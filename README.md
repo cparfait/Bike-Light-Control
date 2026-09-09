@@ -36,7 +36,10 @@ Reste à confronter le tout à la vraie lampe.
 | Licence et journal des versions | ✅ `LICENSE` (MIT) et `CHANGELOG.md` |
 | Publiabilité sur le Connect IQ Store | 🟡 bloquants levés → [docs/audit-publication.md](docs/audit-publication.md) |
 
-Compteur cible confirmé : **Edge 1050**.
+Compteur cible confirmé : **Edge 1050**. Un essai sur **Edge 830** est prévu — c'est le second
+modèle physique, et il couvre ce que le 1050 ne montre pas : écran 246×322, polices bitmap,
+icône 35 px, aucune barre de contrôle système, et le binaire le plus lourd des treize.
+Fiche à emporter : [docs/essai-edge830.md](docs/essai-edge830.md).
 
 ### Les 13 langues, et pourquoi pas les 36
 
@@ -211,6 +214,7 @@ docs/
   compatibilite-edge.md             modèles Edge compatibles, vérifiés contre le SDK
   application.md                    architecture de l'app et décisions de conception
   essai-sans-lampe.md               tester l'app avec une fausse lampe (nRF Connect)
+  essai-edge830.md                  fiche d'essai sur Edge 830, second modèle physique
   audit-publication.md              audit du 09/09/2026 : publiabilité, compatibilité Edge
 shared/                             protocole, couche BLE, automatismes, page de pilotage
 app/                                data field « Bike Light Control »

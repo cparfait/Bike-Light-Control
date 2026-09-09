@@ -4,7 +4,7 @@
 # lecteur), puis liste ce qui est dans GARMIN/Apps.
 #
 #   bash tools/deploy-edge.sh            # edge1050
-#   bash tools/deploy-edge.sh edge530
+#   bash tools/deploy-edge.sh edge830
 #
 # Les deux builds s'appellent <appareil>.prg : on les renomme, sinon le second
 # ecrase le premier. L'Edge consomme les fichiers au redemarrage — ne pas
@@ -19,8 +19,10 @@ ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 DEV="${1:-edge1050}"
 STAGE="$(cygpath -w "$(mktemp -d)")"
 
-cp "$ROOT/app/bin/$DEV.prg"    "$(cygpath -u "$STAGE")/iGEdge-DataField.prg"
-cp "$ROOT/widget/bin/$DEV.prg" "$(cygpath -u "$STAGE")/iGEdge-App.prg"
+# Les noms de fichier reprennent ceux des applications : sur un Edge qui n'est
+# pas le sien, il faut pouvoir retrouver et effacer ce qu'on y a mis.
+cp "$ROOT/app/bin/$DEV.prg"    "$(cygpath -u "$STAGE")/BikeLightControl.prg"
+cp "$ROOT/widget/bin/$DEV.prg" "$(cygpath -u "$STAGE")/BikeLightPanel.prg"
 
 powershell -NoProfile -Command "
 \$sh=New-Object -ComObject Shell.Application

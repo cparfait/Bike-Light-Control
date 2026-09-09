@@ -45,7 +45,7 @@ désigner quand plusieurs se trouvent à portée. Détail dans `docs/application
 1. Éprouver la reconnexion sur le matériel : lampe mise en veille en cours de sortie (§4.5).
 2. Publier en bêta, et vérifier depuis Garmin Connect les réglages, les champs FIT et les deux
    noms. Textes de fiche prêts dans `store/fiches-store.md`.
-3. Obtenir un retour d'un modèle autre que le 1050, idéalement un modèle à boutons.
+3. Obtenir un retour d'un modèle autre que le 1050 — un Edge 830 est prévu, voir §0 bis.
 
 Deux points de l'audit sont volontairement laissés en l'état :
 
@@ -115,7 +115,10 @@ suivant. D'où `AutoController._manualHold`, et les deux entrées `setEnabledMan
 2. **Les captures d'écran du store.** `store/` ne contient que les deux icônes 500×500. Au moins
    une capture par fiche est exigée, et le simulateur suffit à les produire.
 3. **L'essai de la reconnexion après veille**, sur le matériel.
-4. **Un retour d'un modèle autre que le 1050**, idéalement à boutons.
+4. **Un retour d'un modèle autre que le 1050**, idéalement à boutons. Un essai sur **Edge 830**
+   est prévu ; fiche à emporter dans [essai-edge830.md](essai-edge830.md). L'830 couvre l'écran
+   246×322, les polices bitmap, l'icône 35 px, l'absence de barre de contrôle et de tuile de
+   résumé, et le binaire le plus lourd des treize (80 572 o).
 
 ---
 
