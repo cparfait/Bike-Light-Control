@@ -22,21 +22,32 @@ profils du SDK) :
     68  edge1050
 
 L'icone du store fait 500x500, en sRGB, sans transparence et sans fond noir —
-ce sont les regles de publication. D'ou un fond bleu nuit plutot que le
-quasi-noir des icones de lanceur, qui, lui, se fond dans l'interface du
-compteur.
+ce sont les regles de publication.
+
+**Les icones de lanceur sont opaques et pleines, bord a bord.** C'est la
+convention de Garmin lui-meme : les icones des exemples du SDK sont des carres
+pleins, sans coin arrondi et sans canal alpha, coin et centre de la meme
+couleur. La version precedente dessinait un rectangle arrondi quasi-noir sur
+fond transparent, et le resultat etait mauvais sur l'appareil — les coins
+retombaient en noir, le carre sombre se detachait du menu, et l'Edge MTB ne
+gere de toute facon pas la transparence (`alphaBlendingSupport` a False dans
+son profil).
+
+Le fond est donc le meme bleu nuit que l'icone du store : les deux se
+ressemblent, ce qui est le but, et un bleu se lit comme une couleur choisie la
+ou un gris a 30/255 se lit comme une erreur d'affichage.
 """
 
+import math
 import os
 from PIL import Image, ImageDraw
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SS = 8                       # facteur de suréchantillonnage
 
-LAUNCHER_BG = (30, 30, 30)   # quasi-noir : la couleur de fond des menus Edge
-STORE_BG = (27, 42, 58)      # bleu nuit : le store refuse un fond noir
+BG = (27, 42, 58)            # bleu nuit, commun au lanceur et au store
 BEAM = (255, 160, 0)         # orange du faisceau
-PANEL_RING = (255, 160, 0)
+PANEL_FRAME = (255, 160, 0)  # cadre orange, propre au panneau
 
 # Tailles de lanceur par appareil.
 SIZES = {
@@ -48,45 +59,56 @@ SIZES = {
 }
 
 
-def draw_icon(size, bg, ring, alpha_bg=True):
-    """Dessine l'icone a `size` pixels. `ring` distingue le panneau du champ."""
+def draw_icon(size, frame):
+    """Dessine l'icone a `size` pixels.
+
+    Toujours opaque et pleine : pas de canal alpha, pas de coin arrondi. Voir
+    l'en-tete du module. `frame` distingue le panneau du champ de donnees.
+    """
     n = size * SS
-    mode = "RGBA" if alpha_bg else "RGB"
-    im = Image.new(mode, (n, n), (0, 0, 0, 0) if alpha_bg else bg)
+    im = Image.new("RGB", (n, n), BG)
     d = ImageDraw.Draw(im)
 
-    # Fond : carre a coins arrondis, comme les icones systeme.
-    r = int(n * 0.22)
-    d.rounded_rectangle([0, 0, n - 1, n - 1], radius=r,
-                        fill=bg + ((255,) if alpha_bg else ()))
-
-    # Le panneau porte un liseré : c'est ce qui le distingue du champ de
+    # Le panneau porte un cadre : c'est ce qui le distingue du champ de
     # donnees dans la liste des applications, ou les deux se suivent.
-    if ring:
-        w = max(1, int(n * 0.045))
-        m = int(n * 0.10)
-        d.rounded_rectangle([m, m, n - 1 - m, n - 1 - m],
-                            radius=int(n * 0.14), outline=ring, width=w)
+    #
+    # Un cadre plein plutot que le lisere arrondi d'avant : a 35 px celui-ci
+    # tombait sous le pixel et ne laissait qu'un halo sale. Ici l'epaisseur est
+    # calculee pour faire au moins deux pixels a la plus petite taille.
+    inset = 0
+    if frame:
+        w = max(2 * SS, int(n * 0.055))
+        d.rectangle([0, 0, n - 1, n - 1], outline=frame, width=w)
+        inset = w
 
     # Tete de lampe : un disque, decale a gauche pour laisser la place au
-    # faisceau.
-    cx, cy = n * 0.36, n * 0.50
-    rad = n * (0.15 if ring else 0.17)
+    # faisceau. Le dessin se cale sur la zone restee libre a l'interieur du
+    # cadre, sinon le panneau serait dessine plus petit que le champ.
+    x0, y0 = inset, inset
+    span = n - 2 * inset
+    cx, cy = x0 + span * 0.30, y0 + span * 0.50
+    rad = span * 0.155
     d.ellipse([cx - rad, cy - rad, cx + rad, cy + rad], fill=BEAM)
 
     # Faisceau : trois traits en eventail. Deux suffiraient a 35 px, trois
     # tiennent encore et se lisent mieux a 68.
-    import math
-    inner = rad * 1.45
-    outer = n * (0.44 if ring else 0.47)
-    width = max(1, int(n * 0.065))
-    for angle in (-34, 0, 34):
+    #
+    # Les trois rayons partent du **bord du disque** a distance constante et
+    # ont tous la meme longueur. La version precedente les faisait aller
+    # jusqu'a un meme rayon depuis le centre : projete a l'horizontale, le
+    # trait du milieu paraissait alors nettement plus court que les deux
+    # obliques, et l'ensemble tombait de travers.
+    gap = span * 0.06
+    length = span * 0.24
+    width = max(1, int(span * 0.072))
+    for angle in (-35, 0, 35):
         a = math.radians(angle)
-        x0, y0 = cx + inner * math.cos(a), cy + inner * math.sin(a)
-        x1, y1 = cx + outer * math.cos(a), cy + outer * math.sin(a)
-        d.line([x0, y0, x1, y1], fill=BEAM, width=width)
+        ux, uy = math.cos(a), math.sin(a)
+        ax, ay = cx + (rad + gap) * ux, cy + (rad + gap) * uy
+        bx, by = ax + length * ux, ay + length * uy
+        d.line([ax, ay, bx, by], fill=BEAM, width=width)
         # Bouts arrondis : PIL n'en pose pas, on les ajoute a la main.
-        for x, y in ((x0, y0), (x1, y1)):
+        for x, y in ((ax, ay), (bx, by)):
             h = width / 2.0
             d.ellipse([x - h, y - h, x + h, y + h], fill=BEAM)
 
@@ -110,18 +132,19 @@ DRAWABLES_XML = """<!--
 
 
 def main():
-    for binary, ring in (("app", None), ("widget", PANEL_RING)):
+    for binary, frame in (("app", None), ("widget", PANEL_FRAME)):
         print("%s :" % binary)
         for size in sorted(SIZES):
             folder = os.path.join(ROOT, binary, "resources-icon-%d" % size)
             write(os.path.join(folder, "drawables", "launcher.png"),
-                  draw_icon(size, LAUNCHER_BG, ring))
+                  draw_icon(size, frame))
             with open(os.path.join(folder, "drawables", "drawables.xml"),
                       "w", encoding="utf-8", newline="\n") as f:
                 f.write(DRAWABLES_XML)
-        # Icone de la fiche du store : 500x500, opaque, fond non noir.
+        # Icone de la fiche du store : 500x500. Meme dessin, meme fond que le
+        # lanceur — la fiche et le compteur doivent montrer la meme image.
         write(os.path.join(ROOT, "store", "%s-icon-500.png" % binary),
-              draw_icon(500, STORE_BG, ring, alpha_bg=False))
+              draw_icon(500, frame))
 
 
 if __name__ == "__main__":

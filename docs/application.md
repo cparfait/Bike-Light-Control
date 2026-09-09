@@ -427,12 +427,36 @@ ramenés à 35 donnent une image floue là où l'écran est déjà petit.
 `tools/make-icons.py` dessine donc l'icône vectoriellement, la rend huit fois trop grande et la
 réduit en Lanczos, une fois par taille. Le jungle associe chaque appareil à son dossier
 (`resources-icon-35` et suivants) ; `resources/drawables/` n'existe plus, deux définitions du
-même identifiant entrant en conflit. Le script produit aussi les icônes 500×500 des fiches du
-store, sur fond bleu nuit — le store refuse un fond noir ou transparent.
+même identifiant entrant en conflit.
 
-Les deux binaires n'ont pas la même icône : celle de l'application porte un liseré. Sans cette
-différence, ils étaient indistinguables dans la liste des applications du compteur, où ils se
-suivent.
+### L'icône est opaque et pleine, bord à bord
+
+C'est la convention de Garmin lui-même : **toutes les icônes de lanceur des exemples du SDK sont
+des carrés pleins**, sans coin arrondi et sans canal alpha, coin et centre de la même couleur.
+
+La première version faisait l'inverse — un rectangle à coins arrondis, quasi-noir, sur fond
+transparent — et le résultat était mauvais sur l'appareil : les coins retombaient en noir au
+lieu de disparaître, et le carré sombre se détachait du menu au lieu de s'y fondre. L'Edge MTB
+réglait la question à lui seul : `alphaBlendingSupport` vaut `False` dans son profil, il ne sait
+pas composer une transparence.
+
+Le fond est donc le bleu nuit de l'icône du store, opaque, et le même dessin sert aux deux :
+la fiche et le compteur montrent la même image. Accessoirement, un PNG opaque sans canal alpha
+pèse moins — l'Edge 1050 est passé de 82 668 à 78 044 octets.
+
+Trois détails de dessin, tous appris à l'écran :
+
+- **Les trois rayons du faisceau partent du bord du disque, à écart constant, et ont la même
+  longueur.** Les faire aller jusqu'à un même rayon depuis le centre donnait un trait du milieu
+  visiblement plus court que les deux obliques.
+- **Le panneau porte un cadre plein, pas un liseré arrondi.** À 35 px le liseré tombait sous le
+  pixel et ne laissait qu'un halo sale ; l'épaisseur du cadre est calculée pour faire au moins
+  deux pixels à la plus petite taille.
+- **Le dessin se cale à l'intérieur du cadre**, sinon le panneau aurait une lampe plus petite
+  que le champ de données, pour la même taille d'icône.
+
+Sans la différence de cadre, les deux binaires étaient indistinguables dans la liste des
+applications du compteur, où ils se suivent.
 
 ### Hystérésis sur la vitesse
 
@@ -687,9 +711,10 @@ champ de données dispose de 128 Ko :
 | 2 | 56 620 o | 61 372 o |
 | **13** | **82 668 o** | **94 956 o** |
 | 36 — toutes celles du SDK | 113 180 o | 134 284 o |
-
-Mesures sur Edge 1050, la cible la plus lourde. Sur les 13 cibles, le champ de données va de
-72 540 à 82 668 octets, l'application de 83 068 à 94 956.
+Mesures sur Edge 1050, **avec le jeu d'icônes précédent** : ce qui compte ici est l'écart entre
+les lignes, qui ne tient qu'aux langues. Depuis la refonte des icônes en PNG opaques, le même
+binaire à 13 langues pèse 78 044 o. Sur les 13 cibles, le champ de données va de 71 308 à
+80 636 octets, l'application de 81 772 à 93 548.
 
 Les 36 langues ne laissent rien pour le tas. Les 13 retenues sont celles portées par au moins 12
 références sur 18 ; les huit écartées — arabe, bulgare, estonien, letton, lituanien, roumain,

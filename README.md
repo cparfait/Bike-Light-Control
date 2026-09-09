@@ -24,13 +24,13 @@ Reste à confronter le tout à la vraie lampe.
 | Capture HCI | ✅ **faite** le 08/09/2026 — transport et CRC établis |
 | App Connect IQ | 🟡 **socle fonctionnel** → [docs/application.md](docs/application.md) |
 | Protocole implémenté en Monkey C | ✅ 55 tests, dont 12 sur les octets réels de la capture |
-| Compilation 13 cibles | ✅ 71 à 81 Ko en release, 13 langues comprises (budget 128 Ko) |
+| Compilation 13 cibles | ✅ 70 à 79 Ko en release, 13 langues comprises (budget 128 Ko) |
 | Essai de l'app sur l'Edge 1050 | ✅ **connexion et pilotage fonctionnels**, data field, application et tuile de résumé validés sur l'appareil le 09/09/2026 |
 | Interface | ✅ **refondue** — mise en page vérifiée sur les 6 formats d'écran des cibles |
 | Langues | ✅ **13 langues**, suivant la langue du compteur — voir ci-dessous |
 | Champs FIT dans Garmin Connect | ✅ ressource `fitContributions` présente dans le paquet |
 | Plusieurs lampes à proximité | ✅ la plus proche est retenue, et **clignote** pour se désigner |
-| Icônes | ✅ une par taille d'écran (35 à 68 px), plus les icônes 500×500 du store |
+| Icônes | ✅ une par taille d'écran (35 à 68 px), opaques bord à bord comme celles du SDK, plus les 500×500 du store |
 | Réglages modifiés depuis Garmin Connect | ✅ relus en cours d'activité, sans écraser un choix manuel |
 | Allumage au départ | ✅ décochable — le compteur ne sait pas s'il fait nuit |
 | Licence et journal des versions | ✅ `LICENSE` (MIT) et `CHANGELOG.md` |
@@ -56,9 +56,10 @@ sur la référence compilée, et un champ de données dispose de 128 Ko :
 | 2 | 56 620 o | 61 372 o |
 | **13** | **82 668 o** | **94 956 o** |
 | 36 (toutes celles du SDK) | 113 180 o | 134 284 o |
-
-Mesures sur Edge 1050, la cible la plus lourde. Sur les 13 cibles, le champ de données va
-de 72 540 à 82 668 octets.
+Mesures sur Edge 1050, **avec le jeu d'icônes précédent** : ce qui compte ici est l'écart entre
+les lignes, qui ne tient qu'aux langues. Depuis la refonte des icônes en PNG opaques, le même
+binaire à 13 langues pèse 78 044 o. Sur les 13 cibles, le champ de données va de 71 308 à
+80 636 octets, l'application de 81 772 à 93 548.
 
 Les 36 langues ne laissent rien pour le tas. Les 13 retenues sont celles portées par au moins
 12 références sur 18 ; les huit dernières — arabe, bulgare, estonien, letton, lituanien,
