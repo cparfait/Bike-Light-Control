@@ -27,6 +27,7 @@ module SettingsMenu {
     const ID_APP_SPEED3    = 1004;
     const ID_APP_BATTERY   = 1005;
     const ID_APP_ON_START  = 1010;
+    const ID_APP_SEARCH    = 1011;
     const ID_SLEEP_DELAY   = 1006;
     const ID_MODES         = 1008;
     const ID_LOW_DELAY     = 1007;
@@ -103,6 +104,12 @@ module SettingsMenu {
         menu.addItem(new WatchUi.ToggleMenuItem(Labels.of(Rez.Strings.OnAtStart),
             { :enabled => Labels.of(Rez.Strings.Yes), :disabled => Labels.of(Rez.Strings.No) },
             ID_APP_ON_START, _bool("lightOnStart", true), null));
+        // Chercher la lampe des l'ouverture, ou attendre un geste. Le scan BLE
+        // est ce qui coute le plus cher en batterie du compteur, et on ne roule
+        // pas toujours avec sa lampe.
+        menu.addItem(new WatchUi.ToggleMenuItem(Labels.of(Rez.Strings.SearchAuto),
+            { :enabled => Labels.of(Rez.Strings.Yes), :disabled => Labels.of(Rez.Strings.No) },
+            ID_APP_SEARCH, _bool("searchOnStart", true), null));
 
         menu.addItem(new WatchUi.MenuItem(Labels.of(Rez.Strings.ThresholdLow),
             _kmh("speed1", 8), ID_APP_SPEED1, null));
@@ -211,6 +218,8 @@ class SettingsMenuDelegate extends WatchUi.Menu2InputDelegate {
             } else if (id == SettingsMenu.ID_APP_ON_START) {
                 SettingsMenu.save("lightOnStart", on);
                 _auto.loadSettings();
+            } else if (id == SettingsMenu.ID_APP_SEARCH) {
+                SettingsMenu.save("searchOnStart", on);
             } else {
                 // Tout le reste est un automatisme de la lampe : l'identifiant
                 // est directement la constante BLCS_*.

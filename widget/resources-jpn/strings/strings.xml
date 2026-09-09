@@ -29,6 +29,7 @@
     <string id="AppSettings">アプリ設定</string>
     <string id="HintSeparate">データ項目とは別</string>
     <string id="SpeedAdjust">速度で調整</string>
+    <string id="SearchAuto">起動時に探す</string>
     <string id="OffAtEnd">終了時に消灯</string>
     <string id="OnAtStart">開始時に点灯</string>
     <string id="ThresholdLow">低しきい値</string>

@@ -29,6 +29,7 @@
     <string id="AppSettings">應用程式設定</string>
     <string id="HintSeparate">與資料欄位分開</string>
     <string id="SpeedAdjust">依速度調節</string>
+    <string id="SearchAuto">啟動時尋找</string>
     <string id="OffAtEnd">結束時關燈</string>
     <string id="OnAtStart">開始時開燈</string>
     <string id="ThresholdLow">低門檻</string>

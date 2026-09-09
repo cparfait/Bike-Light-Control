@@ -68,6 +68,8 @@
     <string id="StConnecting">Verbinden</string>
     <string id="StReady">OK</string>
     <string id="StUnsupported">Geen BLE</string>
+    <string id="MsgIdle">Licht zoeken</string>
+    <string id="MsgIdleHint">tik om te starten</string>
     <string id="MsgSearching">Zoeken</string>
     <string id="MsgSearchingHint">naar je licht</string>
     <string id="MsgConnecting">Verbinden</string>

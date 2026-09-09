@@ -68,6 +68,8 @@
     <string id="StConnecting">연결 중</string>
     <string id="StReady">OK</string>
     <string id="StUnsupported">BLE 없음</string>
+    <string id="MsgIdle">라이트 찾기</string>
+    <string id="MsgIdleHint">탭하여 시작</string>
     <string id="MsgSearching">검색 중</string>
     <string id="MsgSearchingHint">라이트를 찾는 중</string>
     <string id="MsgConnecting">연결 중</string>

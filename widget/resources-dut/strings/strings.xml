@@ -29,6 +29,7 @@
     <string id="AppSettings">App-instellingen</string>
     <string id="HintSeparate">Los van het veld</string>
     <string id="SpeedAdjust">Aanpassen op snelheid</string>
+    <string id="SearchAuto">Zoeken bij start</string>
     <string id="OffAtEnd">Uit aan einde rit</string>
     <string id="OnAtStart">Aan bij start rit</string>
     <string id="ThresholdLow">Lage drempel</string>

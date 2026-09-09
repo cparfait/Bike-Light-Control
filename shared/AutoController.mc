@@ -103,6 +103,20 @@ class AutoController {
         }
     }
 
+    //! Vrai si la recherche de la lampe doit demarrer d'elle-meme.
+    //!
+    //! Statique et lue a la volee : elle ne concerne pas l'ajustement selon la
+    //! vitesse, mais les deux binaires ont besoin de la meme reponse et c'est
+    //! ici que vit deja l'acces aux reglages.
+    static function searchOnStart() as Lang.Boolean {
+        try {
+            var v = Application.Properties.getValue("searchOnStart");
+            if (v instanceof Lang.Boolean) { return v; }
+        } catch (e) {
+        }
+        return true;
+    }
+
     //! Suspend ou rend l'ajustement d'un geste sur le compteur — une tape sur le
     //! champ, le badge du panneau. Le choix tient jusqu'à la fin de l'activité,
     //! même si les réglages changent entre-temps depuis le téléphone.

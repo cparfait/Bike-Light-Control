@@ -96,6 +96,10 @@
          ligne pour ce qu'il veut dire. Les mots d'etape font tous la meme
          longueur a une lettre pres, ce qui n'est pas un hasard — la police est
          mesuree sur le plus long, donc ils s'affichent tous a la meme taille. -->
+    <!-- Au repos : la recherche ne demarre pas seule, la page propose
+         un bouton. Voir le reglage « chercher au demarrage ». -->
+    <string id="MsgIdle">Find light</string>
+    <string id="MsgIdleHint">tap to start</string>
     <string id="MsgSearching">Searching</string>
     <string id="MsgSearchingHint">for your light</string>
     <string id="MsgConnecting">Connecting</string>

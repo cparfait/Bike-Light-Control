@@ -44,6 +44,7 @@
     <string id="AppSettings">App settings</string>
     <string id="HintSeparate">Separate from the field</string>
     <string id="SpeedAdjust">Adjust by speed</string>
+    <string id="SearchAuto">Search on startup</string>
     <string id="OffAtEnd">Switch off when ride ends</string>
     <string id="OnAtStart">Switch on when ride starts</string>
     <string id="ThresholdLow">Low threshold</string>

@@ -13,6 +13,7 @@
     <string id="SetSpeed2">中速しきい値 (km/h)</string>
     <string id="SetSpeed3">高速しきい値 (km/h)</string>
     <string id="SetLowBattery">バッテリー低下のしきい値 (%)</string>
+    <string id="SetSearchOnStart">起動時にライトを探す</string>
     <string id="SetSyncOff">終了時にライトを消灯</string>
     <string id="SetLightOnStart">開始時にライトを点灯</string>
     <string id="FitMode">ライトモード</string>

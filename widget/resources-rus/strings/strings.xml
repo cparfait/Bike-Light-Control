@@ -29,6 +29,7 @@
     <string id="AppSettings">Настройки приложения</string>
     <string id="HintSeparate">Отдельно от поля данных</string>
     <string id="SpeedAdjust">Подстройка по скорости</string>
+    <string id="SearchAuto">Искать при запуске</string>
     <string id="OffAtEnd">Выключать в конце</string>
     <string id="OnAtStart">Включать на старте</string>
     <string id="ThresholdLow">Нижний порог</string>

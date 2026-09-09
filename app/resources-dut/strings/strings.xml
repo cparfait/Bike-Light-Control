@@ -13,6 +13,7 @@
     <string id="SetSpeed2">Middelste drempel (km/h)</string>
     <string id="SetSpeed3">Hoge drempel (km/h)</string>
     <string id="SetLowBattery">Drempel lage accu (%)</string>
+    <string id="SetSearchOnStart">Licht zoeken bij start</string>
     <string id="SetSyncOff">Licht uit aan einde rit</string>
     <string id="SetLightOnStart">Licht aan bij start rit</string>
     <string id="FitMode">Lichtmodus</string>

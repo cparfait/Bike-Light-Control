@@ -13,6 +13,7 @@
     <string id="SetSpeed2">中速阈值 (km/h)</string>
     <string id="SetSpeed3">高速阈值 (km/h)</string>
     <string id="SetLowBattery">低电量阈值 (%)</string>
+    <string id="SetSearchOnStart">启动时查找车灯</string>
     <string id="SetSyncOff">结束骑行时关灯</string>
     <string id="SetLightOnStart">开始骑行时开灯</string>
     <string id="FitMode">车灯模式</string>

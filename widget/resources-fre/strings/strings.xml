@@ -44,6 +44,7 @@
     <string id="AppSettings">Réglages de l'application</string>
     <string id="HintSeparate">Distincts du champ de données</string>
     <string id="SpeedAdjust">Ajustement selon vitesse</string>
+    <string id="SearchAuto">Chercher au démarrage</string>
     <string id="OffAtEnd">Éteindre en fin d'activité</string>
     <string id="OnAtStart">Allumer au départ</string>
     <string id="ThresholdLow">Seuil bas</string>

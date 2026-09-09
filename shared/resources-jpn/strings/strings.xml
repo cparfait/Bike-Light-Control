@@ -68,6 +68,8 @@
     <string id="StConnecting">接続中</string>
     <string id="StReady">OK</string>
     <string id="StUnsupported">BLE非対応</string>
+    <string id="MsgIdle">ライトを探す</string>
+    <string id="MsgIdleHint">タップして開始</string>
     <string id="MsgSearching">検索中</string>
     <string id="MsgSearchingHint">ライトを探しています</string>
     <string id="MsgConnecting">接続中</string>

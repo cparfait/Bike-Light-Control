@@ -321,6 +321,15 @@ class LampManager extends Ble.BleDelegate {
         return state == STATE_READY;
     }
 
+    //! Vrai quand rien n'est en cours : ni recherche, ni liaison.
+    //!
+    //! C'est l'etat au repos, celui ou la page propose son bouton de mise en
+    //! route. On n'y arrive que si la recherche automatique est coupee, ou si
+    //! `stop()` a ete appele — jamais tout seul.
+    function isIdle() as Lang.Boolean {
+        return state == STATE_IDLE;
+    }
+
     // ---- Envoi de commandes ------------------------------------------------
 
     //! Met une trame en file, découpée si nécessaire.
@@ -893,6 +902,7 @@ class LampManager extends Ble.BleDelegate {
     //! de noir autour d'un texte illisible. Le sens du mot est porte par
     //! `stateHint()`, en dessous et en plus petit.
     function stateMessage() as Lang.String {
+        if (isIdle()) { return Labels.of(Rez.Strings.MsgIdle); }
         if (isIdentifying()) { return Labels.of(Rez.Strings.MsgIdentify); }
         switch (state) {
             case STATE_CONNECTING:
@@ -908,6 +918,7 @@ class LampManager extends Ble.BleDelegate {
     //! geste. Vient ensuite le nombre de lampes vues — savoir qu'il y en avait
     //! trois autour change le regard qu'on porte sur celle qui clignote.
     function stateHint() as Lang.String {
+        if (isIdle()) { return Labels.of(Rez.Strings.MsgIdleHint); }
         if (lastError != null && !isReady()) { return lastError as Lang.String; }
         if (isIdentifying()) {
             // L'annonce prime sur le decompte : dire « va clignoter » avant que
@@ -935,12 +946,14 @@ class LampManager extends Ble.BleDelegate {
     //! l'ecran d'attente.
     static function longestStateMessage() as Lang.String {
         return _longest([ Rez.Strings.MsgSearching, Rez.Strings.MsgConnecting,
-                          Rez.Strings.MsgIdentify, Rez.Strings.MsgNoBle ]);
+                          Rez.Strings.MsgIdentify, Rez.Strings.MsgNoBle,
+                          Rez.Strings.MsgIdle ]);
     }
 
     static function longestStateHint() as Lang.String {
         return _longest([ Rez.Strings.MsgSearchingHint, Rez.Strings.MsgConnectingHint,
-                          Rez.Strings.MsgIdentifyHint, Rez.Strings.MsgNoBleHint ]);
+                          Rez.Strings.MsgIdentifyHint, Rez.Strings.MsgNoBleHint,
+                          Rez.Strings.MsgIdleHint ]);
     }
 
     private static function _longest(ids as Lang.Array) as Lang.String {

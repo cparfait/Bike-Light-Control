@@ -55,7 +55,7 @@ class IgEdgeWidget extends Application.AppBase {
         if (_lamp == null) {
             _lamp = new LampManager();
             _auto = new AutoController();
-            _lamp.start();
+            if (AutoController.searchOnStart()) { _lamp.start(); }
         }
         var view = new LampControlView(_lamp, _auto);
         return [ view, new LampControlDelegate(_lamp, _auto, view) ];
@@ -170,6 +170,8 @@ class LampControlDelegate extends WatchUi.BehaviorDelegate {
     function onTap(evt as WatchUi.ClickEvent) as Lang.Boolean {
         var p = evt.getCoordinates();
         var action = _view.panel.actionAt(p[0], p[1]);
+        // Au repos, la page n'est qu'un bouton : la tape lance la recherche.
+        if (_lamp.isIdle()) { _lamp.start(); WatchUi.requestUpdate(); return true; }
         // Hors liaison, on ne pilote rien — mais on redessine, pour que la
         // surcouche de diagnostic montre le point touche.
         if (!_lamp.isReady()) { WatchUi.requestUpdate(); return true; }
@@ -209,6 +211,10 @@ class LampControlDelegate extends WatchUi.BehaviorDelegate {
     //! **precedente** — chaque geste appliquait la tuile d'avant. C'est le
     //! « les boutons ne correspondent pas » observe sur l'Edge 1050.
     function onSelect() as Lang.Boolean {
+        // Au repos, la selection lance la recherche — y compris sur un Edge a
+        // boutons, ou aucune tape n'est possible et ou le bouton serait sinon
+        // inatteignable.
+        if (_lamp.isIdle()) { _lamp.start(); WatchUi.requestUpdate(); return true; }
         if (!_view.panel.usesCursor()) { return false; }
         if (!_lamp.isReady()) { return false; }
         var boxes = _view.panel.hitBoxes;

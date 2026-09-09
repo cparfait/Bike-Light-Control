@@ -126,6 +126,10 @@ class LampView extends WatchUi.DataField {
     //! Changement de mode manuel : on avance d'un cran dans l'échelle, et on
     //! repasse à l'extinction après le mode le plus fort.
     function onTap(evt as WatchUi.ClickEvent) as Lang.Boolean {
+        // Au repos, la page n'est qu'un bouton : la tape lance la recherche.
+        // A tester avant `isReady()`, qui rendait `false` et laissait le geste
+        // sans effet.
+        if (_lamp.isIdle()) { _lamp.start(); return true; }
         if (!_lamp.isReady()) { return false; }
         // Pendant l'identification, une tape veut dire « c'est bon, j'ai vu » :
         // on abrege et on remet la lampe comme on l'a trouvee. La tape etait

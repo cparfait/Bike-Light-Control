@@ -68,6 +68,8 @@
     <string id="StConnecting">Łączenie</string>
     <string id="StReady">OK</string>
     <string id="StUnsupported">Brak BLE</string>
+    <string id="MsgIdle">Szukaj lampki</string>
+    <string id="MsgIdleHint">dotknij, aby zacząć</string>
     <string id="MsgSearching">Szukanie</string>
     <string id="MsgSearchingHint">twojej lampki</string>
     <string id="MsgConnecting">Łączenie</string>

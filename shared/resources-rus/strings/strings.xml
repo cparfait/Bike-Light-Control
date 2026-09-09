@@ -68,6 +68,8 @@
     <string id="StConnecting">Соединение</string>
     <string id="StReady">OK</string>
     <string id="StUnsupported">Нет BLE</string>
+    <string id="MsgIdle">Найти фару</string>
+    <string id="MsgIdleHint">нажмите, чтобы начать</string>
     <string id="MsgSearching">Поиск</string>
     <string id="MsgSearchingHint">вашей фары</string>
     <string id="MsgConnecting">Соединение</string>

@@ -24,6 +24,7 @@
     <string id="SetSpeed2">Seuil moyen (km/h)</string>
     <string id="SetSpeed3">Seuil haut (km/h)</string>
     <string id="SetLowBattery">Seuil de batterie faible (%)</string>
+    <string id="SetSearchOnStart">Chercher la lampe au démarrage</string>
     <string id="SetSyncOff">Éteindre la lampe à l'arrêt de l'activité</string>
     <string id="SetLightOnStart">Allumer la lampe au départ de l'activité</string>
 

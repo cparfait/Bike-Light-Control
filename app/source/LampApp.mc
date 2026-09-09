@@ -15,7 +15,10 @@ class LampApp extends Application.AppBase {
     function onStart(state as Lang.Dictionary or Null) as Void {
         _lamp = new LampManager();
         _auto = new AutoController();
-        _lamp.start();
+        // La recherche ne part pas toujours seule : le scan BLE est ce qui coute
+        // le plus cher en batterie du compteur, et on ne roule pas toujours avec
+        // sa lampe. Reglage decoche, la page propose un bouton.
+        if (AutoController.searchOnStart()) { _lamp.start(); }
     }
 
     //! Rappelee par le systeme quand les reglages changent depuis Garmin

@@ -68,6 +68,8 @@
     <string id="StConnecting">连接中</string>
     <string id="StReady">OK</string>
     <string id="StUnsupported">无 BLE</string>
+    <string id="MsgIdle">查找车灯</string>
+    <string id="MsgIdleHint">点按开始</string>
     <string id="MsgSearching">搜索中</string>
     <string id="MsgSearchingHint">正在寻找您的车灯</string>
     <string id="MsgConnecting">连接中</string>

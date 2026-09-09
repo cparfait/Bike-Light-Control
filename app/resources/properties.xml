@@ -14,4 +14,9 @@
     <!-- Allumage au depart. Decoche pour les sorties de jour : le compteur ne
          sait pas s'il fait nuit, et allumer systematiquement videre la lampe. -->
     <property id="lightOnStart" type="boolean">true</property>
+
+    <!-- Chercher la lampe des le demarrage. Decoche, l'application attend un
+         geste : le scan BLE est ce qui coute le plus cher en batterie du
+         compteur, et on ne roule pas toujours avec sa lampe. -->
+    <property id="searchOnStart" type="boolean">true</property>
 </properties>

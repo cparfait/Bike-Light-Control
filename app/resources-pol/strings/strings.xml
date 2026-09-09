@@ -13,6 +13,7 @@
     <string id="SetSpeed2">Próg średni (km/h)</string>
     <string id="SetSpeed3">Próg wysoki (km/h)</string>
     <string id="SetLowBattery">Próg niskiej baterii (%)</string>
+    <string id="SetSearchOnStart">Szukaj lampki przy starcie</string>
     <string id="SetSyncOff">Wyłącz lampkę po zakończeniu</string>
     <string id="SetLightOnStart">Włącz lampkę na starcie</string>
     <string id="FitMode">Tryb lampki</string>

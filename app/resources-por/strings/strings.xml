@@ -13,6 +13,7 @@
     <string id="SetSpeed2">Limite médio (km/h)</string>
     <string id="SetSpeed3">Limite alto (km/h)</string>
     <string id="SetLowBattery">Limite de bateria fraca (%)</string>
+    <string id="SetSearchOnStart">Procurar a luz ao iniciar</string>
     <string id="SetSyncOff">Desligar a luz no fim</string>
     <string id="SetLightOnStart">Ligar a luz ao iniciar</string>
     <string id="FitMode">Modo da luz</string>

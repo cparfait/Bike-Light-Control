@@ -759,6 +759,23 @@ class LampPanel {
         _drawLampGlyph(dc, mid, glyphY, r,
                        identifying ? (lit ? LC.UI_ACCENT : LC.UI_TILE) : LC.UI_EDGE);
 
+        // Au repos, le message est le libelle d'un bouton : on lui dessine un
+        // cadre, sinon rien ne dit qu'il est touchable. C'est le seul etat ou la
+        // page attend un geste plutot qu'un evenement.
+        var idle = _lamp.isIdle();
+        if (idle) {
+            var bw = w * 62 / 100;
+            var bh = h * 20 / 100;
+            var bx = mid - bw / 2;
+            var by = h * 62 / 100 - bh / 2;
+            dc.setColor(LC.UI_TILE, Graphics.COLOR_TRANSPARENT);
+            dc.fillRoundedRectangle(bx, by, bw, bh, bh / 4);
+            dc.setColor(LC.UI_ACCENT, Graphics.COLOR_TRANSPARENT);
+            dc.setPenWidth(_pen(bh, 14));
+            dc.drawRoundedRectangle(bx, by, bw, bh, bh / 4);
+            dc.setPenWidth(1);
+        }
+
         var margin = w / 10;
         var font = _fitFont(dc, LampManager.longestStateMessage(), w - 2 * margin, [
             Graphics.FONT_LARGE, Graphics.FONT_MEDIUM, Graphics.FONT_SMALL,
@@ -779,7 +796,10 @@ class LampPanel {
         // Trois points qui défilent : la seule chose qui dise « ça travaille »
         // pendant une recherche qui peut durer une minute. Inutile pendant
         // l'identification, où c'est la lampe elle-même qui bat la mesure.
-        if (!identifying) {
+        // Ni pendant l'identification, ou la lampe bat elle-meme la mesure, ni
+        // au repos, ou rien ne travaille — trois points qui defilent devant un
+        // bouton a presser seraient un mensonge.
+        if (!identifying && !idle) {
             _drawProgress(dc, mid, h * 90 / 100, r / 5);
         }
     }

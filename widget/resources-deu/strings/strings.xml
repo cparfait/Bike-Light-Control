@@ -29,6 +29,7 @@
     <string id="AppSettings">App-Einstellungen</string>
     <string id="HintSeparate">Getrennt vom Datenfeld</string>
     <string id="SpeedAdjust">Anpassung nach Tempo</string>
+    <string id="SearchAuto">Beim Start suchen</string>
     <string id="OffAtEnd">Bei Fahrtende ausschalten</string>
     <string id="OnAtStart">Bei Fahrtbeginn einschalten</string>
     <string id="ThresholdLow">Untere Schwelle</string>

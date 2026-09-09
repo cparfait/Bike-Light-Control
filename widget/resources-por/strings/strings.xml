@@ -29,6 +29,7 @@
     <string id="AppSettings">Definições da app</string>
     <string id="HintSeparate">Separado do campo</string>
     <string id="SpeedAdjust">Ajustar pela velocidade</string>
+    <string id="SearchAuto">Procurar ao iniciar</string>
     <string id="OffAtEnd">Desligar no fim</string>
     <string id="OnAtStart">Ligar ao iniciar</string>
     <string id="ThresholdLow">Limite baixo</string>

@@ -29,6 +29,7 @@
     <string id="AppSettings">앱 설정</string>
     <string id="HintSeparate">데이터 필드와 별도</string>
     <string id="SpeedAdjust">속도로 조정</string>
+    <string id="SearchAuto">시작할 때 검색</string>
     <string id="OffAtEnd">종료 시 끄기</string>
     <string id="OnAtStart">출발 시 켜기</string>
     <string id="ThresholdLow">낮은 기준</string>

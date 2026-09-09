@@ -24,6 +24,7 @@
     <string id="SetSpeed2">Medium threshold (km/h)</string>
     <string id="SetSpeed3">High threshold (km/h)</string>
     <string id="SetLowBattery">Low battery threshold (%)</string>
+    <string id="SetSearchOnStart">Search for the light on startup</string>
     <string id="SetSyncOff">Switch light off when ride ends</string>
     <string id="SetLightOnStart">Switch light on when ride starts</string>
 

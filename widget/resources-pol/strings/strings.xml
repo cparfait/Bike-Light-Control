@@ -29,6 +29,7 @@
     <string id="AppSettings">Ustawienia aplikacji</string>
     <string id="HintSeparate">Osobno od pola danych</string>
     <string id="SpeedAdjust">Dostosuj do prędkości</string>
+    <string id="SearchAuto">Szukaj przy starcie</string>
     <string id="OffAtEnd">Wyłącz po zakończeniu</string>
     <string id="OnAtStart">Włącz na starcie</string>
     <string id="ThresholdLow">Próg niski</string>
