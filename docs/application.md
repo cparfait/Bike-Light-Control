@@ -728,6 +728,35 @@ les diacritiques latines — et cela se voyait à l'écran. Rétabli par `tools/
 idempotent, qui remplace par identifiant et jamais par mot : « Route » est à la fois une
 catégorie et un préfixe de mode.
 
+## Ce qui n'est verifie que sur un Edge 1050
+
+La question se pose a chaque reglage d'affichage : est-ce accorde au 1050, ou aux treize ?
+Voici l'etat exact.
+
+Verifie sur les 13 cibles, contre les profils du SDK et non contre la documentation :
+
+| Point | Comment |
+|---|---|
+| Taille d'icone par appareil | `tools/check-icons.py` — manifeste, profil SDK, jungle et PNG croises |
+| Opacite des icones, quatre coins identiques | idem |
+| Formats d'ecran | les six formats du test correspondent un pour un a `resolution` des 13 profils |
+| Mise en page de la page complete | 1 925 combinaisons : 6 formats, 4 decoupes de champ, 5 jeux de polices, 2 a 6 categories |
+| Langues portees par chaque reference | `tools/i18n/langues-supportees.py` |
+| Compilation | 26 binaires, et types stricts sur un Edge 530 — pas sur le 1050 |
+| Suite de tests | `bash app/build.sh test-all` : 530, MTB, 1040, 1050 |
+
+**Ce qui reste propre au 1050 : le materiel.** C'est le seul exemplaire physique disponible, et
+aucun simulateur ne remplace un essai avec une vraie lampe. Un retour d'un modele a boutons
+reste la derniere piece manquante avant une sortie publique.
+
+Deux details valent d'etre notes, parce qu'ils ont failli passer pour des verites generales :
+
+- **Le tableau des tailles d'icone venait d'un fil de forum.** Il se trouve qu'il etait juste,
+  mais il n'etait pas verifie. `tools/check-icons.py` le relit desormais dans `compiler.json`.
+- **`monkeydo` rend un code de retour non nul meme quand la suite passe.** Le mode `test-all`
+  lit donc le verdict dans la sortie ; s'y fier autrement declarait les quatre profils en echec
+  alors que les 55 tests etaient au vert.
+
 ## Construire
 
 ```bash

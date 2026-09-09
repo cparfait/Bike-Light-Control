@@ -132,6 +132,25 @@ bash app/build.sh
 bash app/build.sh test
 ```
 
+```bash
+bash app/build.sh test-all
+```
+
+Le second lance la suite sur **quatre profils** — 530, MTB, 1040, 1050 — et non sur le seul
+1050. Les tests de mise en page parcourent les six formats d'écran quel que soit le profil, mais
+le reste du binaire s'exécute sur celui du simulateur : une suite qui ne tourne que sur un 1050
+ne prouve rien des douze autres.
+
+Deux contrôles croisent le code avec les profils du SDK plutôt qu'avec la documentation :
+
+```bash
+python tools/check-icons.py
+```
+
+```bash
+python tools/i18n/langues-supportees.py --declarees
+```
+
 Le script localise seul le JDK et le SDK. Détail de l'architecture et des décisions de
 conception dans [docs/application.md](docs/application.md).
 
@@ -203,6 +222,7 @@ app/                                data field « Bike Light Control »
 widget/                             application « Bike Light Panel », pilotage manuel
 store/                              icônes 500×500 des fiches du Connect IQ Store
 tools/
+  check-icons.py                    icônes croisées avec les profils SDK des 13 cibles
   i18n/                             traductions : une table JSON par langue
     generate.py                     écrit les resources-<langue>/ à partir des tables
     langues-supportees.py           langues portées par chaque référence, d'après le SDK

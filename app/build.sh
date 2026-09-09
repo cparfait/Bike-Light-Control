@@ -6,6 +6,7 @@
 #   bash app/build.sh edge1050   # release, un seul appareil
 #   bash app/build.sh test       # tests unitaires dans le simulateur (edge1050)
 #   bash app/build.sh test edge530   # tests sur un autre profil d'appareil
+#   bash app/build.sh test-all   # tests sur quatre profils representatifs
 #   bash app/build.sh debug      # build de debogage pour l'Edge 1050
 #   bash app/build.sh package    # paquets .iq pour le Connect IQ Store
 #
@@ -57,6 +58,36 @@ log "SDK $(basename "$SDK")"
 log "JDK $("$JAVA_HOME/bin/java" -version 2>&1 | head -1)"
 
 MODE="${1:-all}"
+
+# --- Tests sur plusieurs profils ----------------------------------------------
+# Les tests de mise en page parcourent les six formats d'ecran quel que soit le
+# profil ; mais le reste du binaire, lui, s'execute sur celui du simulateur. Une
+# suite qui ne tourne que sur un Edge 1050 ne prouve rien des douze autres.
+#
+# Quatre profils suffisent a couvrir les extremes : le 530 (police bitmap, petit
+# ecran, boutons), le MTB (le plus petit ecran, et le seul sans composition
+# alpha), le 1040 (polices vectorielles de taille intermediaire) et le 1050 (le
+# plus grand, tactile).
+if [ "$MODE" = "test-all" ]; then
+  fail=0
+  for dev in edge530 edgemtb edge1040 edge1050; do
+    log "Tests sur $dev…"
+    # Le verdict se lit dans la sortie, pas dans le code de retour : monkeydo
+    # rend un code non nul meme quand la suite passe. S'y fier declarait les
+    # quatre profils en echec alors que les 55 tests etaient au vert.
+    out="$(bash "$APP/build.sh" test "$dev" 2>&1)"
+    line="$(printf '%s\n' "$out" | grep -E '^(PASSED|FAILED)' | tail -1)"
+    case "$line" in
+      PASSED*) printf '  %-10s %s\n' "$dev" "$line" ;;
+      *)       printf '  %-10s %s\n' "$dev" "${line:-aucun verdict}"
+               printf '%s\n' "$out" | tail -20
+               fail=$((fail + 1)) ;;
+    esac
+  done
+  [ "$fail" -eq 0 ] || die "$fail profil(s) en echec."
+  log "Quatre profils au vert."
+  exit 0
+fi
 
 # --- Tests unitaires ----------------------------------------------------------
 if [ "$MODE" = "test" ]; then
