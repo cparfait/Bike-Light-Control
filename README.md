@@ -41,6 +41,13 @@ modèle physique, et il couvre ce que le 1050 ne montre pas : écran 246×322, p
 icône 35 px, aucune barre de contrôle système, et le binaire le plus lourd des treize.
 Fiche à emporter : [docs/essai-edge830.md](docs/essai-edge830.md).
 
+Pour les douze autres, [docs/essai-modeles.md](docs/essai-modeles.md) dit ce que chacun apporte
+et dans quel ordre les essayer. Elle est **générée** depuis les profils du SDK :
+
+```bash
+python tools/fiche-modeles.py
+```
+
 ### Les 13 langues, et pourquoi pas les 36
 
 Anglais, français, allemand, espagnol, italien, portugais, néerlandais, polonais, russe,
@@ -215,6 +222,7 @@ docs/
   application.md                    architecture de l'app et décisions de conception
   essai-sans-lampe.md               tester l'app avec une fausse lampe (nRF Connect)
   essai-edge830.md                  fiche d'essai sur Edge 830, second modèle physique
+  essai-modeles.md                  fiche des 13 modèles — générée depuis les profils SDK
   audit-publication.md              audit du 09/09/2026 : publiabilité, compatibilité Edge
 shared/                             protocole, couche BLE, automatismes, page de pilotage
 app/                                data field « Bike Light Control »
@@ -227,6 +235,7 @@ widget/                             application « Bike Light Panel », pilotage
 store/                              icônes 500×500 des fiches du Connect IQ Store
 tools/
   check-icons.py                    icônes croisées avec les profils SDK des 13 cibles
+  fiche-modeles.py                  écrit docs/essai-modeles.md depuis les profils SDK
   i18n/                             traductions : une table JSON par langue
     generate.py                     écrit les resources-<langue>/ à partir des tables
     langues-supportees.py           langues portées par chaque référence, d'après le SDK

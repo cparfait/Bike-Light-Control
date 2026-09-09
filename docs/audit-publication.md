@@ -118,7 +118,13 @@ suivant. D'où `AutoController._manualHold`, et les deux entrées `setEnabledMan
 4. **Un retour d'un modèle autre que le 1050**, idéalement à boutons. Un essai sur **Edge 830**
    est prévu ; fiche à emporter dans [essai-edge830.md](essai-edge830.md). L'830 couvre l'écran
    246×322, les polices bitmap, l'icône 35 px, l'absence de barre de contrôle et de tuile de
-   résumé, et le binaire le plus lourd des treize (80 572 o).
+   résumé, et l'un des deux binaires les plus lourds des treize (80 572 o).
+
+   Pour les douze autres, [essai-modeles.md](essai-modeles.md) — générée depuis les profils du
+   SDK — dit ce que chacun apporte. Elle établit surtout que **les treize ne se recoupent
+   presque pas** : 12 cas distincts, un seul regroupement (1030 et 1030 Plus). Il n'y a donc pas
+   de modèle unique qui vaudrait pour les autres, et l'ordre de priorité y remplace l'idée
+   d'équivalence.
 
 ---
 
