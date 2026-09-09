@@ -77,15 +77,17 @@ class LampControlView extends WatchUi.View {
     private function _remember() as Void {
         var battery = _lamp.status.batteryPct;
         var mode = _lamp.status.mode;
-        if (battery == null) { return; }
+        // Plus de sortie sur `battery == null` : lampe eteinte, le resume se
+        // passe desormais du pourcentage, et attendre une mesure de batterie
+        // pour ecrire « Eteint » n'aurait pas de sens.
+        if (battery == null && mode == null) { return; }
         if (battery == _savedBattery && mode == _savedMode) { return; }
 
         var type = _lamp.status.lightType;
         var title = Labels.of(Rez.Strings.LightGeneric);
         if (type != null) { title += " " + LC.typeLabel(type); }
 
-        var summary = battery.format("%d") + "%";
-        if (mode != null) { summary += "  " + LC.modeShort(mode); }
+        var summary = _summary(battery, mode);
 
         try {
             Application.Storage.setValue(LampGlanceView.KEY_TITLE, title);
@@ -94,5 +96,31 @@ class LampControlView extends WatchUi.View {
             _savedMode = mode;
         } catch (e) {
         }
+    }
+
+    //! Texte de droite de la tuile de résumé.
+    //!
+    //! **Lampe éteinte, pas de pourcentage.** « 30 %  Éteint » se lit comme une
+    //! contradiction, et le nombre est de toute façon un relevé mémorisé, pas une
+    //! mesure en cours : la tuile n'interroge pas la lampe. Annoncer une charge
+    //! qu'on ne mesure plus, à côté du mot qui dit que la lampe ne consomme plus,
+    //! c'est la seule ligne de l'application qui affirme quelque chose de faux.
+    //!
+    //! Même règle que l'autonomie dans le champ de données, qui disparaît elle
+    //! aussi à l'extinction.
+    //!
+    //! Le niveau de charge avant de partir reste lisible d'une tape : il est en
+    //! haut de la page de pilotage, avec sa jauge.
+    private function _summary(battery as Lang.Number or Null,
+                              mode as Lang.Number or Null) as Lang.String {
+        if (mode != null && mode == LC.BLM_LIGHT_OFF) {
+            return LC.modeShort(mode);
+        }
+        var out = (battery == null) ? "" : battery.format("%d") + "%";
+        if (mode != null) {
+            if (out.length() > 0) { out += "  "; }
+            out += LC.modeShort(mode);
+        }
+        return out;
     }
 }
