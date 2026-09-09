@@ -171,6 +171,10 @@ bash app/build.sh package
 
 ## Avant de deposer
 
+- [ ] **Remettre `panel.debug` a `false`** dans `widget/source/LampControlView.mc`. La surcouche
+      de diagnostic est allumee depuis l'essai du 09/09 pour lire le mode brut d'une lampe
+      eteinte ; elle ecrit une ligne rouge en bas de la page de pilotage. Verifier :
+      `grep -rn "debug = true" widget/ app/ shared/` doit ne rien rendre.
 - [ ] **Sauvegarder `developer_key.der` hors de cette machine.** Garmin lie definitivement une
       application publiee a la cle qui l'a signee. Perdue, plus aucune mise a jour n'est
       possible : il faut redeposer sous une nouvelle fiche, et les utilisateurs deja installes
