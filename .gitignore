@@ -1,0 +1,28 @@
+# Clé de signature développeur Garmin — personnelle, ne jamais publier
+developer_key.der
+developer_key.pem
+
+# Captures : à exclure sans exception avant toute diffusion (objectif O8).
+#
+# Les bugreports Android sont des vidages complets du téléphone — comptes,
+# messages, journaux système, position — et les .apk sont l'application d'un
+# tiers, redistribuée sans droit. Les journaux HCI contiennent les adresses
+# Bluetooth des appareils alentour. Seuls les rapports d'analyse en Markdown,
+# écrits à la main, ont vocation à être publiés.
+captures/apk/
+captures/**/*.apk
+captures/**/*.zip
+captures/**/btsnoop_hci.log
+captures/**/*.log
+captures/*/strings.txt
+captures/CIQ_LOG.YML
+
+# Manuel constructeur : document sous droit d'auteur iGPSPORT.
+captures/doc/
+
+# Build Connect IQ
+*.prg
+*.prg.debug.xml
+*.iq
+bin/
+__pycache__/

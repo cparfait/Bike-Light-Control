@@ -1,0 +1,49 @@
+project.manifest = manifest.xml
+
+# Meme code protocolaire que le data field : une seule verite.
+base.sourcePath = ../shared;source
+
+# Les libelles d'interface vivent dans shared/, comme le code : les deux
+# binaires doivent afficher exactement les memes mots. Le SDK ajoute deja
+# `resources` et `resources-fre` du repertoire du projet ; on y ajoute ceux du
+# repertoire partage.
+#
+# L'anglais est le jeu par defaut, donc le repli pour toute langue non fournie.
+# Le francais est une variante — c'est l'inverse de ce qu'on ecrirait
+# spontanement, mais un Edge configure en suedois doit tomber sur l'anglais.
+base.resourcePath = $(base.resourcePath);../shared/resources
+base.lang.fre = $(base.lang.fre);../shared/resources-fre
+
+# Icone de lanceur : une taille par appareil.
+#
+# Le compilateur redimensionne en silence une icone unique, sans le moindre
+# avertissement, et 68 px ramenes a 35 donnent une image floue sur les modeles
+# ou l'ecran est deja petit. Chaque groupe pointe donc sur son propre dossier de
+# ressources, ou `LauncherIcon` est dessine a la taille exacte.
+#
+# `resources/drawables/` n'existe plus : deux definitions du meme identifiant
+# entreraient en conflit. Regenerer les images avec :
+#   python tools/make-icons.py
+
+# 35 x 35 px
+edge530.resourcePath = $(edge530.resourcePath);resources-icon-35
+edge540.resourcePath = $(edge540.resourcePath);resources-icon-35
+edge830.resourcePath = $(edge830.resourcePath);resources-icon-35
+edge840.resourcePath = $(edge840.resourcePath);resources-icon-35
+
+# 36 x 36 px
+edge1030.resourcePath = $(edge1030.resourcePath);resources-icon-36
+edge1030plus.resourcePath = $(edge1030plus.resourcePath);resources-icon-36
+edgeexplore.resourcePath = $(edgeexplore.resourcePath);resources-icon-36
+edgeexplore2.resourcePath = $(edgeexplore2.resourcePath);resources-icon-36
+edgemtb.resourcePath = $(edgemtb.resourcePath);resources-icon-36
+
+# 40 x 40 px
+edge1040.resourcePath = $(edge1040.resourcePath);resources-icon-40
+
+# 56 x 56 px
+edge550.resourcePath = $(edge550.resourcePath);resources-icon-56
+edge850.resourcePath = $(edge850.resourcePath);resources-icon-56
+
+# 68 x 68 px
+edge1050.resourcePath = $(edge1050.resourcePath);resources-icon-68

@@ -1,0 +1,71 @@
+<!--
+  Chaines propres a l'application compagnon (anglais, repli par defaut).
+
+  Doit declarer exactement les memes identifiants que ../resources-fre/strings/strings.xml.
+-->
+<strings>
+    <!--
+      Nom affiche dans le store, dans Garmin Connect et dans la liste des
+      applications du compteur.
+
+      Ni « Edge » ni « iGPSPORT » : depuis 2025, l'equipe du Connect IQ Store
+      traite tout usage d'une marque Garmin dans un titre comme une infraction,
+      noms de produits compris, et « iGPSPORT » est une marque tierce. La
+      compatibilite se dit dans le texte de presentation, pas dans le titre.
+
+      Les deux binaires portent des noms differents : sans cela ils etaient
+      indistinguables l'un de l'autre dans le store comme sur le compteur.
+    -->
+    <string id="AppName">Bike Light Panel</string>
+    <string id="SetLowBattery">Low battery threshold (%)</string>
+
+    <!-- Menu des reglages, sur le compteur -->
+    <string id="MenuTitle">Settings</string>
+
+    <!-- Automatismes de la lampe : ils vivent dans son firmware -->
+    <string id="LampAutomations">Light automations</string>
+    <string id="HintNotConnected">Light not connected</string>
+    <string id="LampLumenVary">Brightness by speed</string>
+    <string id="HintByLamp">Handled by the light</string>
+    <string id="LampAutoLight">Light sensor</string>
+    <string id="HintAutoOn">Switches on by itself</string>
+    <string id="LampSyncOff">Synced switch-off</string>
+    <string id="HintFollowsTimer">Follows the timer</string>
+    <string id="LampAutoStart">Switch on at start</string>
+    <string id="HintOnStart">When the ride starts</string>
+    <string id="LampAutoSleep">Auto sleep</string>
+    <string id="HintAfterIdle">After standing still</string>
+    <string id="SleepDelay">Sleep delay</string>
+    <string id="LampAutoLow">Dim when stopped</string>
+    <string id="LowDelay">Delay before dimming</string>
+    <string id="AvailableModes">Available modes</string>
+
+    <!-- Reglages propres a l'application -->
+    <string id="AppSettings">App settings</string>
+    <string id="HintSeparate">Separate from the field</string>
+    <string id="SpeedAdjust">Adjust by speed</string>
+    <string id="OffAtEnd">Switch off when ride ends</string>
+    <string id="OnAtStart">Switch on when ride starts</string>
+    <string id="ThresholdLow">Low threshold</string>
+    <string id="ThresholdMid">Medium threshold</string>
+    <string id="ThresholdHigh">High threshold</string>
+    <string id="LowBattery">Low battery</string>
+
+    <!-- Etats d'interrupteur et mots isoles -->
+    <string id="StateActive">On</string>
+    <string id="StateInactive">Off</string>
+    <string id="Yes">Yes</string>
+    <string id="No">No</string>
+    <string id="StateAvailable">Available</string>
+    <string id="StateDisabled">Disabled</string>
+    <string id="Current">current</string>
+
+    <!-- « 6 actifs sur 11 » : la conjonction est traduite a part -->
+    <string id="ActiveOutOf"> active of </string>
+
+    <!-- Unites -->
+    <string id="UnitSec">s</string>
+    <string id="UnitMin">min</string>
+    <string id="UnitKmh">km/h</string>
+    <string id="UnitPct">%</string>
+</strings>

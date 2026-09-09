@@ -1,0 +1,17 @@
+<properties>
+    <!-- Automatisme selon la vitesse -->
+    <property id="autoEnabled" type="boolean">true</property>
+    <property id="speed1" type="number">8</property>
+    <property id="speed2" type="number">18</property>
+    <property id="speed3" type="number">30</property>
+
+    <!-- Batterie -->
+    <property id="lowBatteryPct" type="number">20</property>
+
+    <!-- Extinction a l'arret de l'activite -->
+    <property id="syncOff" type="boolean">true</property>
+
+    <!-- Allumage au depart. Decoche pour les sorties de jour : le compteur ne
+         sait pas s'il fait nuit, et allumer systematiquement videre la lampe. -->
+    <property id="lightOnStart" type="boolean">true</property>
+</properties>

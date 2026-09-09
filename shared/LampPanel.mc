@@ -1,0 +1,896 @@
+using Toybox.Graphics;
+using Toybox.Lang;
+using Toybox.System;
+using LightConstants as LC;
+
+//! Panneau de pilotage : bandeau d'état, mode courant, catégories, niveaux.
+//!
+//! Composant de dessin, volontairement pas une View : il sert à la fois à
+//! l'application compagnon et au champ de données quand celui-ci occupe assez
+//! de place. Une seule mise en page à maintenir plutôt que deux qui divergent.
+//!
+//! Le classement par catégorie évite d'avoir à traverser les six crans de
+//! faisceau pour atteindre le flash : une tape sur « Flash » y va directement,
+//! à son niveau le plus faible.
+//!
+//! **Mise en page élastique.** La même page doit tenir dans les 246x322 d'un
+//! Edge 530 comme dans les 480x800 d'un 1050. Rien n'est exprimé en pixels :
+//! les tuiles se dimensionnent sur la largeur disponible, plafonnées par la
+//! hauteur, et l'espace qui reste va au bandeau du mode courant. C'est ce
+//! plafond qui manquait à la version précédente, où deux rangées se
+//! partageaient toute la hauteur et donnaient des pavés de 300 pixels.
+class LampPanel {
+
+    //! Valeurs sentinelles pour les zones tactiles qui n'appliquent pas un mode.
+    //! Hors de la plage des modes réels, qui va de 0 à 75.
+    static const ACTION_SETTINGS = -1;
+    static const ACTION_AUTO     = -2;
+    static const ACTION_CATEGORY = -100;   // -100 - index de catégorie
+
+    //! Forme des libellés d'une rangée de catégories, la même pour toutes.
+    static const LABEL_NONE  = 0;
+    static const LABEL_SHORT = 1;
+    static const LABEL_FULL  = 2;
+
+    private var _lamp as LampManager;
+    private var _auto as AutoController;
+
+    //! Zones tactiles calculées au dessin : `[x, y, largeur, hauteur, action]`.
+    var hitBoxes as Lang.Array = [];
+
+    //! Curseur pour la navigation aux boutons, sur les modèles sans tactile.
+    var cursor as Lang.Number = 0;
+
+    //! Catégorie affichée dans la rangée des niveaux. Suit le mode courant
+    //! tant que l'utilisateur n'en a pas choisi une autre explicitement.
+    var selectedCategory as Lang.Number or Null = null;
+
+    //! Affiche le badge AUTO / MANU. Vrai par défaut. L'application compagnon
+    //! le masque : Connect IQ isole l'état de chaque binaire, et l'ajustement
+    //! selon la vitesse ne tourne que dans le champ de données — un badge qui
+    //! bascule un drapeau sans effet est un mensonge.
+    var showAuto as Lang.Boolean = true;
+
+    //! Affiche la roue dentée des réglages. Faux par défaut : seul un binaire
+    //! capable d'empiler une vue — l'application compagnon — peut la proposer.
+    var showSettings as Lang.Boolean = false;
+
+    //! Vrai sur les Edge à boutons. Le curseur n'y est pas un détail : sans
+    //! trace à l'écran, `onNextPage()` déplaçait une sélection invisible et la
+    //! page paraissait ne pas répondre.
+    private var _showCursor as Lang.Boolean = false;
+
+    //! Vrai sur les modeles a boutons : la selection s'y fait au curseur. Sur un
+    //! tactile, c'est la tape qui designe, et le curseur n'a pas de sens.
+    function usesCursor() as Lang.Boolean { return _showCursor; }
+
+    //! Supprime le curseur, quel que soit l'appareil.
+    //!
+    //! Le champ de donnees l'appelle : aucune touche n'est transmise a un data
+    //! field, meme plein ecran. Sur un Edge 530, 540 ou MTB, le cadre blanc
+    //! restait donc fige sur la premiere tuile — une selection qu'aucun bouton
+    //! ne pouvait deplacer, et qui laissait croire a une page bloquee.
+    function hideCursor() as Void { _showCursor = false; }
+
+    private var _settingsBox as Lang.Array or Null = null;
+
+    function initialize(lamp as LampManager, auto as AutoController) {
+        _lamp = lamp;
+        _auto = auto;
+        var settings = System.getDeviceSettings();
+        _showCursor = !((settings has :isTouchScreen) && settings.isTouchScreen);
+    }
+
+    //! Catégories réellement disponibles sur cette lampe. « Éteint » est
+    //! toujours proposé ; les autres n'apparaissent que si la lampe déclare au
+    //! moins un mode dedans — une icône sans effet vaut moins que rien.
+    function categories() as Lang.Array {
+        // Les modes **declares**, pas seulement les actifs : la VS1800S sort
+        // d'usine avec ses deux flashs desactives, et la categorie « Flash »
+        // disparaissait purement et simplement. L'utilisateur en concluait que
+        // l'application ne les connaissait pas.
+        var supported = _lamp.declaredModes();
+        var out = [];
+        for (var i = 0; i < LC.CATEGORY_ORDER.size(); i++) {
+            var cat = LC.CATEGORY_ORDER[i] as Lang.Number;
+            if (cat == LC.CAT_OFF || LC.modesInCategory(cat, supported).size() > 0) {
+                out.add(cat);
+            }
+        }
+        return out;
+    }
+
+    //! Dessine le panneau et recalcule les zones tactiles.
+    function draw(dc as Graphics.Dc) as Void {
+        _auto.setSupportedModes(_lamp.status.supportedModes, _lamp.status.lightType);
+
+        dc.setColor(LC.UI_TEXT, LC.UI_BG);
+        dc.clear();
+        hitBoxes = [];
+        _settingsBox = null;
+
+        var w = dc.getWidth();
+        var h = dc.getHeight();
+
+        // Tant que la lampe n'est pas la — et pendant qu'elle se designe en
+        // clignotant — la page ne montre qu'une chose : ou on en est. Afficher
+        // les tuiles d'une lampe absente etait un mensonge poli : elles ne
+        // repondaient pas a la tape, et l'etat se lisait en petit dans un coin,
+        // dans une police differente de tout le reste.
+        if (!_lamp.isReady() || _lamp.isIdentifying()) {
+            _drawWaiting(dc, w, h);
+            return;
+        }
+
+        if (w < 200 || h < 160) {
+            _drawCompact(dc, w, h);
+            return;
+        }
+
+        // La catégorie suit le mode courant tant qu'on n'en a pas choisi une.
+        if (selectedCategory == null) {
+            selectedCategory = LC.categoryOf(_lamp.status.mode);
+        }
+
+        // Toute la geometrie est calculee par PanelLayout, qui ne connait que
+        // des nombres : c'est ce qui permet de la verifier sur les tailles
+        // reelles des 13 Edge cibles depuis un test unitaire, plutot que de la
+        // constater sur un appareil a la fois.
+        var cats = categories();
+        var levels = _levelModes();
+        var m = new PanelLayout(w, h, cats.size(), levels.size(), _hasLevelRow(),
+                                dc.getFontHeight(Graphics.FONT_SMALL),
+                                dc.getFontHeight(Graphics.FONT_MEDIUM),
+                                dc.getFontHeight(Graphics.FONT_LARGE));
+
+        _drawHeader(dc, m.x, m.headerY, m.cw);
+        _drawBattery(dc, m.x, m.batteryY, m.cw);
+
+        if (m.heroH > 0) {
+            _drawHero(dc, m.x, m.heroY, m.cw, m.heroH);
+        }
+
+        _drawCategories(dc, m.x, m.rowsY, m.cw, cats, m.tw, m.catH, m.cols, m.gap);
+        // La rangée peut être réservée mais vide — « Éteint » n'a pas de crans.
+        // On ne dessine rien, et la place reste prise : rien ne se déplace.
+        if (m.levH > 0 && levels.size() > 0) {
+            _drawLevels(dc, m.x, m.levY, m.cw, m.levH, levels, m.gap);
+        }
+
+        if (_settingsBox != null) {
+            hitBoxes.add([_settingsBox[0], _settingsBox[1], _settingsBox[2],
+                          _settingsBox[3], ACTION_SETTINGS]);
+        }
+
+        _drawCursor(dc);
+        _drawDebug(dc);
+    }
+
+    //! Modes de la rangée du bas. Vide pour « Éteint » : la catégorie n'a qu'un
+    //! seul mode, et une rangée d'une seule tuile n'apprendrait rien.
+    private function _levelModes() as Lang.Array {
+        if (selectedCategory == null || selectedCategory == LC.CAT_OFF) { return []; }
+        var modes = LC.modesInCategory(selectedCategory, _lamp.declaredModes());
+        return (modes.size() > 1) ? modes : [];
+    }
+
+    //! Vrai si la rangée des niveaux doit garder sa place, y compris quand la
+    //! catégorie affichée n'en a pas.
+    //!
+    //! Ne dépend que de ce que la lampe déclare, jamais de la sélection : c'est
+    //! précisément ce qui empêche la page de bouger quand on passe d'une
+    //! catégorie à « Éteint » et retour.
+    private function _hasLevelRow() as Lang.Boolean {
+        var supported = _lamp.declaredModes();
+        for (var i = 0; i < LC.CATEGORY_ORDER.size(); i++) {
+            var cat = LC.CATEGORY_ORDER[i] as Lang.Number;
+            if (cat != LC.CAT_OFF
+                    && LC.modesInCategory(cat, supported).size() > 1) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    // ---- Bandeau supérieur -------------------------------------------------
+
+    private function _drawHeader(dc as Graphics.Dc, x as Lang.Number,
+                                 y as Lang.Number, w as Lang.Number) as Lang.Number {
+        var font = Graphics.FONT_SMALL;
+        var hh = dc.getFontHeight(font);
+        var cy = y + hh / 2;
+
+        // Roue dentée collée au bord droit. C'est le seul accès aux réglages
+        // sur un modèle sans bouton menu ; la coincer au milieu du bandeau,
+        // comme avant, la faisait passer pour une décoration.
+        //
+        // Elle n'est dessinée que par l'application compagnon : un champ de
+        // données n'a pas le droit d'empiler une vue, la roue y était donc un
+        // bouton qui ne menait nulle part.
+        var right = x + w;
+        if (showSettings) {
+            var gr = hh * 45 / 100;
+            var gx = x + w - gr;
+            _drawGear(dc, gx, cy, gr);
+            _settingsBox = [gx - gr - 2, y, 2 * gr + 4, hh];
+            right = gx - gr - _gap(hh);
+        }
+
+        // État de la liaison : une pastille verte, et rien d'autre. Le mot
+        // « OK » qui l'accompagnait n'apprenait rien de plus qu'elle, dans une
+        // police encore differente ; la page en comptait une de trop.
+        //
+        // Le bandeau ne s'affiche que lampe connectée — sinon c'est l'écran
+        // d'attente qui prend toute la place — donc la pastille est verte, sauf
+        // panne survenue en cours de liaison.
+        var ready = _lamp.isReady();
+
+        var dotR = hh / 7;
+        if (dotR < 3) { dotR = 3; }
+
+        dc.setColor(ready ? LC.UI_OK : LC.UI_WARN, Graphics.COLOR_TRANSPARENT);
+        dc.fillCircle(right - dotR, cy, dotR);
+
+        // « Lampe avant » quand elle l'a dit, « Lampe » sinon : afficher
+        // « Lampe ? » ferait croire a une anomalie alors qu'on attend juste
+        // une reponse. Une panne signalee prend sa place : c'est ce qui rend le
+        // diagnostic possible sans PC.
+        var type = _lamp.status.lightType;
+        var generic = Labels.of(Rez.Strings.LightGeneric);
+        var title = (type == null) ? generic : generic + " " + LC.typeLabel(type);
+        if (_lamp.lastError != null) { title = _lamp.lastError; }
+        var titleMax = right - 3 * dotR - _gap(hh) - x;
+        var titleFont = _fitFont(dc, title, titleMax,
+            [Graphics.FONT_SMALL, Graphics.FONT_TINY, Graphics.FONT_XTINY]);
+        dc.setColor(LC.UI_TEXT, Graphics.COLOR_TRANSPARENT);
+        dc.drawText(x, cy, titleFont, title,
+                    Graphics.TEXT_JUSTIFY_LEFT | Graphics.TEXT_JUSTIFY_VCENTER);
+
+        return y + hh;
+    }
+
+    //! Espacement proportionnel à la taille du texte voisin, pour que la
+    //! respiration du bandeau suive la résolution de l'écran.
+    private function _gap(fontHeight as Lang.Number) as Lang.Number {
+        var g = fontHeight / 4;
+        return (g < 3) ? 3 : g;
+    }
+
+    private function _drawGear(dc as Graphics.Dc, cx as Lang.Number,
+                               cy as Lang.Number, r as Lang.Number) as Void {
+        if (r < 5) { return; }
+        dc.setColor(LC.UI_DIM, Graphics.COLOR_TRANSPARENT);
+        dc.setPenWidth(_pen(r, 10));
+        dc.drawCircle(cx, cy, r * 55 / 100);
+        var dxs = [1, 1, 0, -1, -1, -1, 0, 1];
+        var dys = [0, 1, 1, 1, 0, -1, -1, -1];
+        for (var i = 0; i < 8; i++) {
+            // Huit rayons approximés par des segments : aucune trigonométrie,
+            // ce qui compte sur un appareil lent.
+            dc.drawLine(cx + dxs[i] * r * 55 / 100, cy + dys[i] * r * 55 / 100,
+                        cx + dxs[i] * r, cy + dys[i] * r);
+        }
+        dc.setPenWidth(1);
+    }
+
+    private function _drawBattery(dc as Graphics.Dc, x as Lang.Number,
+                                  y as Lang.Number, w as Lang.Number) as Lang.Number {
+        var pct = _lamp.status.batteryPct;
+        var rowH = dc.getFontHeight(Graphics.FONT_MEDIUM);
+        var barH = rowH * 68 / 100;
+        var barY = y + (rowH - barH) / 2;
+        var cy = y + rowH / 2;
+
+        // Lampe éteinte : l'autonomie serait celle d'avant l'extinction.
+        var mode = _lamp.status.mode;
+        var lit = (mode != null && mode != LC.BLM_LIGHT_OFF);
+        var left = _lamp.status.remainingMinutes;
+        var showLeft = (lit && left != null && left > 0);
+
+        // La barre prend ce que l'autonomie ne prend pas, au lieu d'une part
+        // fixe de la largeur : sur un écran étroit, « 12 h 05 » ne chevauche
+        // plus la jauge.
+        var barW = w;
+        if (showLeft) {
+            var text = _duration(left);
+            var font = _fitFont(dc, text, w * 45 / 100,
+                [Graphics.FONT_MEDIUM, Graphics.FONT_SMALL, Graphics.FONT_TINY]);
+            dc.setColor(LC.UI_TEXT, Graphics.COLOR_TRANSPARENT);
+            dc.drawText(x + w, cy, font, text,
+                        Graphics.TEXT_JUSTIFY_RIGHT | Graphics.TEXT_JUSTIFY_VCENTER);
+            barW = w - dc.getTextWidthInPixels(text, font) - _gap(rowH) * 2;
+        }
+        if (barW < 40) { return y + rowH; }
+
+        var radius = barH / 3;
+        var nub = barH / 4;
+        dc.setColor(LC.UI_TILE, Graphics.COLOR_TRANSPARENT);
+        dc.fillRoundedRectangle(x, barY, barW - nub, barH, radius);
+        dc.setColor(LC.UI_EDGE, Graphics.COLOR_TRANSPARENT);
+        dc.fillRoundedRectangle(x + barW - nub, barY + barH / 3, nub, barH / 3, 1);
+
+        if (pct != null) {
+            var inner = barW - nub - 4;
+            var fill = inner * pct / 100;
+            if (fill < 3 && pct > 0) { fill = 3; }
+            var color = _batteryColor(pct);
+            if (fill > 0) {
+                // Un rayon plus grand que la moitié de la largeur ne définit
+                // plus un rectangle : à 2 %, la jauge est plus étroite que son
+                // propre arrondi.
+                var fr = radius;
+                if (fr > fill / 2) { fr = fill / 2; }
+                dc.setColor(color, Graphics.COLOR_TRANSPARENT);
+                dc.fillRoundedRectangle(x + 2, barY + 2, fill, barH - 4, fr);
+            }
+            // Le pourcentage est écrit dans la barre, donc parfois sur la
+            // couleur de remplissage et parfois sur le fond : la teinte du
+            // texte suit ce qu'il y a derrière lui, au lieu d'un blanc qui
+            // disparaît sur le vert.
+            var mid = (barW - nub) / 2;
+            dc.setColor((fill > mid) ? LC.contrastOn(color) : LC.UI_TEXT,
+                        Graphics.COLOR_TRANSPARENT);
+            dc.drawText(x + mid, cy, Graphics.FONT_XTINY, pct.format("%d") + " %",
+                        Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER);
+        }
+        return y + rowH;
+    }
+
+    private function _batteryColor(pct as Lang.Number) as Lang.Number {
+        if (_auto.isBatteryLow(pct)) { return LC.UI_ALERT; }
+        if (pct <= 40) { return LC.UI_WARN; }
+        return LC.UI_OK;
+    }
+
+    // ---- Bandeau du mode courant -------------------------------------------
+
+    //! Le mode en toutes lettres, et l'état de l'automatisme à droite.
+    //!
+    //! Le badge n'est pas décoratif : toute action manuelle coupe l'ajustement
+    //! selon la vitesse, et jusqu'ici rien ne le disait ni ne permettait de le
+    //! rétablir depuis la page — il fallait éteindre la lampe puis retaper.
+    private function _drawHero(dc as Graphics.Dc, x as Lang.Number, y as Lang.Number,
+                               w as Lang.Number, h as Lang.Number) as Void {
+        var badge = Labels.of(_auto.enabled ? Rez.Strings.BadgeAuto : Rez.Strings.BadgeManual);
+        // Une vraie cible tactile, pas une etiquette : police de taille normale
+        // et hauteur genereuse. Le badge est la seule commande de la page qui
+        // n'est pas une tuile, il ne doit pas etre le plus petit element.
+        var badgeFont = Graphics.FONT_SMALL;
+        var bh = dc.getFontHeight(badgeFont) * 140 / 100;
+        if (bh > h) { bh = h; }
+        // Largeur fixee sur le plus long des deux mots : basculer AUTO/MANU ne
+        // doit pas deplacer le badge, cale a droite, ni le libelle a sa gauche.
+        var wAuto = dc.getTextWidthInPixels(Labels.of(Rez.Strings.BadgeAuto), badgeFont);
+        var wManu = dc.getTextWidthInPixels(Labels.of(Rez.Strings.BadgeManual), badgeFont);
+        var bw = ((wAuto > wManu) ? wAuto : wManu) + bh * 120 / 100;
+        var bx = x + w - bw;
+        var by = y + (h - bh) / 2;
+
+        if (showAuto) {
+            // Meme grammaire que les tuiles : plein vert = actif, sombre cercle
+            // = inactif. On lit l'etat a la couleur avant de lire le mot.
+            if (_auto.enabled) {
+                dc.setColor(LC.UI_OK, Graphics.COLOR_TRANSPARENT);
+                dc.fillRoundedRectangle(bx, by, bw, bh, bh / 2);
+                dc.setColor(LC.contrastOn(LC.UI_OK), Graphics.COLOR_TRANSPARENT);
+            } else {
+                dc.setColor(LC.UI_TILE, Graphics.COLOR_TRANSPARENT);
+                dc.fillRoundedRectangle(bx, by, bw, bh, bh / 2);
+                dc.setColor(LC.UI_EDGE, Graphics.COLOR_TRANSPARENT);
+                dc.setPenWidth(_pen(bh, 12));
+                dc.drawRoundedRectangle(bx, by, bw, bh, bh / 2);
+                dc.setPenWidth(1);
+                dc.setColor(LC.UI_DIM, Graphics.COLOR_TRANSPARENT);
+            }
+            dc.drawText(bx + bw / 2, by + bh / 2, badgeFont, badge,
+                        Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER);
+            hitBoxes.add([bx, by, bw, bh, ACTION_AUTO]);
+        } else {
+            bw = 0;
+        }
+
+        var mode = _lamp.status.mode;
+        var label = (mode == null) ? "--" : LC.modeLabel(mode);
+        var avail = w - bw - _gap(bh) * 2;
+        // La police est choisie pour le **plus long libelle que la lampe peut
+        // afficher**, pas pour celui du moment : sinon passer de « Route
+        // eleve » a « Croisement moyen » faisait sauter la taille du texte a
+        // chaque tape, et la page semblait bouger.
+        var font = _fitFont(dc, _longestModeLabel(label), avail, [
+            Graphics.FONT_LARGE, Graphics.FONT_MEDIUM, Graphics.FONT_SMALL,
+            Graphics.FONT_TINY, Graphics.FONT_XTINY
+        ]);
+        if (dc.getFontHeight(font) > h) { font = Graphics.FONT_XTINY; }
+        dc.setColor(_modeColor(mode), Graphics.COLOR_TRANSPARENT);
+        dc.drawText(x, y + h / 2, font, label,
+                    Graphics.TEXT_JUSTIFY_LEFT | Graphics.TEXT_JUSTIFY_VCENTER);
+    }
+
+    //! Le plus long des libelles de mode que la lampe declare — `fallback`
+    //! compris, au cas ou le mode courant ne serait pas dans la liste. Sert a
+    //! choisir une police qui ne changera pas d'un mode a l'autre.
+    private function _longestModeLabel(fallback as Lang.String) as Lang.String {
+        var longest = fallback;
+        var modes = _lamp.declaredModes();
+        if (modes == null) { return longest; }
+        for (var i = 0; i < modes.size(); i++) {
+            var l = LC.modeLabel(modes[i] as Lang.Number);
+            if (l.length() > longest.length()) { longest = l; }
+        }
+        return longest;
+    }
+
+    //! Couleur d'un mode : sa place dans la rampe d'intensité de sa catégorie.
+    //! Le libellé du mode courant a donc exactement la teinte de sa tuile.
+    private function _modeColor(mode as Lang.Number or Null) as Lang.Number {
+        if (mode == null || mode == LC.BLM_LIGHT_OFF) { return LC.UI_OFF; }
+        var modes = LC.modesInCategory(LC.categoryOf(mode), _lamp.declaredModes());
+        for (var i = 0; i < modes.size(); i++) {
+            if (modes[i] == mode) { return LC.intensityColor(i, modes.size()); }
+        }
+        return LC.UI_ACCENT;
+    }
+
+    // ---- Catégories --------------------------------------------------------
+
+    private function _drawCategories(dc as Graphics.Dc, x as Lang.Number, y as Lang.Number,
+                                     w as Lang.Number, cats as Lang.Array,
+                                     tw as Lang.Number, th as Lang.Number,
+                                     cols as Lang.Number, gap as Lang.Number) as Void {
+        var n = cats.size();
+        if (n == 0 || th < 12 || cols < 1) { return; }
+        var active = LC.categoryOf(_lamp.status.mode);
+        var labelling = _labelling(dc, cats, tw, th);
+
+        for (var i = 0; i < n; i++) {
+            var cat = cats[i] as Lang.Number;
+            var row = i / cols;
+            var col = i % cols;
+
+            // Une rangée incomplète est centrée : cinq catégories sur trois
+            // colonnes donnent 3 + 2, et les deux du bas se placent au milieu
+            // plutôt que de laisser un trou à droite.
+            var inRow = n - row * cols;
+            if (inRow > cols) { inRow = cols; }
+            var rowW = inRow * tw + (inRow - 1) * gap;
+
+            var tx = x + (w - rowW) / 2 + col * (tw + gap);
+            var ty = y + row * (th + gap);
+            _drawCategoryTile(dc, tx, ty, tw, th, cat,
+                              cat == active, cat == selectedCategory, labelling);
+            hitBoxes.add([tx, ty, tw, th, ACTION_CATEGORY - cat]);
+        }
+    }
+
+    //! Forme des libellés, décidée **pour toute la rangée** : complète, abrégée,
+    //! ou aucune. Trancher tuile par tuile donnerait sur un Edge 530 une rangée
+    //! où « Route » est écrit et « Croisement » non — ce qui se lit comme un
+    //! défaut d'affichage, pas comme une adaptation.
+    private function _labelling(dc as Graphics.Dc, cats as Lang.Array,
+                                tw as Lang.Number, h as Lang.Number) as Lang.Number {
+        var lh = dc.getFontHeight(Graphics.FONT_XTINY);
+        if (h < lh * 5 / 2) { return LABEL_NONE; }
+
+        var avail = tw * 88 / 100;
+        var form = LABEL_FULL;
+        for (var i = 0; i < cats.size(); i++) {
+            var cat = cats[i] as Lang.Number;
+            if (dc.getTextWidthInPixels(LC.categoryLabel(cat),
+                                        Graphics.FONT_XTINY) > avail) {
+                form = LABEL_SHORT;
+            }
+        }
+        if (form == LABEL_FULL) { return LABEL_FULL; }
+
+        for (var i = 0; i < cats.size(); i++) {
+            var cat = cats[i] as Lang.Number;
+            if (dc.getTextWidthInPixels(LC.categoryLabelShort(cat),
+                                        Graphics.FONT_XTINY) > avail) {
+                return LABEL_NONE;
+            }
+        }
+        return LABEL_SHORT;
+    }
+
+    //! Trois états à distinguer, et une seule couleur d'accent pour le faire :
+    //! la catégorie **allumée** est pleine, celle qu'on **consulte** est
+    //! seulement cerclée, les autres restent sombres. Remplir la sélection
+    //! comme l'état actif, ce que faisait la version précédente avec un bleu et
+    //! un liseré blanc, obligeait à comparer deux tuiles pour savoir laquelle
+    //! éclairait vraiment.
+    private function _drawCategoryTile(dc as Graphics.Dc, x as Lang.Number,
+                                       y as Lang.Number, w as Lang.Number,
+                                       h as Lang.Number, cat as Lang.Number,
+                                       active as Lang.Boolean,
+                                       selected as Lang.Boolean,
+                                       labelling as Lang.Number) as Void {
+        var radius = h / 8;
+        if (radius > w / 5) { radius = w / 5; }
+        // Vert pour « c'est ce mode qui est allumé ». Sauf l'extinction : un
+        // vert dirait « ça marche » là où il n'y a précisément plus de lumière.
+        var accent = (cat == LC.CAT_OFF) ? LC.UI_OFF : LC.UI_OK;
+
+        dc.setColor(active ? accent : LC.UI_TILE, Graphics.COLOR_TRANSPARENT);
+        dc.fillRoundedRectangle(x, y, w, h, radius);
+        if (selected && !active) {
+            dc.setColor(accent, Graphics.COLOR_TRANSPARENT);
+            dc.setPenWidth(_pen(h, 24));
+            dc.drawRoundedRectangle(x, y, w, h, radius);
+            dc.setPenWidth(1);
+        }
+
+        var ink = active ? LC.contrastOn(accent)
+                         : (selected ? accent : LC.UI_DIM);
+
+        // Icône et libellé forment un groupe centré, plutôt qu'une icône posée
+        // dans ce qui reste au-dessus d'un libellé collé en bas : la tuile peut
+        // être deux fois plus haute que large, et le contenu doit rester
+        // groupé au milieu au lieu de flotter aux deux extrémités.
+        var font = Graphics.FONT_XTINY;
+        var lh = dc.getFontHeight(font);
+        var label = null;
+        if (labelling == LABEL_FULL)  { label = LC.categoryLabel(cat); }
+        if (labelling == LABEL_SHORT) { label = LC.categoryLabelShort(cat); }
+        var labelH = (label == null) ? 0 : lh;
+
+        var r = w * 36 / 100;
+        var rMax = (h - labelH) * 38 / 100;
+        if (r > rMax) { r = rMax; }
+
+        var lead = (labelH > 0) ? r / 3 : 0;
+        var top = y + (h - (2 * r + lead + labelH)) / 2;
+
+        _drawCategoryIcon(dc, x + w / 2, top + r, r, cat, ink);
+        if (label != null) {
+            dc.setColor(ink, Graphics.COLOR_TRANSPARENT);
+            dc.drawText(x + w / 2, top + 2 * r + lead + labelH / 2, font, label,
+                        Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER);
+        }
+    }
+
+
+    //! Icônes dessinées en primitives : rien à embarquer, et elles s'adaptent à
+    //! toutes les tailles d'écran, de 240x320 à 480x800.
+    //!
+    //! Toutes tiennent dans le carré `[cx - r, cx + r] x [cy - r, cy + r]`.
+    //! C'est une contrainte, pas une remarque : le réflecteur du faisceau était
+    //! posé en `cx - r` avec des rayons jusqu'à `cx + 2r`, soit une icône trois
+    //! fois plus large que son rayon, qui empiétait sur la tuile voisine.
+    private function _drawCategoryIcon(dc as Graphics.Dc, cx as Lang.Number,
+                                       cy as Lang.Number, r as Lang.Number,
+                                       cat as Lang.Number,
+                                       color as Lang.Number) as Void {
+        if (r < 6) { return; }
+        dc.setColor(color, Graphics.COLOR_TRANSPARENT);
+        dc.setPenWidth(_pen(r, 8));
+
+        if (cat == LC.CAT_LOW_BEAM || cat == LC.CAT_HIGH_BEAM) {
+            // Réflecteur puis faisceau : incliné vers le bas pour le
+            // croisement, horizontal et plus ouvert pour la route.
+            var br = r * 42 / 100;
+            var bx = cx - r + br;
+            dc.fillCircle(bx, cy, br);
+            var drop = (cat == LC.CAT_LOW_BEAM) ? r * 35 / 100 : 0;
+            var spread = (cat == LC.CAT_LOW_BEAM) ? r * 22 / 100 : r * 30 / 100;
+            for (var i = -1; i <= 1; i++) {
+                var y0 = cy + i * br * 65 / 100;
+                dc.drawLine(bx + br + r / 8, y0, cx + r, y0 + drop + i * spread);
+            }
+        } else if (cat == LC.CAT_STEADY) {
+            // Ampoule pleine, rayons tout autour.
+            dc.fillCircle(cx, cy, r * 45 / 100);
+            var dxs = [1, 0, -1, 0]; var dys = [0, 1, 0, -1];
+            for (var k = 0; k < 4; k++) {
+                dc.drawLine(cx + dxs[k] * r * 65 / 100, cy + dys[k] * r * 65 / 100,
+                            cx + dxs[k] * r, cy + dys[k] * r);
+            }
+        } else if (cat == LC.CAT_FLASH) {
+            // Éclair : un zigzag plein, plus étroit que haut.
+            dc.fillPolygon([
+                [cx + r * 45 / 100, cy - r],
+                [cx - r * 45 / 100, cy + r / 10],
+                [cx + r / 20,       cy + r / 10],
+                [cx - r * 45 / 100, cy + r],
+                [cx + r * 45 / 100, cy - r / 10],
+                [cx - r / 20,       cy - r / 10]
+            ]);
+        } else if (cat == LC.CAT_CUSTOM) {
+            // Silhouette : tête et épaules. Les modes « perso » sont ceux que
+            // l'utilisateur a réglés lui-même dans l'app iGPSPORT ; un bonhomme
+            // le dit directement, là où l'étoile précédente évoquait plutôt un
+            // favori ou une mise en avant.
+            var hr = r * 32 / 100;
+            dc.fillCircle(cx, cy - r + hr, hr);
+            var bw = r * 130 / 100;
+            var by = cy - r + 2 * hr + r / 8;
+            dc.fillRoundedRectangle(cx - bw / 2, by, bw, cy + r - by, bw * 40 / 100);
+        } else {
+            // Éteint : symbole d'alimentation. L'arc est tracé comme un arc —
+            // la version précédente masquait le haut du cercle avec un
+            // rectangle gris, qui restait visible dès que la tuile changeait
+            // de fond.
+            var ar = r * 72 / 100;
+            if (dc has :drawArc) {
+                dc.drawArc(cx, cy, ar, Graphics.ARC_COUNTER_CLOCKWISE, 118, 62);
+            } else {
+                dc.drawCircle(cx, cy, ar);
+            }
+            dc.drawLine(cx, cy - r, cx, cy - r / 6);
+        }
+        dc.setPenWidth(1);
+    }
+
+    // ---- Niveaux de la catégorie sélectionnée ------------------------------
+
+    //! Une jauge plutôt que six pavés colorés : chaque tuile porte un trait
+    //! d'autant plus long que le cran est fort. La rangée se lit comme une
+    //! échelle croissante, y compris du coin de l'œil, et seul le mode en cours
+    //! est peint en plein.
+    private function _drawLevels(dc as Graphics.Dc, x as Lang.Number, y as Lang.Number,
+                                 w as Lang.Number, h as Lang.Number,
+                                 modes as Lang.Array, gap as Lang.Number) as Void {
+        var n = modes.size();
+        if (n == 0 || h < 12) { return; }
+
+        var tw = (w - gap * (n - 1)) / n;
+        var current = _lamp.status.mode;
+        var radius = h / 6;
+        if (radius > tw / 5) { radius = tw / 5; }
+
+        for (var i = 0; i < n; i++) {
+            var mode = modes[i] as Lang.Number;
+            var tx = x + i * (tw + gap);
+            var active = (current != null && current == mode);
+            var tint = LC.intensityColor(i, n);
+            // Declare mais desactive dans la lampe : grise, mais present et
+            // touchable — le toucher l'active. Voir LampManager.setMode().
+            var enabled = _lamp.isModeEnabled(mode);
+            if (!enabled && !active) { tint = LC.UI_EDGE; }
+
+            // Deux informations, deux canaux : le **vert** dit lequel est
+            // allumé, la rampe jaune-orange-rouge dit la puissance. Peindre la
+            // tuile active de sa propre teinte, comme avant, mélangeait les
+            // deux — un cran fort et un cran allumé se ressemblaient.
+            dc.setColor(active ? LC.UI_OK : LC.UI_TILE, Graphics.COLOR_TRANSPARENT);
+            dc.fillRoundedRectangle(tx, y, tw, h, radius);
+            var ink = active ? LC.contrastOn(LC.UI_OK) : tint;
+
+            var barH = h / 10;
+            if (barH < 2) { barH = 2; }
+            var label = LC.modeLevel(mode);
+            var font = _fitFont(dc, label, tw - gap, [
+                Graphics.FONT_SMALL, Graphics.FONT_TINY, Graphics.FONT_XTINY
+            ]);
+            // Le texte se centre sur ce qui reste au-dessus de la jauge, pas
+            // sur la tuile entière : sinon il mord dessus sur les tuiles basses.
+            var textY = y + (h - 2 * barH) / 2;
+
+            dc.setColor(ink, Graphics.COLOR_TRANSPARENT);
+            dc.drawText(tx + tw / 2, textY, font, label,
+                        Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER);
+
+            // Jauge : de 30 % de la tuile au premier cran, à 80 % au dernier.
+            var barW = tw * (30 + ((n > 1) ? 50 * i / (n - 1) : 50)) / 100;
+            dc.setColor(ink, Graphics.COLOR_TRANSPARENT);
+            dc.fillRectangle(tx + (tw - barW) / 2, y + h - barH * 2, barW, barH);
+
+            hitBoxes.add([tx, y, tw, h, mode]);
+        }
+    }
+
+    // ---- Curseur des modèles à boutons -------------------------------------
+
+    private function _drawCursor(dc as Graphics.Dc) as Void {
+        if (!_showCursor) { return; }
+        if (cursor < 0 || cursor >= hitBoxes.size()) { return; }
+        var b = hitBoxes[cursor];
+        var m = 2;
+        dc.setColor(LC.UI_TEXT, Graphics.COLOR_TRANSPARENT);
+        dc.setPenWidth(3);
+        dc.drawRoundedRectangle(b[0] - m, b[1] - m, b[2] + 2 * m, b[3] + 2 * m, 6);
+        dc.setPenWidth(1);
+    }
+
+    // ---- Écran d'attente ---------------------------------------------------
+
+    //! Une seule chose à l'écran : où en est la liaison.
+    //!
+    //! Trois textes de tailles différentes se disputaient la page pendant la
+    //! connexion — un bandeau, un état dans un coin, un mode « -- » au centre —
+    //! et le vocabulaire tenait du protocole : « Liaison », « Abonnement ».
+    //! Ici, un pictogramme, un message en toutes lettres, une précision
+    //! facultative. La taille du message est calculée sur le **plus long** des
+    //! messages possibles, jamais sur celui du moment : c'est ce qui l'empêche
+    //! de changer de corps d'une étape à l'autre.
+    private function _drawWaiting(dc as Graphics.Dc, w as Lang.Number,
+                                  h as Lang.Number) as Void {
+        var mid = w / 2;
+        var identifying = _lamp.isIdentifying();
+
+        // Pictogramme de lampe. Pendant l'identification il s'allume et
+        // s'éteint au rythme de la vraie lampe : c'est ce qui fait le lien
+        // entre le guidon et l'écran, sans une ligne d'explication.
+        var r = ((w < h) ? w : h) * 15 / 100;
+        var glyphY = h * 30 / 100;
+        var lit = identifying && _lamp.identifyLit();
+        _drawLampGlyph(dc, mid, glyphY, r,
+                       identifying ? (lit ? LC.UI_ACCENT : LC.UI_TILE) : LC.UI_EDGE);
+
+        var margin = w / 10;
+        var font = _fitFont(dc, LampManager.longestStateMessage(), w - 2 * margin, [
+            Graphics.FONT_LARGE, Graphics.FONT_MEDIUM, Graphics.FONT_SMALL,
+            Graphics.FONT_TINY, Graphics.FONT_XTINY
+        ]);
+        dc.setColor(LC.UI_TEXT, Graphics.COLOR_TRANSPARENT);
+        dc.drawText(mid, h * 62 / 100, font, _lamp.stateMessage(),
+                    Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER);
+
+        // Même règle pour la ligne du dessous : mesurée sur la plus longue des
+        // précisions, elle garde son corps quand le message change.
+        var hintFont = _fitFont(dc, LampManager.longestStateHint(), w - margin,
+            [Graphics.FONT_SMALL, Graphics.FONT_TINY, Graphics.FONT_XTINY]);
+        dc.setColor(LC.UI_DIM, Graphics.COLOR_TRANSPARENT);
+        dc.drawText(mid, h * 78 / 100, hintFont, _lamp.stateHint(),
+                    Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER);
+
+        // Trois points qui défilent : la seule chose qui dise « ça travaille »
+        // pendant une recherche qui peut durer une minute. Inutile pendant
+        // l'identification, où c'est la lampe elle-même qui bat la mesure.
+        if (!identifying) {
+            _drawProgress(dc, mid, h * 90 / 100, r / 5);
+        }
+    }
+
+    //! Lampe stylisée : une tête et trois rayons, le dessin de l'icône.
+    private function _drawLampGlyph(dc as Graphics.Dc, cx as Lang.Number,
+                                    cy as Lang.Number, r as Lang.Number,
+                                    color as Lang.Number) as Void {
+        dc.setColor(color, Graphics.COLOR_TRANSPARENT);
+        dc.fillCircle(cx - r / 3, cy, r / 2);
+
+        var pen = _pen(r, 8);
+        dc.setPenWidth(pen);
+        // Trois rayons en éventail, approximés sans trigonométrie : le décalage
+        // vertical vaut la moitié de la longueur, ce qui donne environ 30°.
+        var x0 = cx - r / 3 + r * 3 / 4;
+        var x1 = cx + r;
+        var dys = [-1, 0, 1];
+        for (var i = 0; i < 3; i++) {
+            var dy = dys[i] as Lang.Number;
+            dc.drawLine(x0, cy + dy * r * 3 / 8, x1, cy + dy * r * 3 / 4);
+        }
+        dc.setPenWidth(1);
+    }
+
+    //! Trois points, celui de la phase courante allumé.
+    private function _drawProgress(dc as Graphics.Dc, cx as Lang.Number,
+                                   cy as Lang.Number, r as Lang.Number) as Void {
+        if (r < 2) { r = 2; }
+        var step = _lamp.pulse();
+        for (var i = 0; i < 3; i++) {
+            dc.setColor((i == step) ? LC.UI_ACCENT : LC.UI_TILE,
+                        Graphics.COLOR_TRANSPARENT);
+            dc.fillCircle(cx + (i - 1) * 4 * r, cy, r);
+        }
+    }
+
+    // ---- Repli pour petits écrans ------------------------------------------
+
+    private function _drawCompact(dc as Graphics.Dc, w as Lang.Number,
+                                 h as Lang.Number) as Void {
+        // On n'arrive ici que lampe connectée : `draw()` route l'attente vers
+        // `_drawWaiting()`. Le titre ne dit donc plus l'état de la liaison.
+        var mid = w / 2;
+        var type = _lamp.status.lightType;
+        var title = (type == null)
+            ? Labels.of(Rez.Strings.LightGeneric)
+            : Labels.of(Rez.Strings.LightGeneric) + " " + LC.typeLabel(type);
+        if (_lamp.lastError != null) { title = _lamp.lastError; }
+
+        dc.setColor(LC.UI_DIM, Graphics.COLOR_TRANSPARENT);
+        dc.drawText(mid, h / 8, Graphics.FONT_SMALL, title, Graphics.TEXT_JUSTIFY_CENTER);
+
+        var mode = _lamp.status.mode;
+        dc.setColor(_modeColor(mode), Graphics.COLOR_TRANSPARENT);
+        dc.drawText(mid, h / 2, Graphics.FONT_LARGE,
+                    (mode == null) ? "--" : LC.modeShort(mode),
+                    Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER);
+
+        var line = "";
+        var battery = _lamp.status.batteryPct;
+        if (battery != null) { line = battery.format("%d") + " %"; }
+        var left = _lamp.status.remainingMinutes;
+        var lit = (mode != null && mode != LC.BLM_LIGHT_OFF);
+        if (lit && left != null && left > 0) {
+            if (!line.equals("")) { line += "  -  "; }
+            line += _duration(left);
+        }
+        if (!line.equals("")) {
+            dc.setColor(_batteryColor(battery == null ? 100 : battery),
+                        Graphics.COLOR_TRANSPARENT);
+            dc.drawText(mid, h * 3 / 4, Graphics.FONT_MEDIUM, line,
+                        Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER);
+        }
+    }
+
+    // ---- Utilitaires -------------------------------------------------------
+
+    //! Épaisseur de trait proportionnelle à la taille du motif, jamais nulle :
+    //! un filet d'un pixel disparaît sur les 480x800 d'un Edge 1050, et un
+    //! filet de trois pixels mange l'icône d'un 530.
+    private function _pen(size as Lang.Number, divisor as Lang.Number) as Lang.Number {
+        var p = size / divisor;
+        if (p < 2) { p = 2; }
+        if (p > 5) { p = 5; }
+        return p;
+    }
+
+    //! Première police de la liste dont le texte tienne dans la largeur donnée.
+    //! Le texte tronqué est le défaut le plus visible d'une page de compteur.
+    private function _fitFont(dc as Graphics.Dc, text as Lang.String,
+                              maxWidth as Lang.Number,
+                              fonts as Lang.Array) as Graphics.FontDefinition {
+        for (var i = 0; i < fonts.size(); i++) {
+            var f = fonts[i] as Graphics.FontDefinition;
+            if (dc.getTextWidthInPixels(text, f) <= maxWidth) { return f; }
+        }
+        return fonts[fonts.size() - 1] as Graphics.FontDefinition;
+    }
+
+    private function _duration(minutes as Lang.Number) as Lang.String {
+        if (minutes < 60) { return minutes.format("%d") + " " + Labels.of(Rez.Strings.UnitMin); }
+        return (minutes / 60).format("%d") + " h " + (minutes % 60).format("%02d");
+    }
+
+    //! Action associée au point touché, ou `null` si l'on a tapé à côté.
+    function actionAt(x as Lang.Number, y as Lang.Number) as Lang.Number or Null {
+        var hit = null;
+        for (var i = 0; i < hitBoxes.size(); i++) {
+            var b = hitBoxes[i];
+            if (x >= b[0] && x <= b[0] + b[2] && y >= b[1] && y <= b[1] + b[3]) {
+                cursor = i;
+                hit = b[4];
+                break;
+            }
+        }
+        _lastTap = [x, y, hit];
+        return hit;
+    }
+
+    // ---- Diagnostic ------------------------------------------------------
+
+    //! Surcouche de diagnostic, inactive par defaut : taille du Dc, nombre de
+    //! zones, dernier point touche et action trouvee, etat de la liaison.
+    //!
+    //! Gardee volontairement. Elle a tranche en une lecture ce que ni le
+    //! simulateur ni le journal de plantage ne montraient : sur l'Edge 1050,
+    //! `480x707 ko t=248,304>-101` a prouve que les coordonnees etaient justes
+    //! et que le vrai probleme etait une liaison jamais etablie. Pour la
+    //! reactiver, mettre `panel.debug = true` dans la vue concernee.
+    var debug as Lang.Boolean = false;
+    private var _lastTap as Lang.Array or Null = null;
+
+    private function _drawDebug(dc as Graphics.Dc) as Void {
+        if (!debug) { return; }
+        var text = dc.getWidth() + "x" + dc.getHeight()
+                 + " z=" + hitBoxes.size()
+                 + " " + (_lamp.isReady() ? "OK" : "ko");
+        if (_lastTap != null) {
+            var a = _lastTap[2];
+            text += " t=" + _lastTap[0] + "," + _lastTap[1]
+                  + ">" + ((a == null) ? "-" : a.toString());
+        }
+        dc.setColor(LC.UI_BG, LC.UI_BG);
+        var fh = dc.getFontHeight(Graphics.FONT_XTINY);
+        dc.fillRectangle(0, dc.getHeight() - fh, dc.getWidth(), fh);
+        dc.setColor(LC.UI_ALERT, Graphics.COLOR_TRANSPARENT);
+        dc.drawText(dc.getWidth() / 2, dc.getHeight() - fh / 2, Graphics.FONT_XTINY,
+                    text, Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER);
+    }
+
+    //! Vrai si la place disponible permet d'afficher le panneau complet.
+    //! En dessous, le champ de données se rabat sur son affichage à deux lignes.
+    static function fits(width as Lang.Number, height as Lang.Number) as Lang.Boolean {
+        return PanelLayout.fits(width, height);
+    }
+}

@@ -1,0 +1,27 @@
+<settings>
+    <setting propertyKey="@Properties.autoEnabled" title="@Strings.SetAuto">
+        <settingConfig type="boolean"/>
+    </setting>
+
+    <setting propertyKey="@Properties.speed1" title="@Strings.SetSpeed1">
+        <settingConfig type="numeric" min="1" max="80"/>
+    </setting>
+    <setting propertyKey="@Properties.speed2" title="@Strings.SetSpeed2">
+        <settingConfig type="numeric" min="1" max="80"/>
+    </setting>
+    <setting propertyKey="@Properties.speed3" title="@Strings.SetSpeed3">
+        <settingConfig type="numeric" min="1" max="80"/>
+    </setting>
+
+    <setting propertyKey="@Properties.lowBatteryPct" title="@Strings.SetLowBattery">
+        <settingConfig type="numeric" min="0" max="100"/>
+    </setting>
+
+    <setting propertyKey="@Properties.syncOff" title="@Strings.SetSyncOff">
+        <settingConfig type="boolean"/>
+    </setting>
+
+    <setting propertyKey="@Properties.lightOnStart" title="@Strings.SetLightOnStart">
+        <settingConfig type="boolean"/>
+    </setting>
+</settings>

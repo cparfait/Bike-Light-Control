@@ -1,0 +1,37 @@
+<!--
+  Chaines propres au champ de donnees (anglais, repli par defaut).
+
+  Doit declarer exactement les memes identifiants que ../resources-fre/strings/strings.xml.
+-->
+<strings>
+    <!--
+      Nom affiche dans le store, dans Garmin Connect et dans la liste des
+      applications du compteur.
+
+      Ni « Edge » ni « iGPSPORT » : depuis 2025, l'equipe du Connect IQ Store
+      traite tout usage d'une marque Garmin dans un titre comme une infraction,
+      noms de produits compris, et « iGPSPORT » est une marque tierce. La
+      compatibilite se dit dans le texte de presentation, pas dans le titre.
+
+      Les deux binaires portent des noms differents : sans cela ils etaient
+      indistinguables l'un de l'autre dans le store comme sur le compteur.
+    -->
+    <string id="AppName">Bike Light Control</string>
+
+    <!-- Titres des reglages, tels qu'ils apparaissent dans Garmin Connect -->
+    <string id="SetAuto">Auto brightness by speed</string>
+    <string id="SetSpeed1">Low threshold (km/h)</string>
+    <string id="SetSpeed2">Medium threshold (km/h)</string>
+    <string id="SetSpeed3">High threshold (km/h)</string>
+    <string id="SetLowBattery">Low battery threshold (%)</string>
+    <string id="SetSyncOff">Switch light off when ride ends</string>
+    <string id="SetLightOnStart">Switch light on when ride starts</string>
+
+    <!-- Noms des champs ecrits dans le FIT, visibles dans Garmin Connect -->
+    <string id="FitMode">Light mode</string>
+    <string id="FitBattery">Light battery</string>
+    <!-- `unitLabel` est obligatoire sur chaque champ FIT : le mode
+         n'a pas d'unite au sens propre, on met le mot lui-meme. -->
+    <string id="FitModeUnit">mode</string>
+    <string id="FitBatteryUnit">%</string>
+</strings>

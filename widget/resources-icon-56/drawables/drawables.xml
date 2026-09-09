@@ -1,0 +1,7 @@
+<!--
+  Icone de lanceur a la taille exacte attendue par les appareils de ce groupe.
+  Genere par tools/make-icons.py — ne pas retoucher a la main.
+-->
+<drawables>
+    <bitmap id="LauncherIcon" filename="launcher.png"/>
+</drawables>

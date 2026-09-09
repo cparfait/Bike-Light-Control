@@ -1,0 +1,133 @@
+<!--
+  Libelles partages par le champ de donnees et l'application compagnon (francais).
+
+  Genere a la main, mais garde en phase avec resources/strings/strings.xml : les deux fichiers
+  doivent declarer exactement les memes identifiants. Un identifiant present
+  d'un seul cote passerait la compilation et manquerait a l'execution sur les
+  appareils de l'autre langue.
+-->
+<strings>
+
+    <!-- Type de lampe (blt_light_self.lightType) -->
+    <string id="TypeTail">Arriere</string>
+    <string id="TypeFront">Avant</string>
+    <string id="TypeHead">Frontale</string>
+    <string id="TypeLeft">Gauche</string>
+    <string id="TypeRight">Droite</string>
+
+    <!-- Categories : libelle complet puis repli pour tuile etroite -->
+    <string id="CatLowBeam">Croisement</string>
+    <string id="CatHighBeam">Route</string>
+    <string id="CatSteady">Fixe</string>
+    <string id="CatFlash">Flash</string>
+    <string id="CatCustom">Perso</string>
+    <string id="CatOff">Eteint</string>
+    <string id="CatLowBeamShort">Crois.</string>
+    <string id="CatHighBeamShort">Route</string>
+    <string id="CatSteadyShort">Fixe</string>
+    <string id="CatFlashShort">Flash</string>
+    <string id="CatCustomShort">Perso</string>
+    <string id="CatOffShort">Off</string>
+
+    <!-- Crans d'intensite, tels qu'ecrits sur les tuiles de niveau -->
+    <string id="LvlLow">Faible</string>
+    <string id="LvlMid">Moyen</string>
+    <string id="LvlHigh">Eleve</string>
+    <string id="LvlMax">Maxi</string>
+    <string id="ModeOff">Eteint</string>
+
+    <!-- Modes abreges, pour les champs de donnees etroits -->
+    <string id="ShortDipLow">Cr. faible</string>
+    <string id="ShortDipMid">Cr. moyen</string>
+    <string id="ShortDipHigh">Cr. eleve</string>
+    <string id="ShortMainLow">Rt. faible</string>
+    <string id="ShortMainMid">Rt. moyen</string>
+    <string id="ShortMainHigh">Rt. eleve</string>
+    <string id="ShortFlashDay">Flash jour</string>
+    <string id="ShortFlashNight">Flash nuit</string>
+
+    <!-- Modes en toutes lettres, vocabulaire de l'app iGPSPORT -->
+    <string id="ModeDipLow">Croisement faible</string>
+    <string id="ModeDipMid">Croisement moyen</string>
+    <string id="ModeDipHigh">Croisement eleve</string>
+    <string id="ModeMainLow">Route faible</string>
+    <string id="ModeMainMid">Route moyen</string>
+    <string id="ModeMainHigh">Route eleve</string>
+    <string id="ModeSteadyLow">Fixe faible</string>
+    <string id="ModeSteadyMid">Fixe moyen</string>
+    <string id="ModeSteadyHigh">Fixe eleve</string>
+    <string id="ModeFlashDay">Flash diurne</string>
+    <string id="ModeFlashNight">Flash nocturne</string>
+    <string id="ModeGradient">Degrade</string>
+    <string id="ModeMaximum">Maximum</string>
+    <string id="ModeSos">SOS</string>
+
+    <!-- Effets lumineux, listes dans la categorie Flash -->
+    <string id="ModeComet">Comete</string>
+    <string id="ModeWaterfall">Cascade</string>
+    <string id="ModePinwheel">Moulinet</string>
+    <string id="ModeRotation">Rotatif</string>
+    <string id="ModeLeftTurn">Clignotant gauche</string>
+    <string id="ModeRightTurn">Clignotant droit</string>
+
+    <!-- Prefixes des modes numerotes : suivis du numero -->
+    <string id="PrefixCustom">Perso </string>
+    <string id="PrefixCustomLong">Personnalise </string>
+    <string id="PrefixSpecial">Special </string>
+    <string id="PrefixMode">Mode </string>
+
+    <!-- Bandeau de la page de pilotage -->
+    <string id="LightGeneric">Lampe</string>
+    <string id="BadgeAuto">AUTO</string>
+    <string id="BadgeManual">MANU</string>
+
+    <!-- Etapes de la liaison BLE.
+         Deux etapes seulement, et des mots de tous les jours : « Abonnement »
+         ou « Liaison » ne disaient rien a personne, et chaque etape ayant une
+         longueur differente, le texte changeait de taille a chaque changement
+         d'etat. La forme courte sert au bandeau, la forme longue a l'ecran
+         d'attente. -->
+    <string id="StScanning">Recherche</string>
+    <string id="StConnecting">Connexion</string>
+    <string id="StReady">OK</string>
+    <string id="StUnsupported">Sans BLE</string>
+
+    <!-- Ecran d'attente. Deux niveaux, et c'est tout : un mot pour l'etape, une
+         ligne pour ce qu'il veut dire. Les mots d'etape font tous la meme
+         longueur a une lettre pres, ce qui n'est pas un hasard — la police est
+         mesuree sur le plus long, donc ils s'affichent tous a la meme taille. -->
+    <string id="MsgSearching">Recherche</string>
+    <string id="MsgSearchingHint">de votre lampe</string>
+    <string id="MsgConnecting">Connexion</string>
+    <string id="MsgConnectingHint">lampe trouvee</string>
+    <string id="MsgNoBle">Bluetooth</string>
+    <string id="MsgNoBleHint">indisponible</string>
+
+    <!-- Identification : la lampe clignote pour se designer elle-meme -->
+    <string id="MsgIdentify">Celle-ci ?</string>
+    <string id="MsgIdentifyHint">votre lampe clignote</string>
+    <!-- Precede du nombre : « 2 lampes a proximite » -->
+    <string id="MsgNearby"> lampes a proximite</string>
+    <string id="MsgOtherLight">Changer de lampe</string>
+    <string id="MsgOtherLightHint">Chercher a nouveau</string>
+
+    <!-- Echecs de liaison, affiches a la place de l'etat -->
+    <string id="ErrScanRefused">scan refuse</string>
+    <string id="ErrBleUnavailable">BLE non disponible</string>
+    <string id="ErrProfilesRefused">profils refuses</string>
+    <string id="ErrWriteRefused">ecriture refusee</string>
+    <string id="ErrProfileRegister">enregistrement du profil en echec</string>
+    <string id="ErrServiceMissing">service absent</string>
+    <string id="ErrCharsMissing">caracteristiques absentes</string>
+    <string id="ErrCccdMissing">CCCD absent</string>
+    <string id="ErrSubscribeRefused">abonnement refuse</string>
+    <string id="ErrWriteFailed">ecriture en echec</string>
+    <string id="ErrBatterySubscribe">abonnement batterie refuse</string>
+
+    <!-- Champ de donnees etroit : etat de l'ajustement automatique -->
+    <string id="DfAuto">LAMPE - AUTO</string>
+    <string id="DfManual">LAMPE - MANUEL</string>
+
+    <!-- Unite d'autonomie -->
+    <string id="UnitMin">min</string>
+</strings>

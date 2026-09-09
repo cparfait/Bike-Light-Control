@@ -1,0 +1,45 @@
+<!--
+  Declaration des champs ecrits dans le fichier FIT de l'activite.
+
+  Sans ce fichier, `createField()` ecrit bien les donnees, mais Garmin Connect
+  les ignore : le libelle, l'unite, la couleur de la courbe et la presence dans
+  le resume viennent d'ici, pas du FIT. C'est le piege classique des
+  contributions FIT, et il est entierement silencieux — l'application compile,
+  s'installe, enregistre, et le graphique n'apparait jamais.
+
+  Les `id` doivent correspondre exactement a ceux passes a `createField()` dans
+  app/source/LampView.mc : 0 pour le mode, 1 pour la batterie.
+
+  Ne se verifie qu'apres installation depuis le store — le mode beta suffit —
+  ou avec l'outil monkeygraph du SDK. Le simulateur ne rend pas cette partie.
+-->
+<resources xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:noNamespaceSchemaLocation="https://developer.garmin.com/downloads/connect-iq/resources.xsd">
+    <fitContributions>
+        <!-- Mode de la lampe, seconde par seconde. Un entier sans unite : la
+             courbe montre les paliers, ce qui suffit a relire une sortie et
+             comprendre quand l'ajustement a change de cran. Orange, la couleur
+             du faisceau, pour la distinguer de la batterie. -->
+        <fitField id="0"
+                  displayInChart="true"
+                  sortOrder="0"
+                  precision="0"
+                  chartTitle="@Strings.FitMode"
+                  dataLabel="@Strings.FitMode"
+                  unitLabel="@Strings.FitModeUnit"
+                  fillColor="#FFAA00" />
+
+        <!-- Batterie de la lampe, en pourcent. Aussi dans le resume de
+             l'activite : c'est la valeur qu'on regarde apres coup pour savoir
+             si la lampe tiendra la sortie suivante. -->
+        <fitField id="1"
+                  displayInChart="true"
+                  sortOrder="1"
+                  precision="0"
+                  chartTitle="@Strings.FitBattery"
+                  dataLabel="@Strings.FitBattery"
+                  unitLabel="@Strings.FitBatteryUnit"
+                  displayInActivitySummary="true"
+                  fillColor="#00C060" />
+    </fitContributions>
+</resources>
