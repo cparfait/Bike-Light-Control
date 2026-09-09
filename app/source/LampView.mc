@@ -44,6 +44,12 @@ class LampView extends WatchUi.DataField {
         // Un data field ne recoit jamais d'evenement de touche, meme plein
         // ecran : le curseur des modeles a boutons y serait immobile.
         _panel.hideCursor();
+        // TEMPORAIRE — surcouche de diagnostic, a remettre a `false` avant tout
+        // depot sur le store. Elle est allumee dans les DEUX binaires : le
+        // drapeau ne vivait que dans l'application compagnon, et la page pleine
+        // du champ de donnees — celle qu'on regarde en roulant — n'affichait
+        // donc rien. Voir docs/protocole-vs1800s.md.
+        _panel.debug = true;
         // Le tactile n'est pas exposé dans les profils du SDK : c'est une
         // propriété d'exécution. Un seul binaire pour les 13 modèles.
         var settings = System.getDeviceSettings();
