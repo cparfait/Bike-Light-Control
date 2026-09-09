@@ -1,8 +1,13 @@
 # Commande d'éclairage vélo — lampe iGPSPORT ↔ compteur Garmin Edge
 
 Data field Connect IQ pilotant une lampe **iGPSPORT** depuis un compteur **Garmin Edge**.
-Développé pour la VS1800S, mais sans rien coder en dur : l'app demande à la lampe son type et
-ses modes, et s'adapte — VS500, VS800, VS1200, feux arrière TL30/TL50 inclus. Cahier des charges de référence : `cahier-des-charges-igpsport-garmin.md`.
+Développé et **éprouvé sur une VS1800S, et sur ce seul modèle**. Rien n'y est codé en dur pour
+autant : l'app demande à la lampe son type et sa liste de modes, et s'adapte à la réponse — les
+VS500, VS800, VS1200 et les feux arrière TL30/TL50 ont donc de bonnes chances de fonctionner,
+mais aucun n'a été essayé. Ce sont des modèles **non vérifiés**, pas des modèles pris en charge.
+
+Ce n'est pas non plus un pilote de lampe Bluetooth générique : le protocole est celui
+d'iGPSPORT, et aucune lampe d'une autre marque ne sera même détectée. Cahier des charges de référence : `cahier-des-charges-igpsport-garmin.md`.
 
 **Phase 1 close, Phase 2 engagée.** Le protocole a été établi par analyse statique de
 l'app Android puis **confirmé par capture HCI sur la lampe réelle** : le code reproduit à

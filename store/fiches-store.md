@@ -8,6 +8,13 @@ usage d'une marque Garmin dans un titre comme une infraction, noms de produits c
 « iGPSPORT » appartient à un tiers. L'accord développeur autorise en revanche à **mentionner la
 compatibilité** dans la description — c'est ce que font les deux textes.
 
+**Les descriptions nomment donc la marque et le modèle dès la première ligne.** Elles disaient
+auparavant « pilote une lampe vélo Bluetooth », ce qui était faux sur deux plans : l'application
+ne détecte aucune lampe d'une autre marque — son filtre de scan cherche un service Nordic UART
+et un nom en « VS… » ou « TL… » — et seule la VS1800S a été essayée sur du matériel. Un
+utilisateur venu avec une Varia ou une Lezyne n'aurait rien trouvé du tout, et l'aurait écrit
+dans son avis. Un titre générique impose une description précise.
+
 | | Champ de données | Application |
 |---|---|---|
 | Paquet | `dist/bike-light-control.iq` | `dist/bike-light-panel.iq` |
@@ -39,7 +46,16 @@ bash app/build.sh package
 
 **Anglais**
 
-> Controls a Bluetooth bike light from your bike computer, during the ride.
+> Controls an **iGPSPORT VS1800S** bike light from your bike computer, during the ride.
+>
+> **Read this first.** This is not a generic Bluetooth light controller. It speaks the iGPSPORT
+> protocol, and it will not find or drive lights from any other brand — Garmin Varia, Bontrager,
+> Lezyne, Knog and the rest are out of reach, whatever their Bluetooth support.
+>
+> Developed and tested on a VS1800S, and on that model only. Other iGPSPORT lights — VS1200,
+> VS800, VS500, and the TL30 and TL50 rear lights — stand a fair chance of working: the app asks
+> the light for its type and its list of modes instead of assuming, and adapts to the answer. But
+> none of them has been tried on real hardware. Treat them as untested, not as supported.
 >
 > The light follows your speed: dim when stopped or climbing, full beam on a fast descent.
 > Thresholds are yours to set. Battery running low? The field caps the brightness so the light
@@ -58,16 +74,26 @@ bash app/build.sh package
 > On a touch screen, tap the field to pick a mode by hand. Tap once more when the light is off
 > to hand control back to the automatic adjustment.
 >
-> Works with Bluetooth lights from iGPSPORT (VS1800S, VS1200, VS800, VS500, TL30, TL50). The
-> app asks the light what it can do rather than assuming, so a model that is not listed here
-> may well work too. Not affiliated with, or endorsed by, iGPSPORT.
+> Not affiliated with, or endorsed by, iGPSPORT. The protocol was worked out independently; the
+> name is used only to say which lights this drives.
 >
 > Companion app "Bike Light Panel" available separately, for controlling the light before you
 > set off and on models without a touch screen.
 
 **Français**
 
-> Pilote une lampe velo Bluetooth depuis le compteur, pendant la sortie.
+> Pilote une lampe velo **iGPSPORT VS1800S** depuis le compteur, pendant la sortie.
+>
+> **A lire avant d'installer.** Ce n'est pas un pilote de lampe Bluetooth generique. L'application
+> parle le protocole iGPSPORT, et elle ne trouvera ni ne pilotera aucune lampe d'une autre
+> marque — Garmin Varia, Bontrager, Lezyne, Knog et les autres sont hors de portee, quel que soit
+> leur Bluetooth.
+>
+> Developpee et essayee sur une VS1800S, et sur ce seul modele. Les autres lampes iGPSPORT —
+> VS1200, VS800, VS500, et les feux arriere TL30 et TL50 — ont de bonnes chances de fonctionner :
+> l'application demande a la lampe son type et sa liste de modes au lieu de supposer, et s'adapte
+> a la reponse. Mais aucune n'a ete essayee sur du materiel reel. A considerer comme non
+> verifiees, pas comme prises en charge.
 >
 > La lampe suit la vitesse : faible a l'arret et en cote, plein faisceau en descente. Les seuils
 > se reglent. Batterie basse ? Le champ plafonne l'intensite pour que la lampe tienne jusqu'au
@@ -86,9 +112,8 @@ bash app/build.sh package
 > Sur ecran tactile, une tape sur le champ change de mode a la main. Une tape de plus, lampe
 > eteinte, rend la main a l'ajustement automatique.
 >
-> Compatible avec les lampes Bluetooth iGPSPORT (VS1800S, VS1200, VS800, VS500, TL30, TL50).
-> L'application interroge la lampe au lieu de supposer : un modele absent de cette liste a de
-> bonnes chances de fonctionner aussi. Sans lien avec iGPSPORT.
+> Sans lien avec iGPSPORT, ni aval de sa part. Le protocole a ete etabli de facon independante ;
+> le nom ne sert qu'a dire quelles lampes sont pilotees.
 >
 > Application compagnon « Panneau eclairage velo » disponible separement, pour piloter la lampe
 > avant de partir et sur les modeles sans ecran tactile.
@@ -97,7 +122,14 @@ bash app/build.sh package
 
 **Anglais**
 
-> Control panel for a Bluetooth bike light, outside the ride.
+> Control panel for an **iGPSPORT VS1800S** bike light, outside the ride.
+>
+> **Read this first.** This is not a generic Bluetooth light controller. It speaks the iGPSPORT
+> protocol, and it will not find or drive lights from any other brand.
+>
+> Developed and tested on a VS1800S, and on that model only. Other iGPSPORT lights — VS1200,
+> VS800, VS500, TL30, TL50 — stand a fair chance of working, since the app asks the light for its
+> type and its modes rather than assuming, but none has been tried on real hardware.
 >
 > Pick a mode by category — steady beam, flash, off — and see the battery level and the
 > remaining runtime. The light's own automations (light sensor, auto sleep, dim when stopped)
@@ -107,12 +139,20 @@ bash app/build.sh package
 >
 > Companion to the "Bike Light Control" data field, which handles the ride itself.
 >
-> Works with Bluetooth lights from iGPSPORT (VS1800S, VS1200, VS800, VS500, TL30, TL50). Not
-> affiliated with, or endorsed by, iGPSPORT.
+> Not affiliated with, or endorsed by, iGPSPORT. The protocol was worked out independently; the
+> name is used only to say which lights this drives.
 
 **Français**
 
-> Panneau de pilotage d'une lampe velo Bluetooth, hors activite.
+> Panneau de pilotage d'une lampe velo **iGPSPORT VS1800S**, hors activite.
+>
+> **A lire avant d'installer.** Ce n'est pas un pilote de lampe Bluetooth generique. L'application
+> parle le protocole iGPSPORT, et ne trouvera aucune lampe d'une autre marque.
+>
+> Developpee et essayee sur une VS1800S, et sur ce seul modele. Les autres lampes iGPSPORT —
+> VS1200, VS800, VS500, TL30, TL50 — ont de bonnes chances de fonctionner, l'application
+> interrogeant la lampe sur son type et ses modes au lieu de supposer, mais aucune n'a ete
+> essayee sur du materiel reel.
 >
 > Choix du mode par categorie — faisceau, flash, extinction — avec le niveau de batterie et
 > l'autonomie restante. Les automatismes de la lampe (capteur de luminosite, veille automatique,
@@ -124,8 +164,8 @@ bash app/build.sh package
 > Complement du champ de donnees « Commande eclairage velo », qui prend le relais pendant la
 > sortie.
 >
-> Compatible avec les lampes Bluetooth iGPSPORT (VS1800S, VS1200, VS800, VS500, TL30, TL50).
-> Sans lien avec iGPSPORT.
+> Sans lien avec iGPSPORT, ni aval de sa part. Le protocole a ete etabli de facon independante ;
+> le nom ne sert qu'a dire quelles lampes sont pilotees.
 
 ---
 
