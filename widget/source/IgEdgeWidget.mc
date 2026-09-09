@@ -246,7 +246,7 @@ class LampControlDelegate extends WatchUi.BehaviorDelegate {
         }
         if (action <= LampPanel.ACTION_CATEGORY) {
             var cat = LampPanel.ACTION_CATEGORY - action;
-            _view.panel.selectedCategory = cat;
+            _view.panel.chooseCategory(cat);
             var modes = LC.modesInCategory(cat, _lamp.declaredModes());
             if (modes.size() > 0) {
                 // Toujours le cran le plus faible : personne n'a envie
@@ -265,7 +265,7 @@ class LampControlDelegate extends WatchUi.BehaviorDelegate {
         // Anticipation optimiste : l'écran doit répondre au geste sans attendre
         // la notification de la lampe.
         _lamp.status.mode = mode;
-        _view.panel.selectedCategory = LC.categoryOf(mode);
+        _view.panel.chooseCategory(LC.categoryOf(mode));
         WatchUi.requestUpdate();
     }
 }

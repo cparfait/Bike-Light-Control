@@ -43,7 +43,21 @@ class LampPanel {
 
     //! Catégorie affichée dans la rangée des niveaux. Suit le mode courant
     //! tant que l'utilisateur n'en a pas choisi une autre explicitement.
-    var selectedCategory as Lang.Number or Null = null;
+    //! Categorie dont les modes sont listes sous la rangee. Elle **suit le mode
+    //! courant** tant que l'utilisateur n'en a pas choisi une lui-meme : voir
+    //! `chooseCategory()` et `_categoryChosen`.
+    private var selectedCategory as Lang.Number or Null = null;
+
+    //! Vrai des que l'utilisateur a designe une categorie, directement ou en
+    //! touchant un mode. La selection cesse alors de suivre la lampe.
+    //!
+    //! Sans ce drapeau, la selection etait figee au **premier** dessin et n'en
+    //! bougeait plus. Or ce premier dessin tombe juste apres le clignotement
+    //! d'identification, qui met la lampe sur un cran intermediaire de
+    //! l'echelle — `BLM_HBEAM_LSTEADY`, donc « Route ». La categorie Route
+    //! restait donc entouree de vert pour le reste de la session, alors que
+    //! personne ne l'avait choisie et que la lampe etait revenue a l'extinction.
+    private var _categoryChosen as Lang.Boolean = false;
 
     //! Affiche le badge AUTO / MANU. Vrai par défaut. L'application compagnon
     //! le masque : Connect IQ isole l'état de chaque binaire, et l'ajustement
@@ -70,6 +84,29 @@ class LampPanel {
     //! field, meme plein ecran. Sur un Edge 530, 540 ou MTB, le cadre blanc
     //! restait donc fige sur la premiere tuile — une selection qu'aucun bouton
     //! ne pouvait deplacer, et qui laissait croire a une page bloquee.
+    //! Designe la categorie a lister, sur un geste de l'utilisateur.
+    //!
+    //! Passer par cette methode plutot que d'ecrire le champ : c'est elle qui
+    //! marque le choix comme volontaire et arrete le suivi automatique du mode
+    //! de la lampe.
+    function chooseCategory(cat as Lang.Number or Null) as Void {
+        selectedCategory = cat;
+        _categoryChosen = true;
+    }
+
+    //! Oublie les zones tactiles : plus rien de ce panneau n'est a l'ecran.
+    //!
+    //! A appeler par toute vue qui, sur un rafraichissement, dessine **autre
+    //! chose** que ce panneau. `hitBoxes` n'est vide que par `draw()`, si bien
+    //! qu'un champ de donnees passe du plein ecran a une petite case gardait les
+    //! zones de l'affichage precedent : la tape tombait dans le panneau, ne
+    //! trouvait aucune tuile sous le doigt, et etait avalee. La petite case
+    //! cessait purement et simplement de repondre au toucher.
+    function clearHitBoxes() as Void {
+        hitBoxes = [];
+        _settingsBox = null;
+    }
+
     function hideCursor() as Void { _showCursor = false; }
 
     private var _settingsBox as Lang.Array or Null = null;
@@ -128,7 +165,9 @@ class LampPanel {
         }
 
         // La catégorie suit le mode courant tant qu'on n'en a pas choisi une.
-        if (selectedCategory == null) {
+        // À chaque dessin, et non au premier seulement : c'est ce que dit cette
+        // phrase depuis le début, ce n'est pas ce que faisait le code.
+        if (!_categoryChosen) {
             selectedCategory = LC.categoryOf(_lamp.status.mode);
         }
 
@@ -872,9 +911,17 @@ class LampPanel {
 
     private function _drawDebug(dc as Graphics.Dc) as Void {
         if (!debug) { return; }
+        // `m=` est le mode **brut** annonce par la lampe, pas son libelle : c'est
+        // la seule facon de savoir ce qu'une lampe eteinte au bouton raconte
+        // d'elle-meme. `m=0` vaut BLM_LIGHT_OFF ; toute autre valeur signifie
+        // qu'elle annonce un mode memorise alors qu'elle n'eclaire pas, et que
+        // l'application ne peut pas distinguer les deux situations.
+        var m = _lamp.status.mode;
         var text = dc.getWidth() + "x" + dc.getHeight()
                  + " z=" + hitBoxes.size()
-                 + " " + (_lamp.isReady() ? "OK" : "ko");
+                 + " " + (_lamp.isReady() ? "OK" : "ko")
+                 + " m=" + ((m == null) ? "-" : m.toString())
+                 + (_lamp.isIdentifying() ? " id" : "");
         if (_lastTap != null) {
             var a = _lastTap[2];
             text += " t=" + _lastTap[0] + "," + _lastTap[1]

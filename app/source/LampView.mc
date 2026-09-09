@@ -136,7 +136,7 @@ class LampView extends WatchUi.DataField {
                 _auto.setEnabledManually(false);
                 _lamp.setMode(action);
                 _lamp.status.mode = action;
-                _panel.selectedCategory = LC.categoryOf(action);
+                _panel.chooseCategory(LC.categoryOf(action));
                 return true;
             }
             if (action != null && action == LampPanel.ACTION_AUTO) {
@@ -147,7 +147,7 @@ class LampView extends WatchUi.DataField {
             }
             if (action != null && action <= LampPanel.ACTION_CATEGORY) {
                 var cat = LampPanel.ACTION_CATEGORY - action;
-                _panel.selectedCategory = cat;
+                _panel.chooseCategory(cat);
                 var modes = LC.modesInCategory(cat, _lamp.declaredModes());
                 if (modes.size() > 0) {
                     _auto.setEnabledManually(false);
@@ -216,6 +216,12 @@ class LampView extends WatchUi.DataField {
             _panel.draw(dc);
             return;
         }
+
+        // Affichage a deux lignes : le panneau n'est plus a l'ecran, ses zones
+        // tactiles ne valent plus rien. Sans cet oubli, une case revenue du
+        // plein ecran gardait les zones d'avant, et `onTap()` y cherchait une
+        // tuile au lieu de faire defiler les modes — la case ne repondait plus.
+        _panel.clearHitBoxes();
 
         var bg = getBackgroundColor();
         var fg = (bg == Graphics.COLOR_BLACK) ? Graphics.COLOR_WHITE : Graphics.COLOR_BLACK;

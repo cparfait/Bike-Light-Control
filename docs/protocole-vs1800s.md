@@ -86,6 +86,61 @@ Conséquence : `LightProtocol.turnOff()`, qui envoie `curMode = BLM_LIGHT_OFF`, 
 **hypothèse non vérifiée**. La valeur existe dans l'énumération et un compteur iGS s'en sert
 peut-être, mais rien ne le prouve. À trancher par l'essai sur l'Edge.
 
+#### Mais « éteinte » ne veut pas dire radio coupée — observé le 09/09/2026
+
+**Relevé sur l'Edge 1050, avec la lampe éteinte par l'appui long de 1,5 s : le compteur la
+détecte toujours.** La lampe continue donc d'émettre son advertising alors que son faisceau et
+son témoin sont éteints, et qu'elle est « éteinte » au sens du manuel.
+
+C'était l'hypothèse inverse qui figurait ici, déduite du manuel et jamais vérifiée. L'appui long
+coupe l'éclairage, pas la partie radio.
+
+Deux conséquences, de signe opposé :
+
+- **Bonne** : la lampe reste joignable. Un compteur peut donc la retrouver, et probablement la
+  rallumer, sans qu'on touche au bouton. C'est aussi ce qui rend la reconnexion après veille
+  plausible — voir le tableau des comportements automatiques ci-dessous.
+- **À surveiller** : l'application se connecte alors à une lampe que l'utilisateur vient
+  d'éteindre **volontairement**, et l'identification la fait clignoter. Elle est censée la
+  remettre ensuite dans l'état où elle l'a trouvée (`_restoreMode`), mais cet état est lu sur la
+  lampe — or le manuel signale une **mémoire de mode**, la lampe reprenant son mode précédent au
+  rallumage.
+
+#### Ce que l'essai a donné ensuite — le point dur
+
+Trois observations, le même jour, sur l'Edge 1050 :
+
+1. **La lampe éteinte est redétectée** tant qu'on reste sur la page de pilotage. Le compteur s'y
+   reconnecte de lui-même.
+2. **Le bouton physique ne répond plus** une fois le compteur connecté. Seule l'application
+   parvient encore à allumer la lampe.
+3. **La page affiche un mode alors que la lampe n'éclaire pas.**
+
+La troisième est la plus lourde de conséquences, et elle confirme la crainte ci-dessus :
+`LightStatus` ne porte **aucun champ « allumée / éteinte »**, seulement un `mode`. Si une lampe
+éteinte annonce son mode mémorisé au lieu de `BLM_LIGHT_OFF`, alors rien dans le protocole tel
+qu'on le connaît ne permet de distinguer :
+
+> « lampe allumée en feu de croisement » de « lampe éteinte qui se souvient du feu de croisement ».
+
+L'application affiche donc un mode qui n'éclaire pas, et l'identification, en remettant la lampe
+dans ce mode « d'avant », la **rallume** — ce qui explique l'observation n° 2 vue de
+l'utilisateur : la lampe s'allume sans qu'il ait touché au bouton.
+
+**Ce qu'il reste à établir**, et qui décide de la correction :
+
+- La valeur brute de `curMode` annoncée par une lampe éteinte au bouton. `0` (`BLM_LIGHT_OFF`)
+  et tout va bien : il suffit d'en tenir compte. Toute autre valeur, et il faut chercher un
+  autre indicateur — un champ de `blt_light_self` non encore exploité, ou l'autonomie restante
+  qui vaudrait alors zéro.
+- Si le bouton physique est réellement neutralisé par la connexion BLE, ou s'il ne l'est
+  qu'en état éteint — auquel cas c'est le comportement normal d'un appui court sur une lampe
+  hors tension.
+
+La surcouche de diagnostic de `LampPanel` affiche désormais `m=<mode brut>` et `id` pendant
+l'identification, précisément pour trancher le premier point sans matériel de capture. Elle
+s'active par `panel.debug = true` dans la vue concernée.
+
 ### Pour F6, la lampe a sa propre fonction
 
 > « Arrêt synchronisé : lorsque l'appareil est connecté au compteur, il s'éteint simultanément
