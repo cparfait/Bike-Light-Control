@@ -173,10 +173,10 @@ class LampControlDelegate extends WatchUi.BehaviorDelegate {
         // Hors liaison, on ne pilote rien — mais on redessine, pour que la
         // surcouche de diagnostic montre le point touche.
         if (!_lamp.isReady()) { WatchUi.requestUpdate(); return true; }
-        // Pendant l'identification, la lampe joue une sequence : une tape la
-        // couperait au milieu, et on ne saurait plus quel clignotement etait
-        // le sien.
-        if (_lamp.isIdentifying()) { return true; }
+        // Pendant l'identification, une tape veut dire « c'est bon, j'ai vu » :
+        // on abrege et on remet la lampe comme on l'a trouvee. Voir
+        // LampManager.cancelIdentify().
+        if (_lamp.isIdentifying()) { _lamp.cancelIdentify(); WatchUi.requestUpdate(); return true; }
         if (action != null) { _activate(action); }
         return true;   // toujours consommer, sinon le systeme ouvre sa barre
     }

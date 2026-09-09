@@ -121,10 +121,11 @@ class LampView extends WatchUi.DataField {
     //! repasse à l'extinction après le mode le plus fort.
     function onTap(evt as WatchUi.ClickEvent) as Lang.Boolean {
         if (!_lamp.isReady()) { return false; }
-        // Pendant l'identification, la lampe joue une sequence : une tape la
-        // couperait au milieu, et l'utilisateur ne saurait plus si le
-        // clignotement qu'il vient de voir etait le sien.
-        if (_lamp.isIdentifying()) { return true; }
+        // Pendant l'identification, une tape veut dire « c'est bon, j'ai vu » :
+        // on abrege et on remet la lampe comme on l'a trouvee. La tape etait
+        // auparavant avalee sans effet, ce qui faisait de cet ecran une
+        // question sans reponse — il n'y avait qu'a attendre.
+        if (_lamp.isIdentifying()) { _lamp.cancelIdentify(); return true; }
 
         // Panneau affiché : on applique le bouton touché plutôt que de faire
         // défiler les modes à l'aveugle.

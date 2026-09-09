@@ -105,6 +105,30 @@ class LampManager extends Ble.BleDelegate {
     //! une par battement : allumee, eteinte, allumee, eteinte, puis remise dans
     //! l'etat d'avant.
     private var _identifyStep as Lang.Number = -1;
+
+    //! Identification decidee, mais pas encore commencee.
+    //!
+    //! Elle ne peut pas partir des l'etablissement de la liaison : il faut
+    //! d'abord que le bilan initial revienne, pour savoir dans quel mode
+    //! remettre la lampe apres le clignotement. Ce drapeau couvre cet
+    //! intervalle, et `isIdentifying()` le compte comme une identification en
+    //! cours.
+    //!
+    //! Sans lui, la page passait « prete » des la connexion, dessinait ses
+    //! tuiles, puis l'identification demarrait deux ou trois secondes plus tard
+    //! et **reprenait l'ecran** : tuiles, « Celle-ci ? », tuiles. Un aller-retour
+    //! que rien ne justifiait, et qui donnait l'impression d'un ecran surgi pour
+    //! rien — d'autant qu'on ne pouvait pas y repondre.
+    private var _identifyPending as Lang.Boolean = false;
+
+    //! Secondes ecoulees depuis le passage a READY, pour le delai de garde
+    //! ci-dessous.
+    private var _readySeconds as Lang.Number = 0;
+
+    //! Au-dela de ce delai, on identifie sans attendre le bilan initial. Une
+    //! lampe qui ne repond plus laissait sinon la page bloquee sur
+    //! « Celle-ci ? » indefiniment, la file ne se vidant jamais.
+    static const IDENTIFY_SETTLE_MAX_S = 5;
     private var _identifyMode as Lang.Number = LC.BLM_LIGHT_OFF;
     private var _restoreMode as Lang.Number or Null = null;
     private var _identifiedOnce as Lang.Boolean = false;
@@ -167,10 +191,17 @@ class LampManager extends Ble.BleDelegate {
 
         if (_identifyStep >= 0) { _identifyTick(); return; }
 
+        _readySeconds++;
+
         // Premier battement apres l'etablissement de la liaison, une fois le
         // bilan initial ecoule : la lampe a repondu son mode courant, on sait
         // donc dans quel etat la remettre apres le clignotement.
-        if (!_identifiedOnce && !_busy && _queue.size() == 0) {
+        //
+        // Le delai de garde evite qu'une lampe muette — file jamais videe —
+        // laisse la page bloquee sur l'ecran d'identification.
+        if (!_identifiedOnce
+                && ((!_busy && _queue.size() == 0)
+                    || _readySeconds >= IDENTIFY_SETTLE_MAX_S)) {
             _identifiedOnce = true;
             _startIdentify();
             return;
@@ -265,6 +296,8 @@ class LampManager extends Ble.BleDelegate {
     }
 
     function stop() as Void {
+        _identifyStep = -1;
+        _identifyPending = false;
         if (_scanning) { _setScanning(false); }
         if (_device != null) { Ble.unpairDevice(_device); _device = null; }
         _tx = null;
@@ -491,6 +524,7 @@ class LampManager extends Ble.BleDelegate {
     function forgetCurrentLamp() as Void {
         _reject(_paired);
         _identifyStep = -1;
+        _identifyPending = false;
         _identifiedOnce = false;
         if (_device != null) {
             try { Ble.unpairDevice(_device); } catch (e) { }
@@ -524,6 +558,7 @@ class LampManager extends Ble.BleDelegate {
             _rxBuffer = []b;
             _needBatterySubscribe = false;
             _identifyStep = -1;
+            _identifyPending = false;
             // Desappairer avant de rechercher : l'ancienne liaison compte
             // encore pour la pile BLE du compteur, et la lampe qui se reveille
             // annonce une nouvelle session. Sans ca, le second appairage se
@@ -586,6 +621,11 @@ class LampManager extends Ble.BleDelegate {
         state = STATE_READY;
         _busy = false;
         _needBatterySubscribe = (_battery != null);
+        _readySeconds = 0;
+        // L'identification est decidee **ici**, pas quand elle demarre : la page
+        // enchaine ainsi « Connexion » et « Celle-ci ? » sans montrer ses tuiles
+        // entre les deux, pour les reprendre aussitot. Voir `_identifyPending`.
+        _identifyPending = !_identifiedOnce;
 
         // Premier bilan : ce que la lampe sait faire, ou elle en est.
         send(LightProtocol.readSelf());
@@ -610,7 +650,21 @@ class LampManager extends Ble.BleDelegate {
 
     //! Vrai pendant que la lampe clignote pour se designer.
     function isIdentifying() as Lang.Boolean {
-        return _identifyStep >= 0;
+        return _identifyStep >= 0 || _identifyPending;
+    }
+
+    //! Abandonne l'identification et remet la lampe comme on l'a trouvee.
+    //!
+    //! Appelee sur une tape. L'ecran « Celle-ci ? » posait une question sans
+    //! offrir de reponse : la tape y etait avalee sans effet, et il n'y avait
+    //! qu'a attendre. Une tape veut dire « c'est bon, j'ai vu » — on abrege.
+    function cancelIdentify() as Void {
+        _identifyPending = false;
+        if (_identifyStep < 0) { return; }
+        _identifyStep = -1;
+        var back = (_restoreMode == null) ? LC.BLM_LIGHT_OFF : _restoreMode;
+        send(LightProtocol.setMode(back));
+        send(LightProtocol.readCurrentMode());
     }
 
     //! Vrai quand la phase en cours allume la lampe. L'ecran affiche un
@@ -627,6 +681,9 @@ class LampManager extends Ble.BleDelegate {
     //! apres une mise en veille, serait dangereux. L'identification a sa place
     //! avant le depart, quand on verifie son materiel.
     private function _startIdentify() as Void {
+        // En premier, et sans condition : les deux sorties ci-dessous laissaient
+        // sinon la page sur l'ecran d'identification pour toujours.
+        _identifyPending = false;
         if (_tx == null || !_identifyPermitted()) { return; }
 
         // On retient l'etat d'avant pour le remettre : l'utilisateur avait
