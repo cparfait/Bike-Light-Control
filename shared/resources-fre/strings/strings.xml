@@ -79,7 +79,10 @@
     <!-- Bandeau de la page de pilotage -->
     <string id="LightGeneric">Lampe</string>
     <string id="BadgeAuto">AUTO</string>
-    <string id="BadgeManual">MANU</string>
+    <!-- « MANUEL » en entier : « MANU » n'est pas un mot, la ou « MAN » est une
+         abreviation recue en anglais. La pastille se dimensionne sur le plus
+         long des deux libelles, elle s'adapte donc d'elle-meme. -->
+    <string id="BadgeManual">MANUEL</string>
 
     <!-- Etapes de la liaison BLE.
          Deux etapes seulement, et des mots de tous les jours : « Abonnement »
