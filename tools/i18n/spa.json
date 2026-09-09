@@ -71,6 +71,7 @@
   "MsgConnectingHint": "luz encontrada",
   "MsgIdentify": "¿Esta?",
   "MsgIdentifyHint": "tu luz está parpadeando",
+  "MsgIdentifySoon": "tu luz va a parpadear",
   "MsgNearby": " luces cerca",
   "MsgNoBle": "Bluetooth",
   "MsgNoBleHint": "no disponible",

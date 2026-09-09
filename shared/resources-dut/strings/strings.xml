@@ -75,6 +75,7 @@
     <string id="MsgNoBle">Bluetooth</string>
     <string id="MsgNoBleHint">niet beschikbaar</string>
     <string id="MsgIdentify">Deze?</string>
+    <string id="MsgIdentifySoon">je licht gaat zo knipperen</string>
     <string id="MsgIdentifyHint">je licht knippert</string>
     <string id="MsgNearby"> lichten dichtbij</string>
     <string id="MsgOtherLight">Ander licht</string>

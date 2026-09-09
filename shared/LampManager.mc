@@ -653,6 +653,17 @@ class LampManager extends Ble.BleDelegate {
         return _identifyStep >= 0 || _identifyPending;
     }
 
+    //! Vrai pendant l'attente qui precede le clignotement, pas pendant celui-ci.
+    //!
+    //! Sert a annoncer ce qui va se passer avant que ca se passe : « votre lampe
+    //! va clignoter », puis « votre lampe clignote ». Sans cette distinction, le
+    //! compteur affirmait un clignotement une a deux secondes avant qu'il ne
+    //! commence, et l'utilisateur regardait une lampe eteinte en se demandant ce
+    //! qu'il devait voir.
+    function isIdentifyAnnounced() as Lang.Boolean {
+        return _identifyPending && _identifyStep < 0;
+    }
+
     //! Abandonne l'identification et remet la lampe comme on l'a trouvee.
     //!
     //! Appelee sur une tape. L'ecran « Celle-ci ? » posait une question sans
@@ -871,6 +882,11 @@ class LampManager extends Ble.BleDelegate {
     function stateHint() as Lang.String {
         if (lastError != null && !isReady()) { return lastError as Lang.String; }
         if (isIdentifying()) {
+            // L'annonce prime sur le decompte : dire « va clignoter » avant que
+            // la lampe ne bouge est ce qui rend la seconde qui suit lisible.
+            if (isIdentifyAnnounced()) {
+                return Labels.of(Rez.Strings.MsgIdentifySoon);
+            }
             var n = nearbyCount();
             if (n > 1) { return n.format("%d") + Labels.of(Rez.Strings.MsgNearby); }
             return Labels.of(Rez.Strings.MsgIdentifyHint);

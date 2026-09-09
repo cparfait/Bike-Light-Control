@@ -75,6 +75,7 @@
     <string id="MsgNoBle">藍牙</string>
     <string id="MsgNoBleHint">無法使用</string>
     <string id="MsgIdentify">是這個嗎？</string>
+    <string id="MsgIdentifySoon">車燈即將閃爍</string>
     <string id="MsgIdentifyHint">您的車燈正在閃爍</string>
     <string id="MsgNearby"> 個車燈在附近</string>
     <string id="MsgOtherLight">換一個車燈</string>

@@ -71,6 +71,7 @@
   "MsgConnectingHint": "Licht gefunden",
   "MsgIdentify": "Dieses?",
   "MsgIdentifyHint": "dein Licht blinkt",
+  "MsgIdentifySoon": "dein Licht blinkt gleich",
   "MsgNearby": " Lichter in der Nähe",
   "MsgNoBle": "Bluetooth",
   "MsgNoBleHint": "nicht verfügbar",

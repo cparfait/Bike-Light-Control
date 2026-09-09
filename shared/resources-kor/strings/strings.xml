@@ -75,6 +75,7 @@
     <string id="MsgNoBle">Bluetooth</string>
     <string id="MsgNoBleHint">사용할 수 없음</string>
     <string id="MsgIdentify">이것?</string>
+    <string id="MsgIdentifySoon">라이트가 곧 깜박입니다</string>
     <string id="MsgIdentifyHint">라이트가 깜박입니다</string>
     <string id="MsgNearby">개가 근처에 있음</string>
     <string id="MsgOtherLight">다른 라이트</string>

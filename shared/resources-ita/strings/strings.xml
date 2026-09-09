@@ -75,6 +75,7 @@
     <string id="MsgNoBle">Bluetooth</string>
     <string id="MsgNoBleHint">non disponibile</string>
     <string id="MsgIdentify">Questa?</string>
+    <string id="MsgIdentifySoon">la tua luce sta per lampeggiare</string>
     <string id="MsgIdentifyHint">la tua luce lampeggia</string>
     <string id="MsgNearby"> luci vicine</string>
     <string id="MsgOtherLight">Altra luce</string>

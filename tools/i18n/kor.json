@@ -71,6 +71,7 @@
   "MsgConnectingHint": "라이트를 찾았습니다",
   "MsgIdentify": "이것?",
   "MsgIdentifyHint": "라이트가 깜박입니다",
+  "MsgIdentifySoon": "라이트가 곧 깜박입니다",
   "MsgNearby": "개가 근처에 있음",
   "MsgNoBle": "Bluetooth",
   "MsgNoBleHint": "사용할 수 없음",

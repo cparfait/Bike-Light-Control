@@ -71,6 +71,7 @@
   "MsgConnectingHint": "фара найдена",
   "MsgIdentify": "Эта?",
   "MsgIdentifyHint": "ваша фара мигает",
+  "MsgIdentifySoon": "ваша фара сейчас мигнёт",
   "MsgNearby": " фар рядом",
   "MsgNoBle": "Bluetooth",
   "MsgNoBleHint": "недоступен",

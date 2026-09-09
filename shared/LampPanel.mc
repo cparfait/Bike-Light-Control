@@ -41,10 +41,8 @@ class LampPanel {
     //! Curseur pour la navigation aux boutons, sur les modèles sans tactile.
     var cursor as Lang.Number = 0;
 
-    //! Catégorie affichée dans la rangée des niveaux. Suit le mode courant
-    //! tant que l'utilisateur n'en a pas choisi une autre explicitement.
-    //! Categorie dont les modes sont listes sous la rangee. Elle **suit le mode
-    //! courant** tant que l'utilisateur n'en a pas choisi une lui-meme : voir
+    //! Catégorie dont les modes sont listés sous la rangée. Elle **suit le mode
+    //! courant** tant que l'utilisateur n'en a pas choisi une lui-même : voir
     //! `chooseCategory()` et `_categoryChosen`.
     private var selectedCategory as Lang.Number or Null = null;
 
@@ -78,12 +76,6 @@ class LampPanel {
     //! tactile, c'est la tape qui designe, et le curseur n'a pas de sens.
     function usesCursor() as Lang.Boolean { return _showCursor; }
 
-    //! Supprime le curseur, quel que soit l'appareil.
-    //!
-    //! Le champ de donnees l'appelle : aucune touche n'est transmise a un data
-    //! field, meme plein ecran. Sur un Edge 530, 540 ou MTB, le cadre blanc
-    //! restait donc fige sur la premiere tuile — une selection qu'aucun bouton
-    //! ne pouvait deplacer, et qui laissait croire a une page bloquee.
     //! Designe la categorie a lister, sur un geste de l'utilisateur.
     //!
     //! Passer par cette methode plutot que d'ecrire le champ : c'est elle qui
@@ -107,6 +99,12 @@ class LampPanel {
         _settingsBox = null;
     }
 
+    //! Supprime le curseur, quel que soit l'appareil.
+    //!
+    //! Le champ de donnees l'appelle : aucune touche n'est transmise a un data
+    //! field, meme plein ecran. Sur un Edge 530, 540 ou MTB, le cadre blanc
+    //! restait donc fige sur la premiere tuile — une selection qu'aucun bouton
+    //! ne pouvait deplacer, et qui laissait croire a une page bloquee.
     function hideCursor() as Void { _showCursor = false; }
 
     private var _settingsBox as Lang.Array or Null = null;
@@ -156,11 +154,17 @@ class LampPanel {
         // dans une police differente de tout le reste.
         if (!_lamp.isReady() || _lamp.isIdentifying()) {
             _drawWaiting(dc, w, h);
+            // La surcouche vaut surtout **ici** : c'est l'ecran ou l'on attend,
+            // ou l'on identifie, et donc celui ou l'on a le plus besoin de voir
+            // l'etat brut. Elle n'y etait pas dessinee, faute d'etre appelee
+            // avant la sortie.
+            _drawDebug(dc);
             return;
         }
 
         if (w < 200 || h < 160) {
             _drawCompact(dc, w, h);
+            _drawDebug(dc);
             return;
         }
 

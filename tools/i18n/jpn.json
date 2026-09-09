@@ -71,6 +71,7 @@
   "MsgConnectingHint": "ライトを検出",
   "MsgIdentify": "これ？",
   "MsgIdentifyHint": "ライトが点滅しています",
+  "MsgIdentifySoon": "ライトが点滅します",
   "MsgNearby": " 台が近くにあります",
   "MsgNoBle": "Bluetooth",
   "MsgNoBleHint": "利用できません",

@@ -71,6 +71,7 @@
   "MsgConnectingHint": "已找到車燈",
   "MsgIdentify": "是這個嗎？",
   "MsgIdentifyHint": "您的車燈正在閃爍",
+  "MsgIdentifySoon": "車燈即將閃爍",
   "MsgNearby": " 個車燈在附近",
   "MsgNoBle": "藍牙",
   "MsgNoBleHint": "無法使用",

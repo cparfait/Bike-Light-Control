@@ -75,6 +75,7 @@
     <string id="MsgNoBle">Bluetooth</string>
     <string id="MsgNoBleHint">niedostępny</string>
     <string id="MsgIdentify">Ta?</string>
+    <string id="MsgIdentifySoon">twoja lampka zaraz mignie</string>
     <string id="MsgIdentifyHint">twoja lampka miga</string>
     <string id="MsgNearby"> lampek w pobliżu</string>
     <string id="MsgOtherLight">Inna lampka</string>

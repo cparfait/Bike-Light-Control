@@ -71,6 +71,7 @@
   "MsgConnectingHint": "znaleziono lampkę",
   "MsgIdentify": "Ta?",
   "MsgIdentifyHint": "twoja lampka miga",
+  "MsgIdentifySoon": "twoja lampka zaraz mignie",
   "MsgNearby": " lampek w pobliżu",
   "MsgNoBle": "Bluetooth",
   "MsgNoBleHint": "niedostępny",

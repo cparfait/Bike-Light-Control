@@ -33,6 +33,16 @@ if(-not \$dev){ Write-Error 'Aucun Edge detecte en USB.'; exit 1 }
 \$g=\$st.GetFolder.Items() | Where-Object { \$_.Name -eq 'GARMIN' }
 \$dst=(\$g.GetFolder.Items() | Where-Object { \$_.Name -eq 'Apps' }).GetFolder
 \$src=\$sh.NameSpace('$STAGE')
+# Effacer avant de copier. Sans cela, un fichier de meme nom deja present —
+# depose par un deploiement precedent et pas encore consomme, parce que l'Edge
+# n'a pas redemarre entre-temps — n'est PAS ecrase par CopyHere, malgre l'option
+# 16 (« repondre Oui a tout »). On croyait alors installer la derniere version
+# alors que l'ancienne restait en place, ce qui s'est produit et a coute une
+# session d'essai sur un binaire perime.
+foreach(\$old in @(\$dst.Items())){
+  if(\$old.Name -like '*.prg'){ \$old.InvokeVerb('delete') }
+}
+Start-Sleep -Seconds 3
 foreach(\$f in \$src.Items()){ \$dst.CopyHere(\$f, 16) }
 Start-Sleep -Seconds 10
 foreach(\$i in \$dst.Items()){ if(\$i.Name -like '*.prg'){ '  installe : ' + \$i.Name + '  ' + \$i.ExtendedProperty('Size') + ' o' } }

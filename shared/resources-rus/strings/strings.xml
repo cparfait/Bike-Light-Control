@@ -75,6 +75,7 @@
     <string id="MsgNoBle">Bluetooth</string>
     <string id="MsgNoBleHint">недоступен</string>
     <string id="MsgIdentify">Эта?</string>
+    <string id="MsgIdentifySoon">ваша фара сейчас мигнёт</string>
     <string id="MsgIdentifyHint">ваша фара мигает</string>
     <string id="MsgNearby"> фар рядом</string>
     <string id="MsgOtherLight">Другая фара</string>

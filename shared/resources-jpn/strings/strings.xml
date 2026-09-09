@@ -75,6 +75,7 @@
     <string id="MsgNoBle">Bluetooth</string>
     <string id="MsgNoBleHint">利用できません</string>
     <string id="MsgIdentify">これ？</string>
+    <string id="MsgIdentifySoon">ライトが点滅します</string>
     <string id="MsgIdentifyHint">ライトが点滅しています</string>
     <string id="MsgNearby"> 台が近くにあります</string>
     <string id="MsgOtherLight">別のライト</string>

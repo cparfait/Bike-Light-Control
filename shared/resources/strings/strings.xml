@@ -105,6 +105,7 @@
 
     <!-- Identification : la lampe clignote pour se designer elle-meme -->
     <string id="MsgIdentify">This one?</string>
+    <string id="MsgIdentifySoon">your light will blink</string>
     <string id="MsgIdentifyHint">your light is blinking</string>
     <!-- Precede du nombre : « 2 lampes a proximite » -->
     <string id="MsgNearby"> lights nearby</string>
