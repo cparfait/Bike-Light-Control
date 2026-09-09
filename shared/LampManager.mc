@@ -197,10 +197,18 @@ class LampManager extends Ble.BleDelegate {
         // bilan initial ecoule : la lampe a repondu son mode courant, on sait
         // donc dans quel etat la remettre apres le clignotement.
         //
-        // Le delai de garde evite qu'une lampe muette — file jamais videe —
+        // **`status.mode != null` est la condition qui manquait.** La file vide
+        // et `_busy` a faux disent seulement que *nos ecritures* sont parties ;
+        // les reponses de la lampe, elles, arrivent en notification, plus tard.
+        // L'identification demarrait donc avant que le mode courant ne soit
+        // connu : `_restoreMode` valait `null`, et la surcouche de diagnostic
+        // l'a montre en clair sur l'appareil — `m=-`, puis `m=- id`, et le
+        // `m=12` n'arrivait qu'une fois le clignotement commence.
+        //
+        // Le delai de garde evite qu'une lampe muette — qui ne repond jamais —
         // laisse la page bloquee sur l'ecran d'identification.
         if (!_identifiedOnce
-                && ((!_busy && _queue.size() == 0)
+                && ((status.mode != null && !_busy && _queue.size() == 0)
                     || _readySeconds >= IDENTIFY_SETTLE_MAX_S)) {
             _identifiedOnce = true;
             _startIdentify();
@@ -692,10 +700,30 @@ class LampManager extends Ble.BleDelegate {
     //! apres une mise en veille, serait dangereux. L'identification a sa place
     //! avant le depart, quand on verifie son materiel.
     private function _startIdentify() as Void {
-        // En premier, et sans condition : les deux sorties ci-dessous laissaient
+        // En premier, et sans condition : les sorties ci-dessous laissaient
         // sinon la page sur l'ecran d'identification pour toujours.
         _identifyPending = false;
         if (_tx == null || !_identifyPermitted()) { return; }
+
+        // **Une seule lampe a portee : on n'y touche pas.**
+        //
+        // Le clignotement repond a « laquelle de ces lampes ai-je attrapee ? ».
+        // Quand il n'y en a qu'une, la question ne se pose pas, et le prix est
+        // eleve : allumer la lampe est le seul geste que l'application fasse
+        // sans qu'on le lui demande.
+        //
+        // Or ce prix s'est revele plus lourd que prevu. Mesure sur l'appareil :
+        // une VS1800S **eteinte au bouton** annonce `curMode = 12` — croisement
+        // faible, son mode memorise — exactement comme une lampe allumee en
+        // croisement faible. Aucun des dix sous-services ne dit si elle eclaire,
+        // et `blt_light_self` ne porte que le type et le nombre de lampes.
+        // L'application ne peut donc pas savoir qu'elle est eteinte : elle
+        // relevait `_restoreMode = 12`, clignotait, puis « restaurait » le mode
+        // 12 — et rallumait une lampe que l'utilisateur venait d'eteindre.
+        //
+        // Avec plusieurs lampes autour, l'utilisateur est en train de les
+        // demeler et un bref allumage est ce qu'il attend. Avec une seule, non.
+        if (nearbyCount() <= 1) { return; }
 
         // On retient l'etat d'avant pour le remettre : l'utilisateur avait
         // peut-etre deja allume sa lampe a la main.
