@@ -1,0 +1,96 @@
+<!--
+  Polski — genere par tools/i18n/generate.py, ne pas editer a la main.
+
+  La table de traduction est dans tools/i18n/pol.json. Les identifiants
+  doivent rester identiques a ceux de resources/strings/strings.xml : un
+  identifiant manquant ne se voit qu'a l'execution, et seulement sur un
+  appareil configure dans cette langue.
+-->
+<strings>
+    <string id="TypeTail">Tylna</string>
+    <string id="TypeFront">Przednia</string>
+    <string id="TypeHead">Kask</string>
+    <string id="TypeLeft">Lewa</string>
+    <string id="TypeRight">Prawa</string>
+    <string id="CatLowBeam">Światła mijania</string>
+    <string id="CatHighBeam">Światła drogowe</string>
+    <string id="CatSteady">Ciągłe</string>
+    <string id="CatFlash">Miganie</string>
+    <string id="CatCustom">Własne</string>
+    <string id="CatOff">Wyłączona</string>
+    <string id="CatLowBeamShort">Mij</string>
+    <string id="CatHighBeamShort">Drog</string>
+    <string id="CatSteadyShort">Ciągłe</string>
+    <string id="CatFlashShort">Miga</string>
+    <string id="CatCustomShort">Własne</string>
+    <string id="CatOffShort">Wył</string>
+    <string id="LvlLow">Niski</string>
+    <string id="LvlMid">Średni</string>
+    <string id="LvlHigh">Wysoki</string>
+    <string id="LvlMax">Maks</string>
+    <string id="ModeOff">Wyłączona</string>
+    <string id="ShortDipLow">Mij nis</string>
+    <string id="ShortDipMid">Mij śr</string>
+    <string id="ShortDipHigh">Mij wys</string>
+    <string id="ShortMainLow">Drog nis</string>
+    <string id="ShortMainMid">Drog śr</string>
+    <string id="ShortMainHigh">Drog wys</string>
+    <string id="ShortFlashDay">Miga dzień</string>
+    <string id="ShortFlashNight">Miga noc</string>
+    <string id="ModeDipLow">Mijania niskie</string>
+    <string id="ModeDipMid">Mijania średnie</string>
+    <string id="ModeDipHigh">Mijania wysokie</string>
+    <string id="ModeMainLow">Drogowe niskie</string>
+    <string id="ModeMainMid">Drogowe średnie</string>
+    <string id="ModeMainHigh">Drogowe wysokie</string>
+    <string id="ModeSteadyLow">Ciągłe niskie</string>
+    <string id="ModeSteadyMid">Ciągłe średnie</string>
+    <string id="ModeSteadyHigh">Ciągłe wysokie</string>
+    <string id="ModeFlashDay">Miganie dzienne</string>
+    <string id="ModeFlashNight">Miganie nocne</string>
+    <string id="ModeGradient">Gradient</string>
+    <string id="ModeMaximum">Maksimum</string>
+    <string id="ModeSos">SOS</string>
+    <string id="ModeComet">Kometa</string>
+    <string id="ModeWaterfall">Wodospad</string>
+    <string id="ModePinwheel">Wiatraczek</string>
+    <string id="ModeRotation">Obrotowe</string>
+    <string id="ModeLeftTurn">Skręt w lewo</string>
+    <string id="ModeRightTurn">Skręt w prawo</string>
+    <string id="PrefixCustom">Własny </string>
+    <string id="PrefixCustomLong">Własny </string>
+    <string id="PrefixSpecial">Specjalny </string>
+    <string id="PrefixMode">Tryb </string>
+    <string id="LightGeneric">Lampka</string>
+    <string id="BadgeAuto">AUTO</string>
+    <string id="BadgeManual">RĘCZ</string>
+    <string id="StScanning">Szukanie</string>
+    <string id="StConnecting">Łączenie</string>
+    <string id="StReady">OK</string>
+    <string id="StUnsupported">Brak BLE</string>
+    <string id="MsgSearching">Szukanie</string>
+    <string id="MsgSearchingHint">twojej lampki</string>
+    <string id="MsgConnecting">Łączenie</string>
+    <string id="MsgConnectingHint">znaleziono lampkę</string>
+    <string id="MsgNoBle">Bluetooth</string>
+    <string id="MsgNoBleHint">niedostępny</string>
+    <string id="MsgIdentify">Ta?</string>
+    <string id="MsgIdentifyHint">twoja lampka miga</string>
+    <string id="MsgNearby"> lampek w pobliżu</string>
+    <string id="MsgOtherLight">Inna lampka</string>
+    <string id="MsgOtherLightHint">Szukaj ponownie</string>
+    <string id="ErrScanRefused">skanowanie odrzucone</string>
+    <string id="ErrBleUnavailable">BLE niedostępne</string>
+    <string id="ErrProfilesRefused">profile odrzucone</string>
+    <string id="ErrWriteRefused">zapis odrzucony</string>
+    <string id="ErrProfileRegister">błąd profilu</string>
+    <string id="ErrServiceMissing">brak usługi</string>
+    <string id="ErrCharsMissing">brak charakterystyk</string>
+    <string id="ErrCccdMissing">brak CCCD</string>
+    <string id="ErrSubscribeRefused">subskrypcja odrzucona</string>
+    <string id="ErrWriteFailed">błąd zapisu</string>
+    <string id="ErrBatterySubscribe">subskrypcja baterii odrzucona</string>
+    <string id="DfAuto">LAMPKA - AUTO</string>
+    <string id="DfManual">LAMPKA - RĘCZNIE</string>
+    <string id="UnitMin">min</string>
+</strings>

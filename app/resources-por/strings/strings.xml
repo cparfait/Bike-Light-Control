@@ -1,0 +1,22 @@
+<!--
+  Portugues — genere par tools/i18n/generate.py, ne pas editer a la main.
+
+  La table de traduction est dans tools/i18n/por.json. Les identifiants
+  doivent rester identiques a ceux de resources/strings/strings.xml : un
+  identifiant manquant ne se voit qu'a l'execution, et seulement sur un
+  appareil configure dans cette langue.
+-->
+<strings>
+    <string id="AppName">Controlo de Luz de Bici</string>
+    <string id="SetAuto">Brilho conforme a velocidade</string>
+    <string id="SetSpeed1">Limite baixo (km/h)</string>
+    <string id="SetSpeed2">Limite médio (km/h)</string>
+    <string id="SetSpeed3">Limite alto (km/h)</string>
+    <string id="SetLowBattery">Limite de bateria fraca (%)</string>
+    <string id="SetSyncOff">Desligar a luz no fim</string>
+    <string id="SetLightOnStart">Ligar a luz ao iniciar</string>
+    <string id="FitMode">Modo da luz</string>
+    <string id="FitBattery">Bateria da luz</string>
+    <string id="FitModeUnit">modo</string>
+    <string id="FitBatteryUnit">%</string>
+</strings>

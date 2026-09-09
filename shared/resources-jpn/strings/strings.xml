@@ -1,0 +1,96 @@
+<!--
+  Nihongo — genere par tools/i18n/generate.py, ne pas editer a la main.
+
+  La table de traduction est dans tools/i18n/jpn.json. Les identifiants
+  doivent rester identiques a ceux de resources/strings/strings.xml : un
+  identifiant manquant ne se voit qu'a l'execution, et seulement sur un
+  appareil configure dans cette langue.
+-->
+<strings>
+    <string id="TypeTail">リア</string>
+    <string id="TypeFront">フロント</string>
+    <string id="TypeHead">ヘルメット</string>
+    <string id="TypeLeft">左</string>
+    <string id="TypeRight">右</string>
+    <string id="CatLowBeam">ロービーム</string>
+    <string id="CatHighBeam">ハイビーム</string>
+    <string id="CatSteady">常時点灯</string>
+    <string id="CatFlash">点滅</string>
+    <string id="CatCustom">カスタム</string>
+    <string id="CatOff">消灯</string>
+    <string id="CatLowBeamShort">ロー</string>
+    <string id="CatHighBeamShort">ハイ</string>
+    <string id="CatSteadyShort">常時</string>
+    <string id="CatFlashShort">点滅</string>
+    <string id="CatCustomShort">カスタム</string>
+    <string id="CatOffShort">消灯</string>
+    <string id="LvlLow">弱</string>
+    <string id="LvlMid">中</string>
+    <string id="LvlHigh">強</string>
+    <string id="LvlMax">最大</string>
+    <string id="ModeOff">消灯</string>
+    <string id="ShortDipLow">ロー弱</string>
+    <string id="ShortDipMid">ロー中</string>
+    <string id="ShortDipHigh">ロー強</string>
+    <string id="ShortMainLow">ハイ弱</string>
+    <string id="ShortMainMid">ハイ中</string>
+    <string id="ShortMainHigh">ハイ強</string>
+    <string id="ShortFlashDay">昼点滅</string>
+    <string id="ShortFlashNight">夜点滅</string>
+    <string id="ModeDipLow">ロービーム 弱</string>
+    <string id="ModeDipMid">ロービーム 中</string>
+    <string id="ModeDipHigh">ロービーム 強</string>
+    <string id="ModeMainLow">ハイビーム 弱</string>
+    <string id="ModeMainMid">ハイビーム 中</string>
+    <string id="ModeMainHigh">ハイビーム 強</string>
+    <string id="ModeSteadyLow">常時点灯 弱</string>
+    <string id="ModeSteadyMid">常時点灯 中</string>
+    <string id="ModeSteadyHigh">常時点灯 強</string>
+    <string id="ModeFlashDay">デイフラッシュ</string>
+    <string id="ModeFlashNight">ナイトフラッシュ</string>
+    <string id="ModeGradient">グラデーション</string>
+    <string id="ModeMaximum">最大</string>
+    <string id="ModeSos">SOS</string>
+    <string id="ModeComet">コメット</string>
+    <string id="ModeWaterfall">ウォーターフォール</string>
+    <string id="ModePinwheel">ピンホイール</string>
+    <string id="ModeRotation">回転</string>
+    <string id="ModeLeftTurn">左折</string>
+    <string id="ModeRightTurn">右折</string>
+    <string id="PrefixCustom">カスタム</string>
+    <string id="PrefixCustomLong">カスタム</string>
+    <string id="PrefixSpecial">スペシャル</string>
+    <string id="PrefixMode">モード</string>
+    <string id="LightGeneric">ライト</string>
+    <string id="BadgeAuto">自動</string>
+    <string id="BadgeManual">手動</string>
+    <string id="StScanning">検索中</string>
+    <string id="StConnecting">接続中</string>
+    <string id="StReady">OK</string>
+    <string id="StUnsupported">BLE非対応</string>
+    <string id="MsgSearching">検索中</string>
+    <string id="MsgSearchingHint">ライトを探しています</string>
+    <string id="MsgConnecting">接続中</string>
+    <string id="MsgConnectingHint">ライトを検出</string>
+    <string id="MsgNoBle">Bluetooth</string>
+    <string id="MsgNoBleHint">利用できません</string>
+    <string id="MsgIdentify">これ？</string>
+    <string id="MsgIdentifyHint">ライトが点滅しています</string>
+    <string id="MsgNearby"> 台が近くにあります</string>
+    <string id="MsgOtherLight">別のライト</string>
+    <string id="MsgOtherLightHint">もう一度検索</string>
+    <string id="ErrScanRefused">スキャン拒否</string>
+    <string id="ErrBleUnavailable">BLE利用不可</string>
+    <string id="ErrProfilesRefused">プロファイル拒否</string>
+    <string id="ErrWriteRefused">書き込み拒否</string>
+    <string id="ErrProfileRegister">プロファイル設定失敗</string>
+    <string id="ErrServiceMissing">サービスがありません</string>
+    <string id="ErrCharsMissing">特性がありません</string>
+    <string id="ErrCccdMissing">CCCDがありません</string>
+    <string id="ErrSubscribeRefused">通知登録の拒否</string>
+    <string id="ErrWriteFailed">書き込み失敗</string>
+    <string id="ErrBatterySubscribe">電池通知の登録拒否</string>
+    <string id="DfAuto">ライト - 自動</string>
+    <string id="DfManual">ライト - 手動</string>
+    <string id="UnitMin">分</string>
+</strings>

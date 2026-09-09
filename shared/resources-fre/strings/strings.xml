@@ -9,7 +9,7 @@
 <strings>
 
     <!-- Type de lampe (blt_light_self.lightType) -->
-    <string id="TypeTail">Arriere</string>
+    <string id="TypeTail">Arrière</string>
     <string id="TypeFront">Avant</string>
     <string id="TypeHead">Frontale</string>
     <string id="TypeLeft">Gauche</string>
@@ -21,7 +21,7 @@
     <string id="CatSteady">Fixe</string>
     <string id="CatFlash">Flash</string>
     <string id="CatCustom">Perso</string>
-    <string id="CatOff">Eteint</string>
+    <string id="CatOff">Éteint</string>
     <string id="CatLowBeamShort">Crois.</string>
     <string id="CatHighBeamShort">Route</string>
     <string id="CatSteadyShort">Fixe</string>
@@ -32,38 +32,38 @@
     <!-- Crans d'intensite, tels qu'ecrits sur les tuiles de niveau -->
     <string id="LvlLow">Faible</string>
     <string id="LvlMid">Moyen</string>
-    <string id="LvlHigh">Eleve</string>
+    <string id="LvlHigh">Élevé</string>
     <string id="LvlMax">Maxi</string>
-    <string id="ModeOff">Eteint</string>
+    <string id="ModeOff">Éteint</string>
 
     <!-- Modes abreges, pour les champs de donnees etroits -->
     <string id="ShortDipLow">Cr. faible</string>
     <string id="ShortDipMid">Cr. moyen</string>
-    <string id="ShortDipHigh">Cr. eleve</string>
+    <string id="ShortDipHigh">Cr. élevé</string>
     <string id="ShortMainLow">Rt. faible</string>
     <string id="ShortMainMid">Rt. moyen</string>
-    <string id="ShortMainHigh">Rt. eleve</string>
+    <string id="ShortMainHigh">Rt. élevé</string>
     <string id="ShortFlashDay">Flash jour</string>
     <string id="ShortFlashNight">Flash nuit</string>
 
     <!-- Modes en toutes lettres, vocabulaire de l'app iGPSPORT -->
     <string id="ModeDipLow">Croisement faible</string>
     <string id="ModeDipMid">Croisement moyen</string>
-    <string id="ModeDipHigh">Croisement eleve</string>
+    <string id="ModeDipHigh">Croisement élevé</string>
     <string id="ModeMainLow">Route faible</string>
     <string id="ModeMainMid">Route moyen</string>
-    <string id="ModeMainHigh">Route eleve</string>
+    <string id="ModeMainHigh">Route élevé</string>
     <string id="ModeSteadyLow">Fixe faible</string>
     <string id="ModeSteadyMid">Fixe moyen</string>
-    <string id="ModeSteadyHigh">Fixe eleve</string>
+    <string id="ModeSteadyHigh">Fixe élevé</string>
     <string id="ModeFlashDay">Flash diurne</string>
     <string id="ModeFlashNight">Flash nocturne</string>
-    <string id="ModeGradient">Degrade</string>
+    <string id="ModeGradient">Dégradé</string>
     <string id="ModeMaximum">Maximum</string>
     <string id="ModeSos">SOS</string>
 
     <!-- Effets lumineux, listes dans la categorie Flash -->
-    <string id="ModeComet">Comete</string>
+    <string id="ModeComet">Comète</string>
     <string id="ModeWaterfall">Cascade</string>
     <string id="ModePinwheel">Moulinet</string>
     <string id="ModeRotation">Rotatif</string>
@@ -72,8 +72,8 @@
 
     <!-- Prefixes des modes numerotes : suivis du numero -->
     <string id="PrefixCustom">Perso </string>
-    <string id="PrefixCustomLong">Personnalise </string>
-    <string id="PrefixSpecial">Special </string>
+    <string id="PrefixCustomLong">Personnalisé </string>
+    <string id="PrefixSpecial">Spécial </string>
     <string id="PrefixMode">Mode </string>
 
     <!-- Bandeau de la page de pilotage -->
@@ -99,7 +99,7 @@
     <string id="MsgSearching">Recherche</string>
     <string id="MsgSearchingHint">de votre lampe</string>
     <string id="MsgConnecting">Connexion</string>
-    <string id="MsgConnectingHint">lampe trouvee</string>
+    <string id="MsgConnectingHint">lampe trouvée</string>
     <string id="MsgNoBle">Bluetooth</string>
     <string id="MsgNoBleHint">indisponible</string>
 
@@ -107,22 +107,22 @@
     <string id="MsgIdentify">Celle-ci ?</string>
     <string id="MsgIdentifyHint">votre lampe clignote</string>
     <!-- Precede du nombre : « 2 lampes a proximite » -->
-    <string id="MsgNearby"> lampes a proximite</string>
+    <string id="MsgNearby"> lampes à proximité</string>
     <string id="MsgOtherLight">Changer de lampe</string>
-    <string id="MsgOtherLightHint">Chercher a nouveau</string>
+    <string id="MsgOtherLightHint">Chercher à nouveau</string>
 
     <!-- Echecs de liaison, affiches a la place de l'etat -->
-    <string id="ErrScanRefused">scan refuse</string>
+    <string id="ErrScanRefused">scan refusé</string>
     <string id="ErrBleUnavailable">BLE non disponible</string>
-    <string id="ErrProfilesRefused">profils refuses</string>
-    <string id="ErrWriteRefused">ecriture refusee</string>
-    <string id="ErrProfileRegister">enregistrement du profil en echec</string>
+    <string id="ErrProfilesRefused">profils refusés</string>
+    <string id="ErrWriteRefused">écriture refusée</string>
+    <string id="ErrProfileRegister">enregistrement du profil en échec</string>
     <string id="ErrServiceMissing">service absent</string>
-    <string id="ErrCharsMissing">caracteristiques absentes</string>
+    <string id="ErrCharsMissing">caractéristiques absentes</string>
     <string id="ErrCccdMissing">CCCD absent</string>
-    <string id="ErrSubscribeRefused">abonnement refuse</string>
-    <string id="ErrWriteFailed">ecriture en echec</string>
-    <string id="ErrBatterySubscribe">abonnement batterie refuse</string>
+    <string id="ErrSubscribeRefused">abonnement refusé</string>
+    <string id="ErrWriteFailed">écriture en échec</string>
+    <string id="ErrBatterySubscribe">abonnement batterie refusé</string>
 
     <!-- Champ de donnees etroit : etat de l'ajustement automatique -->
     <string id="DfAuto">LAMPE - AUTO</string>

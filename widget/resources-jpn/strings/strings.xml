@@ -1,0 +1,50 @@
+<!--
+  Nihongo — genere par tools/i18n/generate.py, ne pas editer a la main.
+
+  La table de traduction est dans tools/i18n/jpn.json. Les identifiants
+  doivent rester identiques a ceux de resources/strings/strings.xml : un
+  identifiant manquant ne se voit qu'a l'execution, et seulement sur un
+  appareil configure dans cette langue.
+-->
+<strings>
+    <string id="AppName">バイクライト パネル</string>
+    <string id="SetLowBattery">バッテリー低下のしきい値 (%)</string>
+    <string id="MenuTitle">設定</string>
+    <string id="LampAutomations">ライトの自動機能</string>
+    <string id="HintNotConnected">ライト未接続</string>
+    <string id="LampLumenVary">速度に応じた明るさ</string>
+    <string id="HintByLamp">ライト側で制御</string>
+    <string id="LampAutoLight">光センサー</string>
+    <string id="HintAutoOn">自動で点灯します</string>
+    <string id="LampSyncOff">連動消灯</string>
+    <string id="HintFollowsTimer">タイマーに連動</string>
+    <string id="LampAutoStart">開始時に点灯</string>
+    <string id="HintOnStart">走行開始時</string>
+    <string id="LampAutoSleep">自動スリープ</string>
+    <string id="HintAfterIdle">停止したあと</string>
+    <string id="SleepDelay">スリープまでの待ち時間</string>
+    <string id="LampAutoLow">停止時に減光</string>
+    <string id="LowDelay">減光までの待ち時間</string>
+    <string id="AvailableModes">使用可能なモード</string>
+    <string id="AppSettings">アプリ設定</string>
+    <string id="HintSeparate">データ項目とは別</string>
+    <string id="SpeedAdjust">速度で調整</string>
+    <string id="OffAtEnd">終了時に消灯</string>
+    <string id="OnAtStart">開始時に点灯</string>
+    <string id="ThresholdLow">低しきい値</string>
+    <string id="ThresholdMid">中しきい値</string>
+    <string id="ThresholdHigh">高しきい値</string>
+    <string id="LowBattery">バッテリー低下</string>
+    <string id="StateActive">オン</string>
+    <string id="StateInactive">オフ</string>
+    <string id="Yes">はい</string>
+    <string id="No">いいえ</string>
+    <string id="StateAvailable">使用可能</string>
+    <string id="StateDisabled">無効</string>
+    <string id="Current">現在</string>
+    <string id="ActiveOutOf"> 有効 / </string>
+    <string id="UnitSec">秒</string>
+    <string id="UnitMin">分</string>
+    <string id="UnitKmh">km/h</string>
+    <string id="UnitPct">%</string>
+</strings>

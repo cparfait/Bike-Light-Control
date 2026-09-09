@@ -1,0 +1,96 @@
+<!--
+  Portugues — genere par tools/i18n/generate.py, ne pas editer a la main.
+
+  La table de traduction est dans tools/i18n/por.json. Les identifiants
+  doivent rester identiques a ceux de resources/strings/strings.xml : un
+  identifiant manquant ne se voit qu'a l'execution, et seulement sur un
+  appareil configure dans cette langue.
+-->
+<strings>
+    <string id="TypeTail">Traseira</string>
+    <string id="TypeFront">Frente</string>
+    <string id="TypeHead">Capacete</string>
+    <string id="TypeLeft">Esquerda</string>
+    <string id="TypeRight">Direita</string>
+    <string id="CatLowBeam">Médios</string>
+    <string id="CatHighBeam">Máximos</string>
+    <string id="CatSteady">Fixa</string>
+    <string id="CatFlash">Piscar</string>
+    <string id="CatCustom">Personal.</string>
+    <string id="CatOff">Desligada</string>
+    <string id="CatLowBeamShort">Méd</string>
+    <string id="CatHighBeamShort">Máx</string>
+    <string id="CatSteadyShort">Fixa</string>
+    <string id="CatFlashShort">Pisca</string>
+    <string id="CatCustomShort">Person</string>
+    <string id="CatOffShort">Desl</string>
+    <string id="LvlLow">Baixo</string>
+    <string id="LvlMid">Médio</string>
+    <string id="LvlHigh">Alto</string>
+    <string id="LvlMax">Máx</string>
+    <string id="ModeOff">Desligada</string>
+    <string id="ShortDipLow">Méd baixo</string>
+    <string id="ShortDipMid">Méd médio</string>
+    <string id="ShortDipHigh">Méd alto</string>
+    <string id="ShortMainLow">Máx baixo</string>
+    <string id="ShortMainMid">Máx médio</string>
+    <string id="ShortMainHigh">Máx alto</string>
+    <string id="ShortFlashDay">Pisca dia</string>
+    <string id="ShortFlashNight">Pisca noite</string>
+    <string id="ModeDipLow">Médios baixo</string>
+    <string id="ModeDipMid">Médios médio</string>
+    <string id="ModeDipHigh">Médios alto</string>
+    <string id="ModeMainLow">Máximos baixo</string>
+    <string id="ModeMainMid">Máximos médio</string>
+    <string id="ModeMainHigh">Máximos alto</string>
+    <string id="ModeSteadyLow">Fixa baixa</string>
+    <string id="ModeSteadyMid">Fixa média</string>
+    <string id="ModeSteadyHigh">Fixa alta</string>
+    <string id="ModeFlashDay">Piscar diurno</string>
+    <string id="ModeFlashNight">Piscar noturno</string>
+    <string id="ModeGradient">Gradiente</string>
+    <string id="ModeMaximum">Máximo</string>
+    <string id="ModeSos">SOS</string>
+    <string id="ModeComet">Cometa</string>
+    <string id="ModeWaterfall">Cascata</string>
+    <string id="ModePinwheel">Cata-vento</string>
+    <string id="ModeRotation">Rotação</string>
+    <string id="ModeLeftTurn">Virar à esquerda</string>
+    <string id="ModeRightTurn">Virar à direita</string>
+    <string id="PrefixCustom">Person </string>
+    <string id="PrefixCustomLong">Personalizado </string>
+    <string id="PrefixSpecial">Especial </string>
+    <string id="PrefixMode">Modo </string>
+    <string id="LightGeneric">Luz</string>
+    <string id="BadgeAuto">AUTO</string>
+    <string id="BadgeManual">MAN</string>
+    <string id="StScanning">A procurar</string>
+    <string id="StConnecting">A ligar</string>
+    <string id="StReady">OK</string>
+    <string id="StUnsupported">Sem BLE</string>
+    <string id="MsgSearching">A procurar</string>
+    <string id="MsgSearchingHint">a sua luz</string>
+    <string id="MsgConnecting">A ligar</string>
+    <string id="MsgConnectingHint">luz encontrada</string>
+    <string id="MsgNoBle">Bluetooth</string>
+    <string id="MsgNoBleHint">indisponível</string>
+    <string id="MsgIdentify">Esta?</string>
+    <string id="MsgIdentifyHint">a sua luz está a piscar</string>
+    <string id="MsgNearby"> luzes por perto</string>
+    <string id="MsgOtherLight">Outra luz</string>
+    <string id="MsgOtherLightHint">Procurar de novo</string>
+    <string id="ErrScanRefused">pesquisa recusada</string>
+    <string id="ErrBleUnavailable">BLE indisponível</string>
+    <string id="ErrProfilesRefused">perfis recusados</string>
+    <string id="ErrWriteRefused">escrita recusada</string>
+    <string id="ErrProfileRegister">falha do perfil</string>
+    <string id="ErrServiceMissing">falta o serviço</string>
+    <string id="ErrCharsMissing">faltam características</string>
+    <string id="ErrCccdMissing">falta CCCD</string>
+    <string id="ErrSubscribeRefused">subscrição recusada</string>
+    <string id="ErrWriteFailed">falha de escrita</string>
+    <string id="ErrBatterySubscribe">subscrição bateria recusada</string>
+    <string id="DfAuto">LUZ - AUTO</string>
+    <string id="DfManual">LUZ - MANUAL</string>
+    <string id="UnitMin">min</string>
+</strings>

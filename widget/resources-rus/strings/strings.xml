@@ -1,0 +1,50 @@
+<!--
+  Russkij — genere par tools/i18n/generate.py, ne pas editer a la main.
+
+  La table de traduction est dans tools/i18n/rus.json. Les identifiants
+  doivent rester identiques a ceux de resources/strings/strings.xml : un
+  identifiant manquant ne se voit qu'a l'execution, et seulement sur un
+  appareil configure dans cette langue.
+-->
+<strings>
+    <string id="AppName">Панель велофары</string>
+    <string id="SetLowBattery">Порог низкого заряда (%)</string>
+    <string id="MenuTitle">Настройки</string>
+    <string id="LampAutomations">Автоматика фары</string>
+    <string id="HintNotConnected">Фара не подключена</string>
+    <string id="LampLumenVary">Яркость по скорости</string>
+    <string id="HintByLamp">Управляет сама фара</string>
+    <string id="LampAutoLight">Датчик света</string>
+    <string id="HintAutoOn">Включается сама</string>
+    <string id="LampSyncOff">Синхронное выключение</string>
+    <string id="HintFollowsTimer">Следует за таймером</string>
+    <string id="LampAutoStart">Включение на старте</string>
+    <string id="HintOnStart">Когда начинается поездка</string>
+    <string id="LampAutoSleep">Автоматический сон</string>
+    <string id="HintAfterIdle">После остановки</string>
+    <string id="SleepDelay">Задержка сна</string>
+    <string id="LampAutoLow">Приглушать на стоянке</string>
+    <string id="LowDelay">Задержка приглушения</string>
+    <string id="AvailableModes">Доступные режимы</string>
+    <string id="AppSettings">Настройки приложения</string>
+    <string id="HintSeparate">Отдельно от поля данных</string>
+    <string id="SpeedAdjust">Подстройка по скорости</string>
+    <string id="OffAtEnd">Выключать в конце</string>
+    <string id="OnAtStart">Включать на старте</string>
+    <string id="ThresholdLow">Нижний порог</string>
+    <string id="ThresholdMid">Средний порог</string>
+    <string id="ThresholdHigh">Верхний порог</string>
+    <string id="LowBattery">Низкий заряд</string>
+    <string id="StateActive">Вкл</string>
+    <string id="StateInactive">Выкл</string>
+    <string id="Yes">Да</string>
+    <string id="No">Нет</string>
+    <string id="StateAvailable">Доступен</string>
+    <string id="StateDisabled">Отключён</string>
+    <string id="Current">текущий</string>
+    <string id="ActiveOutOf"> активно из </string>
+    <string id="UnitSec">с</string>
+    <string id="UnitMin">мин</string>
+    <string id="UnitKmh">км/ч</string>
+    <string id="UnitPct">%</string>
+</strings>

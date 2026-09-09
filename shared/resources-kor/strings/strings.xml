@@ -1,0 +1,96 @@
+<!--
+  Hangugeo — genere par tools/i18n/generate.py, ne pas editer a la main.
+
+  La table de traduction est dans tools/i18n/kor.json. Les identifiants
+  doivent rester identiques a ceux de resources/strings/strings.xml : un
+  identifiant manquant ne se voit qu'a l'execution, et seulement sur un
+  appareil configure dans cette langue.
+-->
+<strings>
+    <string id="TypeTail">후방</string>
+    <string id="TypeFront">전방</string>
+    <string id="TypeHead">헬멧</string>
+    <string id="TypeLeft">좌측</string>
+    <string id="TypeRight">우측</string>
+    <string id="CatLowBeam">하향등</string>
+    <string id="CatHighBeam">상향등</string>
+    <string id="CatSteady">상시 점등</string>
+    <string id="CatFlash">점멸</string>
+    <string id="CatCustom">사용자</string>
+    <string id="CatOff">꺼짐</string>
+    <string id="CatLowBeamShort">하향</string>
+    <string id="CatHighBeamShort">상향</string>
+    <string id="CatSteadyShort">상시</string>
+    <string id="CatFlashShort">점멸</string>
+    <string id="CatCustomShort">사용자</string>
+    <string id="CatOffShort">꺼짐</string>
+    <string id="LvlLow">약</string>
+    <string id="LvlMid">중</string>
+    <string id="LvlHigh">강</string>
+    <string id="LvlMax">최대</string>
+    <string id="ModeOff">꺼짐</string>
+    <string id="ShortDipLow">하향 약</string>
+    <string id="ShortDipMid">하향 중</string>
+    <string id="ShortDipHigh">하향 강</string>
+    <string id="ShortMainLow">상향 약</string>
+    <string id="ShortMainMid">상향 중</string>
+    <string id="ShortMainHigh">상향 강</string>
+    <string id="ShortFlashDay">주간 점멸</string>
+    <string id="ShortFlashNight">야간 점멸</string>
+    <string id="ModeDipLow">하향등 약</string>
+    <string id="ModeDipMid">하향등 중</string>
+    <string id="ModeDipHigh">하향등 강</string>
+    <string id="ModeMainLow">상향등 약</string>
+    <string id="ModeMainMid">상향등 중</string>
+    <string id="ModeMainHigh">상향등 강</string>
+    <string id="ModeSteadyLow">상시 점등 약</string>
+    <string id="ModeSteadyMid">상시 점등 중</string>
+    <string id="ModeSteadyHigh">상시 점등 강</string>
+    <string id="ModeFlashDay">주간 점멸</string>
+    <string id="ModeFlashNight">야간 점멸</string>
+    <string id="ModeGradient">그라데이션</string>
+    <string id="ModeMaximum">최대</string>
+    <string id="ModeSos">SOS</string>
+    <string id="ModeComet">혜성</string>
+    <string id="ModeWaterfall">폭포</string>
+    <string id="ModePinwheel">바람개비</string>
+    <string id="ModeRotation">회전</string>
+    <string id="ModeLeftTurn">좌회전</string>
+    <string id="ModeRightTurn">우회전</string>
+    <string id="PrefixCustom">사용자 </string>
+    <string id="PrefixCustomLong">사용자 </string>
+    <string id="PrefixSpecial">특수 </string>
+    <string id="PrefixMode">모드 </string>
+    <string id="LightGeneric">라이트</string>
+    <string id="BadgeAuto">자동</string>
+    <string id="BadgeManual">수동</string>
+    <string id="StScanning">검색 중</string>
+    <string id="StConnecting">연결 중</string>
+    <string id="StReady">OK</string>
+    <string id="StUnsupported">BLE 없음</string>
+    <string id="MsgSearching">검색 중</string>
+    <string id="MsgSearchingHint">라이트를 찾는 중</string>
+    <string id="MsgConnecting">연결 중</string>
+    <string id="MsgConnectingHint">라이트를 찾았습니다</string>
+    <string id="MsgNoBle">Bluetooth</string>
+    <string id="MsgNoBleHint">사용할 수 없음</string>
+    <string id="MsgIdentify">이것?</string>
+    <string id="MsgIdentifyHint">라이트가 깜박입니다</string>
+    <string id="MsgNearby">개가 근처에 있음</string>
+    <string id="MsgOtherLight">다른 라이트</string>
+    <string id="MsgOtherLightHint">다시 검색</string>
+    <string id="ErrScanRefused">검색 거부</string>
+    <string id="ErrBleUnavailable">BLE 사용 불가</string>
+    <string id="ErrProfilesRefused">프로필 거부</string>
+    <string id="ErrWriteRefused">쓰기 거부</string>
+    <string id="ErrProfileRegister">프로필 설정 실패</string>
+    <string id="ErrServiceMissing">서비스 없음</string>
+    <string id="ErrCharsMissing">특성 없음</string>
+    <string id="ErrCccdMissing">CCCD 없음</string>
+    <string id="ErrSubscribeRefused">구독 거부</string>
+    <string id="ErrWriteFailed">쓰기 실패</string>
+    <string id="ErrBatterySubscribe">배터리 구독 거부</string>
+    <string id="DfAuto">라이트 - 자동</string>
+    <string id="DfManual">라이트 - 수동</string>
+    <string id="UnitMin">분</string>
+</strings>

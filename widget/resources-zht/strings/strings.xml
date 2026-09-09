@@ -1,0 +1,50 @@
+<!--
+  Fanti zhongwen — genere par tools/i18n/generate.py, ne pas editer a la main.
+
+  La table de traduction est dans tools/i18n/zht.json. Les identifiants
+  doivent rester identiques a ceux de resources/strings/strings.xml : un
+  identifiant manquant ne se voit qu'a l'execution, et seulement sur un
+  appareil configure dans cette langue.
+-->
+<strings>
+    <string id="AppName">自行車燈面板</string>
+    <string id="SetLowBattery">低電量門檻 (%)</string>
+    <string id="MenuTitle">設定</string>
+    <string id="LampAutomations">車燈自動功能</string>
+    <string id="HintNotConnected">車燈未連線</string>
+    <string id="LampLumenVary">依速度調節亮度</string>
+    <string id="HintByLamp">由車燈處理</string>
+    <string id="LampAutoLight">光線感應器</string>
+    <string id="HintAutoOn">會自動點亮</string>
+    <string id="LampSyncOff">同步熄滅</string>
+    <string id="HintFollowsTimer">跟隨計時器</string>
+    <string id="LampAutoStart">啟動時點亮</string>
+    <string id="HintOnStart">騎乘開始時</string>
+    <string id="LampAutoSleep">自動休眠</string>
+    <string id="HintAfterIdle">停止之後</string>
+    <string id="SleepDelay">休眠延遲</string>
+    <string id="LampAutoLow">停車時調暗</string>
+    <string id="LowDelay">調暗前延遲</string>
+    <string id="AvailableModes">可用模式</string>
+    <string id="AppSettings">應用程式設定</string>
+    <string id="HintSeparate">與資料欄位分開</string>
+    <string id="SpeedAdjust">依速度調節</string>
+    <string id="OffAtEnd">結束時關燈</string>
+    <string id="OnAtStart">開始時開燈</string>
+    <string id="ThresholdLow">低門檻</string>
+    <string id="ThresholdMid">中門檻</string>
+    <string id="ThresholdHigh">高門檻</string>
+    <string id="LowBattery">電量偏低</string>
+    <string id="StateActive">開</string>
+    <string id="StateInactive">關</string>
+    <string id="Yes">是</string>
+    <string id="No">否</string>
+    <string id="StateAvailable">可用</string>
+    <string id="StateDisabled">已停用</string>
+    <string id="Current">目前</string>
+    <string id="ActiveOutOf"> 個已啟用，共 </string>
+    <string id="UnitSec">秒</string>
+    <string id="UnitMin">分</string>
+    <string id="UnitKmh">km/h</string>
+    <string id="UnitPct">%</string>
+</strings>

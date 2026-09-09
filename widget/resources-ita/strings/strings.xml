@@ -1,0 +1,50 @@
+<!--
+  Italiano — genere par tools/i18n/generate.py, ne pas editer a la main.
+
+  La table de traduction est dans tools/i18n/ita.json. Les identifiants
+  doivent rester identiques a ceux de resources/strings/strings.xml : un
+  identifiant manquant ne se voit qu'a l'execution, et seulement sur un
+  appareil configure dans cette langue.
+-->
+<strings>
+    <string id="AppName">Pannello Luce Bici</string>
+    <string id="SetLowBattery">Soglia batteria scarica (%)</string>
+    <string id="MenuTitle">Impostazioni</string>
+    <string id="LampAutomations">Automatismi della luce</string>
+    <string id="HintNotConnected">Luce non connessa</string>
+    <string id="LampLumenVary">Luminosità per velocità</string>
+    <string id="HintByLamp">Gestito dalla luce</string>
+    <string id="LampAutoLight">Sensore di luce</string>
+    <string id="HintAutoOn">Si accende da sola</string>
+    <string id="LampSyncOff">Spegnimento sincronizzato</string>
+    <string id="HintFollowsTimer">Segue il timer</string>
+    <string id="LampAutoStart">Accensione alla partenza</string>
+    <string id="HintOnStart">Quando inizia l'attività</string>
+    <string id="LampAutoSleep">Standby automatico</string>
+    <string id="HintAfterIdle">Dopo la sosta</string>
+    <string id="SleepDelay">Ritardo standby</string>
+    <string id="LampAutoLow">Attenua da fermo</string>
+    <string id="LowDelay">Ritardo prima di attenuare</string>
+    <string id="AvailableModes">Modi disponibili</string>
+    <string id="AppSettings">Impostazioni app</string>
+    <string id="HintSeparate">Separate dal campo</string>
+    <string id="SpeedAdjust">Regola con la velocità</string>
+    <string id="OffAtEnd">Spegni a fine attività</string>
+    <string id="OnAtStart">Accendi alla partenza</string>
+    <string id="ThresholdLow">Soglia bassa</string>
+    <string id="ThresholdMid">Soglia media</string>
+    <string id="ThresholdHigh">Soglia alta</string>
+    <string id="LowBattery">Batteria scarica</string>
+    <string id="StateActive">Acceso</string>
+    <string id="StateInactive">Spento</string>
+    <string id="Yes">Sì</string>
+    <string id="No">No</string>
+    <string id="StateAvailable">Disponibile</string>
+    <string id="StateDisabled">Disattivato</string>
+    <string id="Current">attuale</string>
+    <string id="ActiveOutOf"> attivi su </string>
+    <string id="UnitSec">s</string>
+    <string id="UnitMin">min</string>
+    <string id="UnitKmh">km/h</string>
+    <string id="UnitPct">%</string>
+</strings>

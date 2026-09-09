@@ -1,0 +1,22 @@
+<!--
+  Fanti zhongwen — genere par tools/i18n/generate.py, ne pas editer a la main.
+
+  La table de traduction est dans tools/i18n/zht.json. Les identifiants
+  doivent rester identiques a ceux de resources/strings/strings.xml : un
+  identifiant manquant ne se voit qu'a l'execution, et seulement sur un
+  appareil configure dans cette langue.
+-->
+<strings>
+    <string id="AppName">自行車燈控制</string>
+    <string id="SetAuto">依速度自動調節亮度</string>
+    <string id="SetSpeed1">低速門檻 (km/h)</string>
+    <string id="SetSpeed2">中速門檻 (km/h)</string>
+    <string id="SetSpeed3">高速門檻 (km/h)</string>
+    <string id="SetLowBattery">低電量門檻 (%)</string>
+    <string id="SetSyncOff">結束騎乘時關燈</string>
+    <string id="SetLightOnStart">開始騎乘時開燈</string>
+    <string id="FitMode">車燈模式</string>
+    <string id="FitBattery">車燈電量</string>
+    <string id="FitModeUnit">模式</string>
+    <string id="FitBatteryUnit">%</string>
+</strings>

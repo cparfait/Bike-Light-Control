@@ -12,7 +12,18 @@ compatibilité** dans la description — c'est ce que font les deux textes.
 |---|---|---|
 | Paquet | `dist/bike-light-control.iq` | `dist/bike-light-panel.iq` |
 | Titre (en) | Bike Light Control | Bike Light Panel |
-| Titre (fr) | Commande eclairage velo | Panneau eclairage velo |
+| Titre (fr) | Commande éclairage vélo | Panneau éclairage vélo |
+| Titre (de) | Fahrradlicht Steuerung | Fahrradlicht Panel |
+| Titre (es) | Control de Luz de Bici | Panel de Luz de Bici |
+| Titre (it) | Controllo Luce Bici | Pannello Luce Bici |
+| Titre (pt) | Controlo de Luz de Bici | Painel de Luz de Bici |
+| Titre (nl) | Fietslicht Bediening | Fietslicht Paneel |
+| Titre (pl) | Sterowanie Lampką Roweru | Panel Lampki Roweru |
+| Titre (ru) | Управление велофарой | Панель велофары |
+| Titre (ja) | バイクライト コントロール | バイクライト パネル |
+| Titre (ko) | 자전거 라이트 제어 | 자전거 라이트 패널 |
+| Titre (zh-CN) | 自行车灯控制 | 自行车灯面板 |
+| Titre (zh-TW) | 自行車燈控制 | 自行車燈面板 |
 | Icône 500×500 | `store/app-icon-500.png` | `store/widget-icon-500.png` |
 | Type | Data field | Device app |
 
@@ -126,6 +137,11 @@ bash app/build.sh package
       ne suivent pas. La cle est exclue du depot — un `git clone` ne la sauvegarde donc pas.
 - [ ] Noter le numero de version depose dans `CHANGELOG.md` : le manifeste n'en porte pas, il se
       saisit dans le formulaire, et rien d'autre n'en garde la trace.
+- [ ] Les titres ci-dessus sont ceux affiches **sur le compteur** ; ils viennent des tables de
+      `tools/i18n/`. Le formulaire du store a ses propres champs par langue : y coller les memes
+      titres, sans quoi la fiche et l'appareil ne diront pas la meme chose.
+- [ ] Les descriptions longues n'existent qu'en anglais et en francais. Le store accepte une
+      fiche par langue ; a defaut il retombe sur l'anglais, ce qui reste acceptable.
 - [ ] Publier d'abord en **beta** : c'est la seule facon de verifier les champs FIT et les
       reglages depuis Garmin Connect, que le simulateur ne rend pas.
 - [ ] Au moins une capture d'ecran par fiche. Le panneau plein ecran sur un 1050 est le plus

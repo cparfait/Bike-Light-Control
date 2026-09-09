@@ -1,0 +1,50 @@
+<!--
+  Polski — genere par tools/i18n/generate.py, ne pas editer a la main.
+
+  La table de traduction est dans tools/i18n/pol.json. Les identifiants
+  doivent rester identiques a ceux de resources/strings/strings.xml : un
+  identifiant manquant ne se voit qu'a l'execution, et seulement sur un
+  appareil configure dans cette langue.
+-->
+<strings>
+    <string id="AppName">Panel Lampki Roweru</string>
+    <string id="SetLowBattery">Próg niskiej baterii (%)</string>
+    <string id="MenuTitle">Ustawienia</string>
+    <string id="LampAutomations">Automatyka lampki</string>
+    <string id="HintNotConnected">Lampka niepodłączona</string>
+    <string id="LampLumenVary">Jasność wg prędkości</string>
+    <string id="HintByLamp">Obsługiwane przez lampkę</string>
+    <string id="LampAutoLight">Czujnik światła</string>
+    <string id="HintAutoOn">Włącza się sama</string>
+    <string id="LampSyncOff">Zsynchronizowane wyłączenie</string>
+    <string id="HintFollowsTimer">Podąża za stoperem</string>
+    <string id="LampAutoStart">Włączenie na starcie</string>
+    <string id="HintOnStart">Gdy zaczyna się jazda</string>
+    <string id="LampAutoSleep">Automatyczne uśpienie</string>
+    <string id="HintAfterIdle">Po postoju</string>
+    <string id="SleepDelay">Opóźnienie uśpienia</string>
+    <string id="LampAutoLow">Przygaszanie na postoju</string>
+    <string id="LowDelay">Opóźnienie przygaszenia</string>
+    <string id="AvailableModes">Dostępne tryby</string>
+    <string id="AppSettings">Ustawienia aplikacji</string>
+    <string id="HintSeparate">Osobno od pola danych</string>
+    <string id="SpeedAdjust">Dostosuj do prędkości</string>
+    <string id="OffAtEnd">Wyłącz po zakończeniu</string>
+    <string id="OnAtStart">Włącz na starcie</string>
+    <string id="ThresholdLow">Próg niski</string>
+    <string id="ThresholdMid">Próg średni</string>
+    <string id="ThresholdHigh">Próg wysoki</string>
+    <string id="LowBattery">Niska bateria</string>
+    <string id="StateActive">Wł</string>
+    <string id="StateInactive">Wył</string>
+    <string id="Yes">Tak</string>
+    <string id="No">Nie</string>
+    <string id="StateAvailable">Dostępny</string>
+    <string id="StateDisabled">Wyłączony</string>
+    <string id="Current">bieżący</string>
+    <string id="ActiveOutOf"> aktywnych z </string>
+    <string id="UnitSec">s</string>
+    <string id="UnitMin">min</string>
+    <string id="UnitKmh">km/h</string>
+    <string id="UnitPct">%</string>
+</strings>

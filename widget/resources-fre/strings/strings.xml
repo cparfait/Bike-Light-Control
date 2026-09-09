@@ -16,36 +16,36 @@
       Les deux binaires portent des noms differents : sans cela ils etaient
       indistinguables l'un de l'autre dans le store comme sur le compteur.
     -->
-    <string id="AppName">Panneau eclairage velo</string>
+    <string id="AppName">Panneau éclairage vélo</string>
     <string id="SetLowBattery">Seuil de batterie faible (%)</string>
 
     <!-- Menu des reglages, sur le compteur -->
-    <string id="MenuTitle">Reglages</string>
+    <string id="MenuTitle">Réglages</string>
 
     <!-- Automatismes de la lampe : ils vivent dans son firmware -->
     <string id="LampAutomations">Automatismes de la lampe</string>
-    <string id="HintNotConnected">Lampe non connectee</string>
-    <string id="LampLumenVary">Luminosite selon vitesse</string>
-    <string id="HintByLamp">Gere par la lampe</string>
-    <string id="LampAutoLight">Capteur de luminosite</string>
+    <string id="HintNotConnected">Lampe non connectée</string>
+    <string id="LampLumenVary">Luminosité selon vitesse</string>
+    <string id="HintByLamp">Géré par la lampe</string>
+    <string id="LampAutoLight">Capteur de luminosité</string>
     <string id="HintAutoOn">Allumage automatique</string>
-    <string id="LampSyncOff">Extinction synchronisee</string>
-    <string id="HintFollowsTimer">Suit l'arret du compteur</string>
-    <string id="LampAutoStart">Allumage au depart</string>
-    <string id="HintOnStart">A la mise en route</string>
+    <string id="LampSyncOff">Extinction synchronisée</string>
+    <string id="HintFollowsTimer">Suit l'arrêt du compteur</string>
+    <string id="LampAutoStart">Allumage au départ</string>
+    <string id="HintOnStart">À la mise en route</string>
     <string id="LampAutoSleep">Veille automatique</string>
-    <string id="HintAfterIdle">Apres immobilite</string>
-    <string id="SleepDelay">Delai de veille</string>
-    <string id="LampAutoLow">Luminosite reduite a l'arret</string>
-    <string id="LowDelay">Delai avant reduction</string>
+    <string id="HintAfterIdle">Après immobilité</string>
+    <string id="SleepDelay">Délai de veille</string>
+    <string id="LampAutoLow">Luminosité réduite à l'arrêt</string>
+    <string id="LowDelay">Délai avant réduction</string>
     <string id="AvailableModes">Modes disponibles</string>
 
     <!-- Reglages propres a l'application -->
-    <string id="AppSettings">Reglages de l'application</string>
-    <string id="HintSeparate">Distincts du champ de donnees</string>
+    <string id="AppSettings">Réglages de l'application</string>
+    <string id="HintSeparate">Distincts du champ de données</string>
     <string id="SpeedAdjust">Ajustement selon vitesse</string>
-    <string id="OffAtEnd">Eteindre en fin d'activite</string>
-    <string id="OnAtStart">Allumer au depart</string>
+    <string id="OffAtEnd">Éteindre en fin d'activité</string>
+    <string id="OnAtStart">Allumer au départ</string>
     <string id="ThresholdLow">Seuil bas</string>
     <string id="ThresholdMid">Seuil moyen</string>
     <string id="ThresholdHigh">Seuil haut</string>
@@ -57,7 +57,7 @@
     <string id="Yes">Oui</string>
     <string id="No">Non</string>
     <string id="StateAvailable">Disponible</string>
-    <string id="StateDisabled">Desactive</string>
+    <string id="StateDisabled">Désactivé</string>
     <string id="Current">actuel</string>
 
     <!-- « 6 actifs sur 11 » : la conjonction est traduite a part -->

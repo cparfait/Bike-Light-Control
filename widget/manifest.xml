@@ -33,7 +33,28 @@
             <iq:uses-permission id="BluetoothLowEnergy"/>
         </iq:permissions>
         <iq:languages>
+        <!--
+          Langues declarees. Le SDK associe a chaque reference materielle un
+          jeu de polices : les references « ww » portent les langues
+          europeennes, les references APAC portent le japonais, le coreen et
+          le chinois. Une langue non portee par la reference retombe sur
+          l'anglais, c'est le mecanisme prevu par Garmin.
+
+          Verifier avec : python tools/i18n/langues-supportees.py
+          Traductions dans tools/i18n/, regenerees par tools/i18n/generate.py.
+        -->
             <iq:language>fre</iq:language>
+            <iq:language>deu</iq:language>
+            <iq:language>spa</iq:language>
+            <iq:language>ita</iq:language>
+            <iq:language>por</iq:language>
+            <iq:language>dut</iq:language>
+            <iq:language>pol</iq:language>
+            <iq:language>rus</iq:language>
+            <iq:language>jpn</iq:language>
+            <iq:language>kor</iq:language>
+            <iq:language>zhs</iq:language>
+            <iq:language>zht</iq:language>
             <iq:language>eng</iq:language>
         </iq:languages>
     </iq:application>

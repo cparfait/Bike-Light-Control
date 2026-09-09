@@ -1,0 +1,96 @@
+<!--
+  Jianti zhongwen — genere par tools/i18n/generate.py, ne pas editer a la main.
+
+  La table de traduction est dans tools/i18n/zhs.json. Les identifiants
+  doivent rester identiques a ceux de resources/strings/strings.xml : un
+  identifiant manquant ne se voit qu'a l'execution, et seulement sur un
+  appareil configure dans cette langue.
+-->
+<strings>
+    <string id="TypeTail">尾灯</string>
+    <string id="TypeFront">前灯</string>
+    <string id="TypeHead">头盔</string>
+    <string id="TypeLeft">左侧</string>
+    <string id="TypeRight">右侧</string>
+    <string id="CatLowBeam">近光</string>
+    <string id="CatHighBeam">远光</string>
+    <string id="CatSteady">常亮</string>
+    <string id="CatFlash">闪烁</string>
+    <string id="CatCustom">自定义</string>
+    <string id="CatOff">关闭</string>
+    <string id="CatLowBeamShort">近光</string>
+    <string id="CatHighBeamShort">远光</string>
+    <string id="CatSteadyShort">常亮</string>
+    <string id="CatFlashShort">闪烁</string>
+    <string id="CatCustomShort">自定义</string>
+    <string id="CatOffShort">关闭</string>
+    <string id="LvlLow">低</string>
+    <string id="LvlMid">中</string>
+    <string id="LvlHigh">高</string>
+    <string id="LvlMax">最高</string>
+    <string id="ModeOff">关闭</string>
+    <string id="ShortDipLow">近光低</string>
+    <string id="ShortDipMid">近光中</string>
+    <string id="ShortDipHigh">近光高</string>
+    <string id="ShortMainLow">远光低</string>
+    <string id="ShortMainMid">远光中</string>
+    <string id="ShortMainHigh">远光高</string>
+    <string id="ShortFlashDay">日闪</string>
+    <string id="ShortFlashNight">夜闪</string>
+    <string id="ModeDipLow">近光 低</string>
+    <string id="ModeDipMid">近光 中</string>
+    <string id="ModeDipHigh">近光 高</string>
+    <string id="ModeMainLow">远光 低</string>
+    <string id="ModeMainMid">远光 中</string>
+    <string id="ModeMainHigh">远光 高</string>
+    <string id="ModeSteadyLow">常亮 低</string>
+    <string id="ModeSteadyMid">常亮 中</string>
+    <string id="ModeSteadyHigh">常亮 高</string>
+    <string id="ModeFlashDay">日间闪烁</string>
+    <string id="ModeFlashNight">夜间闪烁</string>
+    <string id="ModeGradient">渐变</string>
+    <string id="ModeMaximum">最大</string>
+    <string id="ModeSos">SOS</string>
+    <string id="ModeComet">彗星</string>
+    <string id="ModeWaterfall">瀑布</string>
+    <string id="ModePinwheel">风车</string>
+    <string id="ModeRotation">旋转</string>
+    <string id="ModeLeftTurn">左转</string>
+    <string id="ModeRightTurn">右转</string>
+    <string id="PrefixCustom">自定义</string>
+    <string id="PrefixCustomLong">自定义</string>
+    <string id="PrefixSpecial">特殊</string>
+    <string id="PrefixMode">模式</string>
+    <string id="LightGeneric">车灯</string>
+    <string id="BadgeAuto">自动</string>
+    <string id="BadgeManual">手动</string>
+    <string id="StScanning">搜索中</string>
+    <string id="StConnecting">连接中</string>
+    <string id="StReady">OK</string>
+    <string id="StUnsupported">无 BLE</string>
+    <string id="MsgSearching">搜索中</string>
+    <string id="MsgSearchingHint">正在寻找您的车灯</string>
+    <string id="MsgConnecting">连接中</string>
+    <string id="MsgConnectingHint">已找到车灯</string>
+    <string id="MsgNoBle">蓝牙</string>
+    <string id="MsgNoBleHint">不可用</string>
+    <string id="MsgIdentify">是这个吗？</string>
+    <string id="MsgIdentifyHint">您的车灯正在闪烁</string>
+    <string id="MsgNearby"> 个车灯在附近</string>
+    <string id="MsgOtherLight">换一个车灯</string>
+    <string id="MsgOtherLightHint">重新搜索</string>
+    <string id="ErrScanRefused">扫描被拒绝</string>
+    <string id="ErrBleUnavailable">BLE 不可用</string>
+    <string id="ErrProfilesRefused">配置文件被拒绝</string>
+    <string id="ErrWriteRefused">写入被拒绝</string>
+    <string id="ErrProfileRegister">配置文件设置失败</string>
+    <string id="ErrServiceMissing">缺少服务</string>
+    <string id="ErrCharsMissing">缺少特征</string>
+    <string id="ErrCccdMissing">缺少 CCCD</string>
+    <string id="ErrSubscribeRefused">订阅被拒绝</string>
+    <string id="ErrWriteFailed">写入失败</string>
+    <string id="ErrBatterySubscribe">电量订阅被拒绝</string>
+    <string id="DfAuto">车灯 - 自动</string>
+    <string id="DfManual">车灯 - 手动</string>
+    <string id="UnitMin">分</string>
+</strings>

@@ -1,0 +1,96 @@
+<!--
+  Russkij — genere par tools/i18n/generate.py, ne pas editer a la main.
+
+  La table de traduction est dans tools/i18n/rus.json. Les identifiants
+  doivent rester identiques a ceux de resources/strings/strings.xml : un
+  identifiant manquant ne se voit qu'a l'execution, et seulement sur un
+  appareil configure dans cette langue.
+-->
+<strings>
+    <string id="TypeTail">Задняя</string>
+    <string id="TypeFront">Передняя</string>
+    <string id="TypeHead">Шлем</string>
+    <string id="TypeLeft">Левая</string>
+    <string id="TypeRight">Правая</string>
+    <string id="CatLowBeam">Ближний свет</string>
+    <string id="CatHighBeam">Дальний свет</string>
+    <string id="CatSteady">Постоянный</string>
+    <string id="CatFlash">Мигание</string>
+    <string id="CatCustom">Свои</string>
+    <string id="CatOff">Выкл</string>
+    <string id="CatLowBeamShort">Ближн</string>
+    <string id="CatHighBeamShort">Дальн</string>
+    <string id="CatSteadyShort">Пост</string>
+    <string id="CatFlashShort">Миг</string>
+    <string id="CatCustomShort">Свои</string>
+    <string id="CatOffShort">Выкл</string>
+    <string id="LvlLow">Низкий</string>
+    <string id="LvlMid">Средний</string>
+    <string id="LvlHigh">Высокий</string>
+    <string id="LvlMax">Макс</string>
+    <string id="ModeOff">Выкл</string>
+    <string id="ShortDipLow">Ближн низ</string>
+    <string id="ShortDipMid">Ближн ср</string>
+    <string id="ShortDipHigh">Ближн выс</string>
+    <string id="ShortMainLow">Дальн низ</string>
+    <string id="ShortMainMid">Дальн ср</string>
+    <string id="ShortMainHigh">Дальн выс</string>
+    <string id="ShortFlashDay">Миг день</string>
+    <string id="ShortFlashNight">Миг ночь</string>
+    <string id="ModeDipLow">Ближний низкий</string>
+    <string id="ModeDipMid">Ближний средний</string>
+    <string id="ModeDipHigh">Ближний высокий</string>
+    <string id="ModeMainLow">Дальний низкий</string>
+    <string id="ModeMainMid">Дальний средний</string>
+    <string id="ModeMainHigh">Дальний высокий</string>
+    <string id="ModeSteadyLow">Постоянный низкий</string>
+    <string id="ModeSteadyMid">Постоянный средний</string>
+    <string id="ModeSteadyHigh">Постоянный высокий</string>
+    <string id="ModeFlashDay">Дневное мигание</string>
+    <string id="ModeFlashNight">Ночное мигание</string>
+    <string id="ModeGradient">Градиент</string>
+    <string id="ModeMaximum">Максимум</string>
+    <string id="ModeSos">SOS</string>
+    <string id="ModeComet">Комета</string>
+    <string id="ModeWaterfall">Водопад</string>
+    <string id="ModePinwheel">Вертушка</string>
+    <string id="ModeRotation">Вращение</string>
+    <string id="ModeLeftTurn">Поворот налево</string>
+    <string id="ModeRightTurn">Поворот направо</string>
+    <string id="PrefixCustom">Свой </string>
+    <string id="PrefixCustomLong">Свой </string>
+    <string id="PrefixSpecial">Особый </string>
+    <string id="PrefixMode">Режим </string>
+    <string id="LightGeneric">Фара</string>
+    <string id="BadgeAuto">АВТО</string>
+    <string id="BadgeManual">РУЧН</string>
+    <string id="StScanning">Поиск</string>
+    <string id="StConnecting">Соединение</string>
+    <string id="StReady">OK</string>
+    <string id="StUnsupported">Нет BLE</string>
+    <string id="MsgSearching">Поиск</string>
+    <string id="MsgSearchingHint">вашей фары</string>
+    <string id="MsgConnecting">Соединение</string>
+    <string id="MsgConnectingHint">фара найдена</string>
+    <string id="MsgNoBle">Bluetooth</string>
+    <string id="MsgNoBleHint">недоступен</string>
+    <string id="MsgIdentify">Эта?</string>
+    <string id="MsgIdentifyHint">ваша фара мигает</string>
+    <string id="MsgNearby"> фар рядом</string>
+    <string id="MsgOtherLight">Другая фара</string>
+    <string id="MsgOtherLightHint">Искать снова</string>
+    <string id="ErrScanRefused">поиск отклонён</string>
+    <string id="ErrBleUnavailable">BLE недоступен</string>
+    <string id="ErrProfilesRefused">профили отклонены</string>
+    <string id="ErrWriteRefused">запись отклонена</string>
+    <string id="ErrProfileRegister">сбой профиля</string>
+    <string id="ErrServiceMissing">нет сервиса</string>
+    <string id="ErrCharsMissing">нет характеристик</string>
+    <string id="ErrCccdMissing">нет CCCD</string>
+    <string id="ErrSubscribeRefused">подписка отклонена</string>
+    <string id="ErrWriteFailed">сбой записи</string>
+    <string id="ErrBatterySubscribe">подписка на батарею отклонена</string>
+    <string id="DfAuto">ФАРА - АВТО</string>
+    <string id="DfManual">ФАРА - РУЧНОЙ</string>
+    <string id="UnitMin">мин</string>
+</strings>

@@ -1,0 +1,96 @@
+<!--
+  Deutsch — genere par tools/i18n/generate.py, ne pas editer a la main.
+
+  La table de traduction est dans tools/i18n/deu.json. Les identifiants
+  doivent rester identiques a ceux de resources/strings/strings.xml : un
+  identifiant manquant ne se voit qu'a l'execution, et seulement sur un
+  appareil configure dans cette langue.
+-->
+<strings>
+    <string id="TypeTail">Hinten</string>
+    <string id="TypeFront">Vorne</string>
+    <string id="TypeHead">Helm</string>
+    <string id="TypeLeft">Links</string>
+    <string id="TypeRight">Rechts</string>
+    <string id="CatLowBeam">Abblendlicht</string>
+    <string id="CatHighBeam">Fernlicht</string>
+    <string id="CatSteady">Dauerlicht</string>
+    <string id="CatFlash">Blinken</string>
+    <string id="CatCustom">Eigene</string>
+    <string id="CatOff">Aus</string>
+    <string id="CatLowBeamShort">Abblend</string>
+    <string id="CatHighBeamShort">Fern</string>
+    <string id="CatSteadyShort">Dauer</string>
+    <string id="CatFlashShort">Blink</string>
+    <string id="CatCustomShort">Eigene</string>
+    <string id="CatOffShort">Aus</string>
+    <string id="LvlLow">Niedrig</string>
+    <string id="LvlMid">Mittel</string>
+    <string id="LvlHigh">Hoch</string>
+    <string id="LvlMax">Max</string>
+    <string id="ModeOff">Aus</string>
+    <string id="ShortDipLow">Abbl nied</string>
+    <string id="ShortDipMid">Abbl mit</string>
+    <string id="ShortDipHigh">Abbl hoch</string>
+    <string id="ShortMainLow">Fern nied</string>
+    <string id="ShortMainMid">Fern mit</string>
+    <string id="ShortMainHigh">Fern hoch</string>
+    <string id="ShortFlashDay">Tagblink</string>
+    <string id="ShortFlashNight">Nachtblink</string>
+    <string id="ModeDipLow">Abblendlicht niedrig</string>
+    <string id="ModeDipMid">Abblendlicht mittel</string>
+    <string id="ModeDipHigh">Abblendlicht hoch</string>
+    <string id="ModeMainLow">Fernlicht niedrig</string>
+    <string id="ModeMainMid">Fernlicht mittel</string>
+    <string id="ModeMainHigh">Fernlicht hoch</string>
+    <string id="ModeSteadyLow">Dauerlicht niedrig</string>
+    <string id="ModeSteadyMid">Dauerlicht mittel</string>
+    <string id="ModeSteadyHigh">Dauerlicht hoch</string>
+    <string id="ModeFlashDay">Tagblinken</string>
+    <string id="ModeFlashNight">Nachtblinken</string>
+    <string id="ModeGradient">Verlauf</string>
+    <string id="ModeMaximum">Maximum</string>
+    <string id="ModeSos">SOS</string>
+    <string id="ModeComet">Komet</string>
+    <string id="ModeWaterfall">Wasserfall</string>
+    <string id="ModePinwheel">Windrad</string>
+    <string id="ModeRotation">Rotierend</string>
+    <string id="ModeLeftTurn">Links abbiegen</string>
+    <string id="ModeRightTurn">Rechts abbiegen</string>
+    <string id="PrefixCustom">Eigene </string>
+    <string id="PrefixCustomLong">Eigene </string>
+    <string id="PrefixSpecial">Spezial </string>
+    <string id="PrefixMode">Modus </string>
+    <string id="LightGeneric">Licht</string>
+    <string id="BadgeAuto">AUTO</string>
+    <string id="BadgeManual">MAN</string>
+    <string id="StScanning">Suche</string>
+    <string id="StConnecting">Verbinde</string>
+    <string id="StReady">OK</string>
+    <string id="StUnsupported">Kein BLE</string>
+    <string id="MsgSearching">Suche</string>
+    <string id="MsgSearchingHint">nach deinem Licht</string>
+    <string id="MsgConnecting">Verbinde</string>
+    <string id="MsgConnectingHint">Licht gefunden</string>
+    <string id="MsgNoBle">Bluetooth</string>
+    <string id="MsgNoBleHint">nicht verfügbar</string>
+    <string id="MsgIdentify">Dieses?</string>
+    <string id="MsgIdentifyHint">dein Licht blinkt</string>
+    <string id="MsgNearby"> Lichter in der Nähe</string>
+    <string id="MsgOtherLight">Anderes Licht</string>
+    <string id="MsgOtherLightHint">Erneut suchen</string>
+    <string id="ErrScanRefused">Suche abgelehnt</string>
+    <string id="ErrBleUnavailable">BLE nicht verfügbar</string>
+    <string id="ErrProfilesRefused">Profile abgelehnt</string>
+    <string id="ErrWriteRefused">Schreiben abgelehnt</string>
+    <string id="ErrProfileRegister">Profil fehlgeschlagen</string>
+    <string id="ErrServiceMissing">Dienst fehlt</string>
+    <string id="ErrCharsMissing">Merkmale fehlen</string>
+    <string id="ErrCccdMissing">CCCD fehlt</string>
+    <string id="ErrSubscribeRefused">Abo abgelehnt</string>
+    <string id="ErrWriteFailed">Schreiben fehlgeschlagen</string>
+    <string id="ErrBatterySubscribe">Akku-Abo abgelehnt</string>
+    <string id="DfAuto">LICHT - AUTO</string>
+    <string id="DfManual">LICHT - MANUELL</string>
+    <string id="UnitMin">Min</string>
+</strings>

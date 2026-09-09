@@ -1,0 +1,22 @@
+<!--
+  Deutsch — genere par tools/i18n/generate.py, ne pas editer a la main.
+
+  La table de traduction est dans tools/i18n/deu.json. Les identifiants
+  doivent rester identiques a ceux de resources/strings/strings.xml : un
+  identifiant manquant ne se voit qu'a l'execution, et seulement sur un
+  appareil configure dans cette langue.
+-->
+<strings>
+    <string id="AppName">Fahrradlicht Steuerung</string>
+    <string id="SetAuto">Helligkeit nach Geschwindigkeit</string>
+    <string id="SetSpeed1">Untere Schwelle (km/h)</string>
+    <string id="SetSpeed2">Mittlere Schwelle (km/h)</string>
+    <string id="SetSpeed3">Obere Schwelle (km/h)</string>
+    <string id="SetLowBattery">Schwelle für niedrigen Akku (%)</string>
+    <string id="SetSyncOff">Licht bei Fahrtende ausschalten</string>
+    <string id="SetLightOnStart">Licht bei Fahrtbeginn einschalten</string>
+    <string id="FitMode">Lichtmodus</string>
+    <string id="FitBattery">Licht-Akku</string>
+    <string id="FitModeUnit">Modus</string>
+    <string id="FitBatteryUnit">%</string>
+</strings>

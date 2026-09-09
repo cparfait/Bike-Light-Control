@@ -1,0 +1,22 @@
+<!--
+  Polski — genere par tools/i18n/generate.py, ne pas editer a la main.
+
+  La table de traduction est dans tools/i18n/pol.json. Les identifiants
+  doivent rester identiques a ceux de resources/strings/strings.xml : un
+  identifiant manquant ne se voit qu'a l'execution, et seulement sur un
+  appareil configure dans cette langue.
+-->
+<strings>
+    <string id="AppName">Sterowanie Lampką Roweru</string>
+    <string id="SetAuto">Jasność wg prędkości</string>
+    <string id="SetSpeed1">Próg niski (km/h)</string>
+    <string id="SetSpeed2">Próg średni (km/h)</string>
+    <string id="SetSpeed3">Próg wysoki (km/h)</string>
+    <string id="SetLowBattery">Próg niskiej baterii (%)</string>
+    <string id="SetSyncOff">Wyłącz lampkę po zakończeniu</string>
+    <string id="SetLightOnStart">Włącz lampkę na starcie</string>
+    <string id="FitMode">Tryb lampki</string>
+    <string id="FitBattery">Bateria lampki</string>
+    <string id="FitModeUnit">tryb</string>
+    <string id="FitBatteryUnit">%</string>
+</strings>

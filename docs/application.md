@@ -8,7 +8,7 @@ même code protocolaire.
 | Data field | `app/` — tourne pendant l'activité : affichage, automatismes, tape pour changer de mode |
 | Widget | `widget/` — pilotage manuel à l'arrêt, et sur les Edge à boutons |
 | Code partagé | `shared/` — protocole, couche BLE, automatismes, page de pilotage |
-| Langues | français et anglais, suivant la langue du compteur |
+| Langues | 13, suivant la langue du compteur — voir « Traductions » |
 | Cibles | 13 modèles Edge — voir [compatibilite-edge.md](compatibilite-edge.md) |
 | Noms publiés | « Bike Light Control » (champ de données) et « Bike Light Panel » (application) |
 | Taille en release | 46 à 61 Ko par binaire, pour un budget de 128 Ko en data field |
@@ -643,6 +643,65 @@ Deux choix délibérés, différents du data field :
   le téléphone puisse la reprendre.
 - **L'échelle ne boucle pas.** Arrivé au maximum on y reste, plutôt que de retomber au
   minimum — et au rallumage on reprend le cran le plus faible, jamais le plein phare.
+
+## Traductions
+
+Treize langues : anglais, français, allemand, espagnol, italien, portugais, néerlandais,
+polonais, russe, japonais, coréen, chinois simplifié et traditionnel.
+
+**Les fichiers `resources-<langue>/strings/strings.xml` sont générés.** La vérité est dans
+`tools/i18n/<langue>.json`, une table par langue couvrant les trois jeux de ressources —
+`shared`, `app`, `widget`. Après modification :
+
+```bash
+python tools/i18n/generate.py
+```
+
+Le script refuse d'écrire tant que les identifiants ne correspondent pas un pour un à ceux de
+l'anglais. Ce contrôle n'est pas décoratif : un identifiant manquant compile sans erreur et
+manque à l'exécution, sur les seuls appareils configurés dans cette langue — autant dire jamais
+chez soi, toujours chez l'utilisateur.
+
+L'anglais et le français restent écrits à la main : ils portent les commentaires de maintenance,
+que le générateur ne produit pas.
+
+### Le jeu de polices se choisit à la fabrication de l'appareil, pas à la compilation
+
+Le SDK associe chaque **référence matérielle** à un jeu de polices. Les 13 modèles totalisent 18
+références : les « ww » portent les langues européennes, les APAC portent le japonais, le coréen,
+le chinois et le thaï. Un Edge 1030 européen n'affichera jamais de japonais, quoi qu'on déclare.
+Aucune langue hors l'anglais n'est donc portée par les 18 références, et c'est sans conséquence :
+une langue absente retombe sur l'anglais.
+
+```bash
+python tools/i18n/langues-supportees.py --declarees
+```
+
+### Ce qui limite le nombre de langues, c'est le budget mémoire
+
+Chaque langue déclarée grossit le binaire, qu'elle serve ou non sur la référence compilée. Un
+champ de données dispose de 128 Ko :
+
+| Langues déclarées | Champ de données | Application |
+|---|---|---|
+| 2 | 56 620 o | 61 372 o |
+| **13** | **82 668 o** | **94 956 o** |
+| 36 — toutes celles du SDK | 113 180 o | 134 284 o |
+
+Mesures sur Edge 1050, la cible la plus lourde. Sur les 13 cibles, le champ de données va de
+72 540 à 82 668 octets, l'application de 83 068 à 94 956.
+
+Les 36 langues ne laissent rien pour le tas. Les 13 retenues sont celles portées par au moins 12
+références sur 18 ; les huit écartées — arabe, bulgare, estonien, letton, lituanien, roumain,
+turc, ukrainien — ne le sont que par **une seule**.
+
+### Le français était écrit sans accents
+
+Les trois fichiers français étaient en ASCII pur : « Eteindre », « reglages »,
+« caracteristiques ». Rien ne l'imposait — les références qui portent le français portent aussi
+les diacritiques latines — et cela se voyait à l'écran. Rétabli par `tools/i18n/accents-fre.py`,
+idempotent, qui remplace par identifiant et jamais par mot : « Route » est à la fois une
+catégorie et un préfixe de mode.
 
 ## Construire
 

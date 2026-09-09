@@ -16,7 +16,7 @@
       Les deux binaires portent des noms differents : sans cela ils etaient
       indistinguables l'un de l'autre dans le store comme sur le compteur.
     -->
-    <string id="AppName">Commande eclairage velo</string>
+    <string id="AppName">Commande éclairage vélo</string>
 
     <!-- Titres des reglages, tels qu'ils apparaissent dans Garmin Connect -->
     <string id="SetAuto">Ajustement automatique selon la vitesse</string>
@@ -24,8 +24,8 @@
     <string id="SetSpeed2">Seuil moyen (km/h)</string>
     <string id="SetSpeed3">Seuil haut (km/h)</string>
     <string id="SetLowBattery">Seuil de batterie faible (%)</string>
-    <string id="SetSyncOff">Eteindre la lampe a l'arret de l'activite</string>
-    <string id="SetLightOnStart">Allumer la lampe au depart de l'activite</string>
+    <string id="SetSyncOff">Éteindre la lampe à l'arrêt de l'activité</string>
+    <string id="SetLightOnStart">Allumer la lampe au départ de l'activité</string>
 
     <!-- Noms des champs ecrits dans le FIT, visibles dans Garmin Connect -->
     <string id="FitMode">Mode lampe</string>

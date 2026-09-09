@@ -1,0 +1,96 @@
+<!--
+  Nederlands — genere par tools/i18n/generate.py, ne pas editer a la main.
+
+  La table de traduction est dans tools/i18n/dut.json. Les identifiants
+  doivent rester identiques a ceux de resources/strings/strings.xml : un
+  identifiant manquant ne se voit qu'a l'execution, et seulement sur un
+  appareil configure dans cette langue.
+-->
+<strings>
+    <string id="TypeTail">Achter</string>
+    <string id="TypeFront">Voor</string>
+    <string id="TypeHead">Helm</string>
+    <string id="TypeLeft">Links</string>
+    <string id="TypeRight">Rechts</string>
+    <string id="CatLowBeam">Dimlicht</string>
+    <string id="CatHighBeam">Groot licht</string>
+    <string id="CatSteady">Continu</string>
+    <string id="CatFlash">Knipperen</string>
+    <string id="CatCustom">Eigen</string>
+    <string id="CatOff">Uit</string>
+    <string id="CatLowBeamShort">Dim</string>
+    <string id="CatHighBeamShort">Groot</string>
+    <string id="CatSteadyShort">Continu</string>
+    <string id="CatFlashShort">Knip</string>
+    <string id="CatCustomShort">Eigen</string>
+    <string id="CatOffShort">Uit</string>
+    <string id="LvlLow">Laag</string>
+    <string id="LvlMid">Midden</string>
+    <string id="LvlHigh">Hoog</string>
+    <string id="LvlMax">Max</string>
+    <string id="ModeOff">Uit</string>
+    <string id="ShortDipLow">Dim laag</string>
+    <string id="ShortDipMid">Dim mid</string>
+    <string id="ShortDipHigh">Dim hoog</string>
+    <string id="ShortMainLow">Groot laag</string>
+    <string id="ShortMainMid">Groot mid</string>
+    <string id="ShortMainHigh">Groot hoog</string>
+    <string id="ShortFlashDay">Dagknip</string>
+    <string id="ShortFlashNight">Nachtknip</string>
+    <string id="ModeDipLow">Dimlicht laag</string>
+    <string id="ModeDipMid">Dimlicht midden</string>
+    <string id="ModeDipHigh">Dimlicht hoog</string>
+    <string id="ModeMainLow">Groot licht laag</string>
+    <string id="ModeMainMid">Groot licht midden</string>
+    <string id="ModeMainHigh">Groot licht hoog</string>
+    <string id="ModeSteadyLow">Continu laag</string>
+    <string id="ModeSteadyMid">Continu midden</string>
+    <string id="ModeSteadyHigh">Continu hoog</string>
+    <string id="ModeFlashDay">Dagknipper</string>
+    <string id="ModeFlashNight">Nachtknipper</string>
+    <string id="ModeGradient">Verloop</string>
+    <string id="ModeMaximum">Maximum</string>
+    <string id="ModeSos">SOS</string>
+    <string id="ModeComet">Komeet</string>
+    <string id="ModeWaterfall">Waterval</string>
+    <string id="ModePinwheel">Windmolen</string>
+    <string id="ModeRotation">Draaiend</string>
+    <string id="ModeLeftTurn">Linksaf</string>
+    <string id="ModeRightTurn">Rechtsaf</string>
+    <string id="PrefixCustom">Eigen </string>
+    <string id="PrefixCustomLong">Eigen </string>
+    <string id="PrefixSpecial">Speciaal </string>
+    <string id="PrefixMode">Modus </string>
+    <string id="LightGeneric">Licht</string>
+    <string id="BadgeAuto">AUTO</string>
+    <string id="BadgeManual">HAND</string>
+    <string id="StScanning">Zoeken</string>
+    <string id="StConnecting">Verbinden</string>
+    <string id="StReady">OK</string>
+    <string id="StUnsupported">Geen BLE</string>
+    <string id="MsgSearching">Zoeken</string>
+    <string id="MsgSearchingHint">naar je licht</string>
+    <string id="MsgConnecting">Verbinden</string>
+    <string id="MsgConnectingHint">licht gevonden</string>
+    <string id="MsgNoBle">Bluetooth</string>
+    <string id="MsgNoBleHint">niet beschikbaar</string>
+    <string id="MsgIdentify">Deze?</string>
+    <string id="MsgIdentifyHint">je licht knippert</string>
+    <string id="MsgNearby"> lichten dichtbij</string>
+    <string id="MsgOtherLight">Ander licht</string>
+    <string id="MsgOtherLightHint">Opnieuw zoeken</string>
+    <string id="ErrScanRefused">scan geweigerd</string>
+    <string id="ErrBleUnavailable">BLE niet beschikbaar</string>
+    <string id="ErrProfilesRefused">profielen geweigerd</string>
+    <string id="ErrWriteRefused">schrijven geweigerd</string>
+    <string id="ErrProfileRegister">profiel mislukt</string>
+    <string id="ErrServiceMissing">service ontbreekt</string>
+    <string id="ErrCharsMissing">kenmerken ontbreken</string>
+    <string id="ErrCccdMissing">CCCD ontbreekt</string>
+    <string id="ErrSubscribeRefused">abonneren geweigerd</string>
+    <string id="ErrWriteFailed">schrijven mislukt</string>
+    <string id="ErrBatterySubscribe">accu-abonnement geweigerd</string>
+    <string id="DfAuto">LICHT - AUTO</string>
+    <string id="DfManual">LICHT - HAND</string>
+    <string id="UnitMin">min</string>
+</strings>

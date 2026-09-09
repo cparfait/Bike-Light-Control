@@ -1,0 +1,50 @@
+<!--
+  Hangugeo — genere par tools/i18n/generate.py, ne pas editer a la main.
+
+  La table de traduction est dans tools/i18n/kor.json. Les identifiants
+  doivent rester identiques a ceux de resources/strings/strings.xml : un
+  identifiant manquant ne se voit qu'a l'execution, et seulement sur un
+  appareil configure dans cette langue.
+-->
+<strings>
+    <string id="AppName">자전거 라이트 패널</string>
+    <string id="SetLowBattery">배터리 부족 기준 (%)</string>
+    <string id="MenuTitle">설정</string>
+    <string id="LampAutomations">라이트 자동 기능</string>
+    <string id="HintNotConnected">라이트 미연결</string>
+    <string id="LampLumenVary">속도에 따른 밝기</string>
+    <string id="HintByLamp">라이트가 처리</string>
+    <string id="LampAutoLight">조도 센서</string>
+    <string id="HintAutoOn">스스로 켜집니다</string>
+    <string id="LampSyncOff">연동 소등</string>
+    <string id="HintFollowsTimer">타이머를 따름</string>
+    <string id="LampAutoStart">출발 시 켜기</string>
+    <string id="HintOnStart">주행이 시작될 때</string>
+    <string id="LampAutoSleep">자동 절전</string>
+    <string id="HintAfterIdle">정지한 뒤</string>
+    <string id="SleepDelay">절전까지 지연</string>
+    <string id="LampAutoLow">정지 시 감광</string>
+    <string id="LowDelay">감광까지 지연</string>
+    <string id="AvailableModes">사용 가능한 모드</string>
+    <string id="AppSettings">앱 설정</string>
+    <string id="HintSeparate">데이터 필드와 별도</string>
+    <string id="SpeedAdjust">속도로 조정</string>
+    <string id="OffAtEnd">종료 시 끄기</string>
+    <string id="OnAtStart">출발 시 켜기</string>
+    <string id="ThresholdLow">낮은 기준</string>
+    <string id="ThresholdMid">중간 기준</string>
+    <string id="ThresholdHigh">높은 기준</string>
+    <string id="LowBattery">배터리 부족</string>
+    <string id="StateActive">켬</string>
+    <string id="StateInactive">끔</string>
+    <string id="Yes">예</string>
+    <string id="No">아니요</string>
+    <string id="StateAvailable">사용 가능</string>
+    <string id="StateDisabled">비활성</string>
+    <string id="Current">현재</string>
+    <string id="ActiveOutOf"> 활성 / </string>
+    <string id="UnitSec">초</string>
+    <string id="UnitMin">분</string>
+    <string id="UnitKmh">km/h</string>
+    <string id="UnitPct">%</string>
+</strings>

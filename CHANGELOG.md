@@ -34,7 +34,9 @@ Première version déposée sur le Connect IQ Store, en bêta.
   à la connexion. Sortie de secours pour passer à la suivante.
 - Application compagnon : panneau de pilotage hors activité, réglages des
   automatismes de la lampe, tuile de résumé.
-- Français et anglais, suivant la langue du compteur.
+- 13 langues, suivant la langue du compteur : anglais, français, allemand, espagnol,
+  italien, portugais, néerlandais, polonais, russe, japonais, coréen, chinois simplifié et
+  traditionnel.
 
 ### Notes
 

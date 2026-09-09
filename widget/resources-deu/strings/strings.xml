@@ -1,0 +1,50 @@
+<!--
+  Deutsch — genere par tools/i18n/generate.py, ne pas editer a la main.
+
+  La table de traduction est dans tools/i18n/deu.json. Les identifiants
+  doivent rester identiques a ceux de resources/strings/strings.xml : un
+  identifiant manquant ne se voit qu'a l'execution, et seulement sur un
+  appareil configure dans cette langue.
+-->
+<strings>
+    <string id="AppName">Fahrradlicht Panel</string>
+    <string id="SetLowBattery">Schwelle für niedrigen Akku (%)</string>
+    <string id="MenuTitle">Einstellungen</string>
+    <string id="LampAutomations">Licht-Automatik</string>
+    <string id="HintNotConnected">Licht nicht verbunden</string>
+    <string id="LampLumenVary">Helligkeit nach Tempo</string>
+    <string id="HintByLamp">Vom Licht gesteuert</string>
+    <string id="LampAutoLight">Lichtsensor</string>
+    <string id="HintAutoOn">Schaltet selbst ein</string>
+    <string id="LampSyncOff">Synchrones Ausschalten</string>
+    <string id="HintFollowsTimer">Folgt dem Timer</string>
+    <string id="LampAutoStart">Einschalten bei Start</string>
+    <string id="HintOnStart">Wenn die Fahrt beginnt</string>
+    <string id="LampAutoSleep">Automatischer Standby</string>
+    <string id="HintAfterIdle">Nach Stillstand</string>
+    <string id="SleepDelay">Standby-Verzögerung</string>
+    <string id="LampAutoLow">Dimmen im Stand</string>
+    <string id="LowDelay">Verzögerung bis Dimmen</string>
+    <string id="AvailableModes">Verfügbare Modi</string>
+    <string id="AppSettings">App-Einstellungen</string>
+    <string id="HintSeparate">Getrennt vom Datenfeld</string>
+    <string id="SpeedAdjust">Anpassung nach Tempo</string>
+    <string id="OffAtEnd">Bei Fahrtende ausschalten</string>
+    <string id="OnAtStart">Bei Fahrtbeginn einschalten</string>
+    <string id="ThresholdLow">Untere Schwelle</string>
+    <string id="ThresholdMid">Mittlere Schwelle</string>
+    <string id="ThresholdHigh">Obere Schwelle</string>
+    <string id="LowBattery">Niedriger Akku</string>
+    <string id="StateActive">Ein</string>
+    <string id="StateInactive">Aus</string>
+    <string id="Yes">Ja</string>
+    <string id="No">Nein</string>
+    <string id="StateAvailable">Verfügbar</string>
+    <string id="StateDisabled">Deaktiviert</string>
+    <string id="Current">aktuell</string>
+    <string id="ActiveOutOf"> aktiv von </string>
+    <string id="UnitSec">s</string>
+    <string id="UnitMin">Min</string>
+    <string id="UnitKmh">km/h</string>
+    <string id="UnitPct">%</string>
+</strings>

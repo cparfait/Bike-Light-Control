@@ -14,6 +14,22 @@ base.sourcePath = ../shared;source
 base.resourcePath = $(base.resourcePath);../shared/resources
 base.lang.fre = $(base.lang.fre);../shared/resources-fre
 
+# Les libelles traduits vivent dans shared/, comme le code : les deux binaires
+# doivent afficher exactement les memes mots dans chaque langue. Ces fichiers
+# sont GENERES — editer les tables de tools/i18n/, puis :
+#   python tools/i18n/generate.py
+base.lang.deu = $(base.lang.deu);../shared/resources-deu
+base.lang.spa = $(base.lang.spa);../shared/resources-spa
+base.lang.ita = $(base.lang.ita);../shared/resources-ita
+base.lang.por = $(base.lang.por);../shared/resources-por
+base.lang.dut = $(base.lang.dut);../shared/resources-dut
+base.lang.pol = $(base.lang.pol);../shared/resources-pol
+base.lang.rus = $(base.lang.rus);../shared/resources-rus
+base.lang.jpn = $(base.lang.jpn);../shared/resources-jpn
+base.lang.kor = $(base.lang.kor);../shared/resources-kor
+base.lang.zhs = $(base.lang.zhs);../shared/resources-zhs
+base.lang.zht = $(base.lang.zht);../shared/resources-zht
+
 # Icone de lanceur : une taille par appareil.
 #
 # Le compilateur redimensionne en silence une icone unique, sans le moindre

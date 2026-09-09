@@ -1,0 +1,22 @@
+<!--
+  Russkij — genere par tools/i18n/generate.py, ne pas editer a la main.
+
+  La table de traduction est dans tools/i18n/rus.json. Les identifiants
+  doivent rester identiques a ceux de resources/strings/strings.xml : un
+  identifiant manquant ne se voit qu'a l'execution, et seulement sur un
+  appareil configure dans cette langue.
+-->
+<strings>
+    <string id="AppName">Управление велофарой</string>
+    <string id="SetAuto">Яркость по скорости</string>
+    <string id="SetSpeed1">Нижний порог (км/ч)</string>
+    <string id="SetSpeed2">Средний порог (км/ч)</string>
+    <string id="SetSpeed3">Верхний порог (км/ч)</string>
+    <string id="SetLowBattery">Порог низкого заряда (%)</string>
+    <string id="SetSyncOff">Выключать фару в конце</string>
+    <string id="SetLightOnStart">Включать фару на старте</string>
+    <string id="FitMode">Режим фары</string>
+    <string id="FitBattery">Батарея фары</string>
+    <string id="FitModeUnit">режим</string>
+    <string id="FitBatteryUnit">%</string>
+</strings>

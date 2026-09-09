@@ -1,0 +1,96 @@
+<!--
+  Italiano — genere par tools/i18n/generate.py, ne pas editer a la main.
+
+  La table de traduction est dans tools/i18n/ita.json. Les identifiants
+  doivent rester identiques a ceux de resources/strings/strings.xml : un
+  identifiant manquant ne se voit qu'a l'execution, et seulement sur un
+  appareil configure dans cette langue.
+-->
+<strings>
+    <string id="TypeTail">Posteriore</string>
+    <string id="TypeFront">Anteriore</string>
+    <string id="TypeHead">Casco</string>
+    <string id="TypeLeft">Sinistra</string>
+    <string id="TypeRight">Destra</string>
+    <string id="CatLowBeam">Anabbagliante</string>
+    <string id="CatHighBeam">Abbagliante</string>
+    <string id="CatSteady">Fisso</string>
+    <string id="CatFlash">Lampeggio</string>
+    <string id="CatCustom">Personal.</string>
+    <string id="CatOff">Spento</string>
+    <string id="CatLowBeamShort">Anabb</string>
+    <string id="CatHighBeamShort">Abbag</string>
+    <string id="CatSteadyShort">Fisso</string>
+    <string id="CatFlashShort">Lamp</string>
+    <string id="CatCustomShort">Person</string>
+    <string id="CatOffShort">Spento</string>
+    <string id="LvlLow">Basso</string>
+    <string id="LvlMid">Medio</string>
+    <string id="LvlHigh">Alto</string>
+    <string id="LvlMax">Max</string>
+    <string id="ModeOff">Spento</string>
+    <string id="ShortDipLow">Anab bas</string>
+    <string id="ShortDipMid">Anab med</string>
+    <string id="ShortDipHigh">Anab alt</string>
+    <string id="ShortMainLow">Abb bas</string>
+    <string id="ShortMainMid">Abb med</string>
+    <string id="ShortMainHigh">Abb alt</string>
+    <string id="ShortFlashDay">Lamp gior</string>
+    <string id="ShortFlashNight">Lamp nott</string>
+    <string id="ModeDipLow">Anabbagliante basso</string>
+    <string id="ModeDipMid">Anabbagliante medio</string>
+    <string id="ModeDipHigh">Anabbagliante alto</string>
+    <string id="ModeMainLow">Abbagliante basso</string>
+    <string id="ModeMainMid">Abbagliante medio</string>
+    <string id="ModeMainHigh">Abbagliante alto</string>
+    <string id="ModeSteadyLow">Fisso basso</string>
+    <string id="ModeSteadyMid">Fisso medio</string>
+    <string id="ModeSteadyHigh">Fisso alto</string>
+    <string id="ModeFlashDay">Lampeggio diurno</string>
+    <string id="ModeFlashNight">Lampeggio notturno</string>
+    <string id="ModeGradient">Gradiente</string>
+    <string id="ModeMaximum">Massimo</string>
+    <string id="ModeSos">SOS</string>
+    <string id="ModeComet">Cometa</string>
+    <string id="ModeWaterfall">Cascata</string>
+    <string id="ModePinwheel">Girandola</string>
+    <string id="ModeRotation">Rotante</string>
+    <string id="ModeLeftTurn">Svolta a sinistra</string>
+    <string id="ModeRightTurn">Svolta a destra</string>
+    <string id="PrefixCustom">Person </string>
+    <string id="PrefixCustomLong">Personalizzato </string>
+    <string id="PrefixSpecial">Speciale </string>
+    <string id="PrefixMode">Modo </string>
+    <string id="LightGeneric">Luce</string>
+    <string id="BadgeAuto">AUTO</string>
+    <string id="BadgeManual">MAN</string>
+    <string id="StScanning">Ricerca</string>
+    <string id="StConnecting">Connetto</string>
+    <string id="StReady">OK</string>
+    <string id="StUnsupported">No BLE</string>
+    <string id="MsgSearching">Ricerca</string>
+    <string id="MsgSearchingHint">della tua luce</string>
+    <string id="MsgConnecting">Connetto</string>
+    <string id="MsgConnectingHint">luce trovata</string>
+    <string id="MsgNoBle">Bluetooth</string>
+    <string id="MsgNoBleHint">non disponibile</string>
+    <string id="MsgIdentify">Questa?</string>
+    <string id="MsgIdentifyHint">la tua luce lampeggia</string>
+    <string id="MsgNearby"> luci vicine</string>
+    <string id="MsgOtherLight">Altra luce</string>
+    <string id="MsgOtherLightHint">Cerca di nuovo</string>
+    <string id="ErrScanRefused">scansione rifiutata</string>
+    <string id="ErrBleUnavailable">BLE non disponibile</string>
+    <string id="ErrProfilesRefused">profili rifiutati</string>
+    <string id="ErrWriteRefused">scrittura rifiutata</string>
+    <string id="ErrProfileRegister">profilo non riuscito</string>
+    <string id="ErrServiceMissing">servizio assente</string>
+    <string id="ErrCharsMissing">caratteristiche assenti</string>
+    <string id="ErrCccdMissing">CCCD assente</string>
+    <string id="ErrSubscribeRefused">iscrizione rifiutata</string>
+    <string id="ErrWriteFailed">scrittura fallita</string>
+    <string id="ErrBatterySubscribe">iscrizione batteria rifiutata</string>
+    <string id="DfAuto">LUCE - AUTO</string>
+    <string id="DfManual">LUCE - MANUALE</string>
+    <string id="UnitMin">min</string>
+</strings>

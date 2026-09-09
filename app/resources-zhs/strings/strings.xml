@@ -1,0 +1,22 @@
+<!--
+  Jianti zhongwen — genere par tools/i18n/generate.py, ne pas editer a la main.
+
+  La table de traduction est dans tools/i18n/zhs.json. Les identifiants
+  doivent rester identiques a ceux de resources/strings/strings.xml : un
+  identifiant manquant ne se voit qu'a l'execution, et seulement sur un
+  appareil configure dans cette langue.
+-->
+<strings>
+    <string id="AppName">自行车灯控制</string>
+    <string id="SetAuto">按速度自动调节亮度</string>
+    <string id="SetSpeed1">低速阈值 (km/h)</string>
+    <string id="SetSpeed2">中速阈值 (km/h)</string>
+    <string id="SetSpeed3">高速阈值 (km/h)</string>
+    <string id="SetLowBattery">低电量阈值 (%)</string>
+    <string id="SetSyncOff">结束骑行时关灯</string>
+    <string id="SetLightOnStart">开始骑行时开灯</string>
+    <string id="FitMode">车灯模式</string>
+    <string id="FitBattery">车灯电量</string>
+    <string id="FitModeUnit">模式</string>
+    <string id="FitBatteryUnit">%</string>
+</strings>
