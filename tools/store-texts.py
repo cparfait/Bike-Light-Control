@@ -32,10 +32,30 @@ DESC_MAX = 4000
 CARDS = [("Champ de données — description", "control"),
          ("Application — description", "panel")]
 
-#: Langues du formulaire, dans l'ordre de la table des titres du fichier
-#: source. Le nom est celui qu'affiche le formulaire de Garmin.
-LANGS = ["en", "fr", "de", "es", "it", "pt", "nl", "pl", "ru", "ja", "ko",
-         "zh-CN", "zh-TW"]
+#: Langues du formulaire, et **le libelle exact de l'onglet** tel que le
+#: formulaire de Garmin l'affiche.
+#:
+#: Le libelle plutot que le code : un onglet asiatique ne se reconnait pas a
+#: l'oeil quand on ne lit pas la langue, et se tromper d'onglet met le titre
+#: coreen sur la fiche japonaise sans que rien ne le signale. En recopiant le
+#: libelle tel qu'il s'affiche, la ligne se retrouve par simple comparaison.
+LANGS = [("en", "English"), ("fr", "Francais"), ("de", "Deutsch"),
+         ("es", "Espanol"), ("it", "Italiano"), ("pt", "Portugues (Portugal)"),
+         ("nl", "Nederlands"), ("pl", "Polski"), ("ru", "Russkij"),
+         ("ja", "JAPONAIS"), ("ko", "COREEN"),
+         ("zh-CN", "CHINOIS SIMPLIFIE"), ("zh-TW", "CHINOIS TRADITIONNEL")]
+
+
+#: Le libelle des onglets asiatiques, ecrit avec ses propres caracteres. Il est
+#: pose ici et non dans LANGS pour que le fichier reste lisible dans un editeur
+#: qui ne rendrait pas ces ecritures.
+LABELS = {"ja": "\u65e5\u672c\u8a9e  (japonais)",
+          "ko": "\ud55c\uad6d\uc5b4  (coreen)",
+          "zh-CN": "\u7b80\u4f53\u4e2d\u6587  (chinois simplifie)",
+          "zh-TW": "\u7e41\u9ad4\u4e2d\u6587  (chinois traditionnel)",
+          "ru": "\u0420\u0443\u0441\u0441\u043a\u0438\u0439",
+          "fr": "Fran\u00e7ais", "es": "Espa\u00f1ol",
+          "pt": "Portugu\u00eas (Portugal)"}
 
 
 def paragraphs(block):
@@ -97,12 +117,14 @@ def main():
     rows = titles(source)
     path = os.path.join(OUT, "titres.txt")
     with io.open(path, "w", encoding="utf-8", newline="\n") as f:
-        f.write("# langue\tchamp de donnees\tapplication\n")
-        for lang in LANGS:
+        f.write("# Onglet du formulaire  ->  titre a coller\n#\n")
+        for lang, label in LANGS:
             if lang not in rows:
                 continue
             champ, appli = rows[lang]
-            f.write("%s\t%s\t%s\n" % (lang, champ, appli))
+            f.write("%s\n" % LABELS.get(lang, label))
+            f.write("   champ de donnees : %s\n" % champ)
+            f.write("   application      : %s\n\n" % appli)
             for title in (champ, appli):
                 if len(title) > TITLE_MAX:
                     problems.append("%s : %s (%d)" % (lang, title, len(title)))
