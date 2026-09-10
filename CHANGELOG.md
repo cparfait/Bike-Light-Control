@@ -13,6 +13,18 @@ partagent `shared/`, et deux numéros divergents seraient ingérables.
 
 ---
 
+## [Non publié] — 0.2
+
+À faire au prochain envoi, en plus de ce que les essais auront révélé :
+
+- **Renvoyer la fiche du champ de données.** Son icône a changé après le dépôt
+  de la 0.1 : les deux applications portent désormais le même phare, le cadre
+  orange distinguant le panneau. Il faut donc remplacer la Cover Image par
+  `store/app-icon-500.png` et renvoyer `dist/bike-light-control-beta.iq`, dont
+  l'icône de lanceur a suivi. La fiche du panneau, elle, est déjà à jour.
+
+---
+
 ## [0.1] — 10/09/2026
 
 Première version déposée sur le Connect IQ Store, en bêta.
