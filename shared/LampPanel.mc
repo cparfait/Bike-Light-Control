@@ -109,10 +109,16 @@ class LampPanel {
 
     private var _settingsBox as Lang.Array or Null = null;
 
-    //! Precision affichee au repos a la place de « toucher pour lancer la
-    //! recherche ». Le champ de donnees la pose sur les modeles a boutons, ou
-    //! aucune tape n'atteint jamais la case : la recherche y part avec le
-    //! chrono, et c'est ce qu'il faut ecrire.
+    //! Precision affichee **au repos**, sous le bouton.
+    //!
+    //! Nulle par defaut, et c'est le cas courant : le bouton porte deja le mot
+    //! « Detecter », et ecrire « Appuyer pour detecter » juste en dessous ne
+    //! fait que le repeter. Une case de page de donnees, elle, n'a pas la place
+    //! d'un bouton encadre — la consigne y tient lieu de valeur, voir
+    //! `LampView`.
+    //!
+    //! Le champ la renseigne dans un seul cas : quand la recherche part avec le
+    //! chrono. Cela, le bouton ne le dit pas.
     var idleHint as Lang.String or Null = null;
 
     //! Caches de mesure de texte. La page se redessine chaque seconde, et
@@ -930,10 +936,12 @@ class LampPanel {
         // précisions, elle garde son corps quand le message change.
         var hintFont = _fitFont(dc, LampManager.longestStateHint(), w - margin,
             [Graphics.FONT_SMALL, Graphics.FONT_TINY, Graphics.FONT_XTINY]);
-        var hint = (idle && idleHint != null) ? idleHint : _lamp.stateHint();
-        dc.setColor(LC.UI_DIM, Graphics.COLOR_TRANSPARENT);
-        dc.drawText(mid, h * 78 / 100, hintFont, hint,
-                    Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER);
+        var hint = idle ? idleHint : _lamp.stateHint();
+        if (hint != null) {
+            dc.setColor(LC.UI_DIM, Graphics.COLOR_TRANSPARENT);
+            dc.drawText(mid, h * 78 / 100, hintFont, hint,
+                        Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER);
+        }
 
         // Trois points qui défilent : la seule chose qui dise « ça travaille »
         // pendant une recherche qui peut durer une minute. Inutile pendant

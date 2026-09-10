@@ -104,22 +104,20 @@
          est choisie sur la plus longue, jamais sur celle du moment. Une
          consigne bavarde rapetissait donc « lampe trouvee » et « 3 lampes a
          proximite » avec elle. -->
-    <string id="MsgIdleHint">tap to search</string>
+    <!-- Au repos : ce qu'il faut faire, sans nommer le geste.
+         **« Appuyer » couvre les deux**, la tape sur un ecran tactile et le
+         bouton Lap ailleurs, et c'est ce qui permet une seule phrase pour les
+         treize modeles. Deux versions ont essaye de nommer le geste juste : la
+         premiere promettait « toucher » sur des compteurs ou la barre de
+         controle du systeme prend la tape, la seconde ecrivait « appui Lap »,
+         qui ne veut rien dire pour qui n'a pas le nom du bouton en tete.
+         Cette chaine sert de valeur principale dans une petite case, ou elle
+         remplace le mot d'etape : la garder courte est ce qui la rend
+         lisible. -->
+    <string id="MsgIdleHint">Press to detect</string>
     <!-- Sur un Edge a boutons, la case ne recoit aucune tape : c'est le
          chrono qui lance la recherche, et c'est ce qu'il faut ecrire. -->
     <string id="MsgIdleHintTimer">starts with the timer</string>
-    <!-- Champ de donnees au repos, sur les neuf modeles ou la tape n'atteint
-         pas le champ. Voir `app/source-hint-lap/FieldGesture.mc`.
-
-         **« appui Lap » et non « Lap » tout court.** Ecrit seul, le mot se lit
-         comme une coquille de « Tap » — c'est arrive, et sur un compteur ou la
-         tape ne marche justement pas, la confusion coute cher. Nommer l'appui
-         dit qu'il s'agit d'une touche.
-
-         Cette chaine sert de valeur principale dans une petite case, ou elle
-         remplace le mot d'etape : la garder courte reste ce qui la rend
-         lisible. -->
-    <string id="MsgIdleHintLap">press Lap to search</string>
     <string id="MsgSearching">Searching</string>
     <string id="MsgSearchingHint">for your light</string>
     <string id="MsgConnecting">Connecting</string>

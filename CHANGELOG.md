@@ -57,11 +57,15 @@ trace de ce qu'elle contenait.
   reçoive ; il marque aussi un tour.
 - La case du champ de données n'écrit plus « Détecter » en gros au-dessus d'une
   consigne illisible : au repos, la consigne **est** la valeur affichée.
-- **La consigne de repos nomme le geste qui marche sur l'appareil.** Un champ
-  de données ne reçoit la tape que sur un écran tactile *sans* barre de contrôle
-  système : quatre modèles sur treize — 830, 1030, 1030 Plus, Explore. Ailleurs
-  c'est le bouton Lap. Le choix se fait à la compilation, à partir de
-  `display.isTouch` et `controlBarSupport` des profils du SDK.
+- **La consigne de repos ne nomme plus le geste : « Appuyer pour détecter ».**
+  Elle couvre ainsi la tape comme le bouton Lap, en une seule phrase pour les
+  treize modèles. Deux versions ont essayé de nommer le geste juste, chacune
+  ratant d'un côté : « toucher » promettait un geste sans effet sur les
+  compteurs dont la barre de contrôle prend la tape, et « appui Lap » ne dit
+  rien à qui n'a pas le nom du bouton en tête.
+- La page complète se passe de consigne au repos : son bouton encadré porte
+  déjà le mot « Détecter ». Elle n'en affiche une que lorsque la recherche part
+  avec le chronomètre, ce que le bouton ne dit pas.
 - L'icône de l'application compagnon est désormais le **pictogramme de phare**,
   celui de ses propres tuiles, au lieu de la lampe de poche du champ de données
   à un cadre près. Deux dessins distincts se reconnaissent mieux qu'un cadre

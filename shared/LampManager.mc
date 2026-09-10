@@ -1216,8 +1216,7 @@ class LampManager extends Ble.BleDelegate {
     static function longestStateHint() as Lang.String {
         return _longest([ Rez.Strings.MsgSearchingHint, Rez.Strings.MsgConnectingHint,
                           Rez.Strings.MsgIdentifyHint, Rez.Strings.MsgNoBleHint,
-                          Rez.Strings.MsgIdleHint, Rez.Strings.MsgIdleHintTimer,
-                          Rez.Strings.MsgIdleHintLap ]);
+                          Rez.Strings.MsgIdleHint, Rez.Strings.MsgIdleHintTimer ]);
     }
 
     private static function _longest(ids as Lang.Array) as Lang.String {

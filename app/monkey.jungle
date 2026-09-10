@@ -45,35 +45,6 @@ base.lang.kor = $(base.lang.kor);../shared/resources-kor
 base.lang.zhs = $(base.lang.zhs);../shared/resources-zhs
 base.lang.zht = $(base.lang.zht);../shared/resources-zht
 
-# Le geste annonce au repos, une variante par appareil.
-#
-# Un champ de donnees ne recoit la tape que si deux conditions sont reunies :
-# l'ecran est tactile, **et** aucune barre de controle du systeme ne s'interpose.
-# Les profils du SDK donnent les deux — `display.isTouch` et `controlBarSupport`
-# — et le partage n'a rien d'approximatif :
-#
-#   la tape atteint le champ : 830, 1030, 1030 Plus, Explore
-#   il faut le bouton Lap    : 530, 540, 550 et MTB (pas de tactile),
-#                              840, 850, 1040, 1050, Explore 2 (barre de controle)
-#
-# Annoncer « toucher » sur un Edge 1050, dont la barre fait 93 pixels et prend
-# la tape avant nous, c'est promettre un geste qui ne marche pas — et c'est ce
-# que faisait la premiere version. Annoncer « Lap » partout, la correction
-# suivante, envoyait chercher un bouton la ou le doigt suffit.
-edge830.sourcePath = $(edge830.sourcePath);source-hint-tap
-edge1030.sourcePath = $(edge1030.sourcePath);source-hint-tap
-edge1030plus.sourcePath = $(edge1030plus.sourcePath);source-hint-tap
-edgeexplore.sourcePath = $(edgeexplore.sourcePath);source-hint-tap
-edge530.sourcePath = $(edge530.sourcePath);source-hint-lap
-edge540.sourcePath = $(edge540.sourcePath);source-hint-lap
-edge550.sourcePath = $(edge550.sourcePath);source-hint-lap
-edge840.sourcePath = $(edge840.sourcePath);source-hint-lap
-edge850.sourcePath = $(edge850.sourcePath);source-hint-lap
-edge1040.sourcePath = $(edge1040.sourcePath);source-hint-lap
-edge1050.sourcePath = $(edge1050.sourcePath);source-hint-lap
-edgeexplore2.sourcePath = $(edgeexplore2.sourcePath);source-hint-lap
-edgemtb.sourcePath = $(edgemtb.sourcePath);source-hint-lap
-
 # Icone de lanceur : une taille par appareil.
 #
 # Le compilateur redimensionne en silence une icone unique, sans le moindre

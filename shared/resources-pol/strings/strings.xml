@@ -69,9 +69,8 @@
     <string id="StReady">OK</string>
     <string id="StUnsupported">Brak BLE</string>
     <string id="MsgIdle">Wykryj</string>
-    <string id="MsgIdleHint">dotknij, aby szukać</string>
+    <string id="MsgIdleHint">Naciśnij, aby wykryć</string>
     <string id="MsgIdleHintTimer">rusza ze stoperem</string>
-    <string id="MsgIdleHintLap">naciśnij Lap, aby szukać</string>
     <string id="MsgSearching">Szukanie</string>
     <string id="MsgSearchingHint">twojej lampki</string>
     <string id="MsgConnecting">Łączenie</string>

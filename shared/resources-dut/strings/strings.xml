@@ -69,9 +69,8 @@
     <string id="StReady">OK</string>
     <string id="StUnsupported">Geen BLE</string>
     <string id="MsgIdle">Zoeken</string>
-    <string id="MsgIdleHint">tik om te zoeken</string>
+    <string id="MsgIdleHint">Druk om te detecteren</string>
     <string id="MsgIdleHintTimer">start met de timer</string>
-    <string id="MsgIdleHintLap">druk op Lap om te zoeken</string>
     <string id="MsgSearching">Zoeken</string>
     <string id="MsgSearchingHint">naar je licht</string>
     <string id="MsgConnecting">Verbinden</string>

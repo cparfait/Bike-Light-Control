@@ -69,9 +69,8 @@
     <string id="StReady">OK</string>
     <string id="StUnsupported">Sin BLE</string>
     <string id="MsgIdle">Detectar</string>
-    <string id="MsgIdleHint">toca para buscar</string>
+    <string id="MsgIdleHint">Pulsa para detectar</string>
     <string id="MsgIdleHintTimer">arranca con el cronómetro</string>
-    <string id="MsgIdleHintLap">pulsa Lap para buscar</string>
     <string id="MsgSearching">Buscando</string>
     <string id="MsgSearchingHint">tu luz</string>
     <string id="MsgConnecting">Conectando</string>

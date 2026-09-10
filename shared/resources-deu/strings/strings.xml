@@ -69,9 +69,8 @@
     <string id="StReady">OK</string>
     <string id="StUnsupported">Kein BLE</string>
     <string id="MsgIdle">Suchen</string>
-    <string id="MsgIdleHint">tippen zum Suchen</string>
+    <string id="MsgIdleHint">Drücken zum Erkennen</string>
     <string id="MsgIdleHintTimer">startet mit dem Timer</string>
-    <string id="MsgIdleHintLap">Lap-Taste zum Suchen</string>
     <string id="MsgSearching">Suche</string>
     <string id="MsgSearchingHint">nach deinem Licht</string>
     <string id="MsgConnecting">Verbinde</string>

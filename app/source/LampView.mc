@@ -291,7 +291,13 @@ class LampView extends WatchUi.DataField {
         // Plein écran : on affiche le panneau complet, avec ses catégories et
         // ses niveaux. C'est la même mise en page que l'application compagnon.
         if (LampPanel.fits(dc.getWidth(), dc.getHeight())) {
-            if (_lamp.isIdle()) { _panel.idleHint = _idleHint(); }
+            // Au repos, la page complete se passe de consigne : son bouton
+            // encadre dit deja « Detecter ». Sauf si la recherche part avec le
+            // chrono — ca, le bouton ne le dit pas.
+            if (_lamp.isIdle()) {
+                _panel.idleHint = AutoController.searchOnStart(false)
+                    ? Labels.of(Rez.Strings.MsgIdleHintTimer) : null;
+            }
             _panel.draw(dc);
             return;
         }
@@ -467,19 +473,16 @@ class LampView extends WatchUi.DataField {
 
     //! Ce qu'il faut faire pour lancer la recherche, en trois mots.
     //!
-    //! **Le geste depend de l'appareil**, et il est choisi a la compilation :
-    //! voir `FieldGesture` et la repartition du jungle. Un champ de donnees ne
-    //! recoit la tape que sur un ecran tactile *sans* barre de controle —
-    //! quatre modeles sur treize. Ailleurs, c'est le bouton Lap.
-    //!
-    //! Deux versions s'y sont trompees, chacune dans un sens : « toucher »
-    //! partout promettait un geste sans effet sur un Edge 1050, et « Lap »
-    //! partout envoyait chercher un bouton la ou le doigt suffit.
+    //! **Sans nommer le geste.** « Appuyer » couvre la tape comme le bouton
+    //! Lap, et c'est ce qui permet une seule phrase pour les treize modeles.
+    //! Deux versions ont essaye de nommer le geste juste, chacune ratant d'un
+    //! cote : « toucher » promettait un geste sans effet sur les compteurs dont
+    //! la barre de controle prend la tape, et « appui Lap » ne dit rien a qui
+    //! n'a pas le nom du bouton en tete. La machinerie qui choisissait entre
+    //! les deux, appareil par appareil, a disparu avec elles.
     private function _idleHint() as Lang.String {
-        if (AutoController.searchOnStart(false)) {
-            return Labels.of(Rez.Strings.MsgIdleHintTimer);
-        }
-        return FieldGesture.idleHint();
+        return Labels.of(AutoController.searchOnStart(false)
+            ? Rez.Strings.MsgIdleHintTimer : Rez.Strings.MsgIdleHint);
     }
 
     //! Le bouton Lap : le seul geste qu'un champ de donnees recoive **sur les
