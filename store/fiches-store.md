@@ -40,6 +40,9 @@ Produire les paquets :
 bash app/build.sh package
 ```
 
+**Version à saisir dans le formulaire : 1.0.0**, en bêta. Le manifeste n'en
+porte pas ; `CHANGELOG.md` en garde la trace.
+
 ---
 
 ## Champ de données — description
@@ -74,8 +77,17 @@ bash app/build.sh package
 > Several lights around? The app picks the closest one, and that light blinks twice at
 > connection so you can see it is yours. If it is not, switch to the next one from the settings.
 >
+> **The field never searches on its own.** A Bluetooth scan is the most expensive thing an app
+> can do to your bike computer's battery, and the light stays in the drawer on most rides. So the
+> field waits for you: tap it on a touch screen, press Lap on a model with buttons. The search is
+> time-boxed — no light nearby, no scan draining the ride. A setting can start it with the timer
+> instead, off by default.
+>
 > On a touch screen, tap the field to pick a mode by hand. Tap once more when the light is off
 > to hand control back to the automatic adjustment.
+>
+> Thresholds and settings are adjustable from Garmin Connect, and from the bike computer itself.
+> Speeds are in km/h.
 >
 > Not affiliated with, or endorsed by, iGPSPORT. The protocol was worked out independently; the
 > name is used only to say which lights this drives.
@@ -116,8 +128,17 @@ bash app/build.sh package
 > deux fois a la connexion pour que vous la reconnaissiez. Si ce n'est pas la bonne, on passe a
 > la suivante depuis les reglages.
 >
+> **Le champ ne cherche jamais la lampe tout seul.** Un scan Bluetooth est ce qui coute le plus
+> cher a la batterie du compteur, et la lampe reste au tiroir la plupart des sorties. Le champ
+> attend donc un geste : une tape sur un ecran tactile, le bouton Lap sur un modele a boutons. La
+> recherche est bornee dans le temps — pas de lampe a portee, pas de scan qui vide la sortie. Un
+> reglage permet de la lancer au depart du chrono, decoche par defaut.
+>
 > Sur ecran tactile, une tape sur le champ change de mode a la main. Une tape de plus, lampe
 > eteinte, rend la main a l'ajustement automatique.
+>
+> Les seuils et les reglages se modifient depuis Garmin Connect, et depuis le compteur lui-meme.
+> Les vitesses sont en km/h.
 >
 > Sans lien avec iGPSPORT, ni aval de sa part. Le protocole a ete etabli de facon independante ;
 > le nom ne sert qu'a dire quelles lampes sont pilotees.
@@ -142,7 +163,8 @@ bash app/build.sh package
 > remaining runtime. The light's own automations (light sensor, auto sleep, dim when stopped)
 > are readable and adjustable from here, without reaching for your phone.
 >
-> Works on models with a touch screen and on models with buttons.
+> Works on models with a touch screen and on models with buttons: on the latter, the up and down
+> keys move a cursor and the Menu key opens the settings.
 >
 > Companion to the "Bike Light Control" data field, which handles the ride itself.
 >
@@ -166,7 +188,8 @@ bash app/build.sh package
 > luminosite reduite a l'arret) se lisent et se reglent depuis le compteur, sans sortir le
 > telephone.
 >
-> Fonctionne sur les modeles tactiles comme sur ceux a boutons.
+> Fonctionne sur les modeles tactiles comme sur ceux a boutons : sur ces derniers, haut et bas
+> deplacent un curseur, et la touche Menu ouvre les reglages.
 >
 > Complement du champ de donnees « Commande eclairage velo », qui prend le relais pendant la
 > sortie.
@@ -195,10 +218,22 @@ bash app/build.sh package
       fiche par langue ; a defaut il retombe sur l'anglais, ce qui reste acceptable.
 - [ ] Publier d'abord en **beta** : c'est la seule facon de verifier les champs FIT et les
       reglages depuis Garmin Connect, que le simulateur ne rend pas.
-- [ ] Au moins une capture d'ecran par fiche. Le panneau plein ecran sur un 1050 est le plus
-      parlant ; une seconde capture du champ dans une page a six cases montre l'autre usage.
-      Les produire avec `bash tools/sim-captures.sh` — elles sortent dans `captures/sim/`,
-      lampe factice comprise, sans avoir a brancher quoi que ce soit.
+- [x] **Captures d'ecran : prises, retenues et rangees dans `store/screenshots/`.** Aux pixels
+      exacts de chaque appareil, sans gabarit autour, produites par
+      `bash tools/sim-captures.sh` puis `tools/sim-crop.py`.
+
+      | Fiche | Fichier | Appareil | Ce qu'on y voit |
+      |---|---|---|---|
+      | Champ de donnees | `control-1-edge1050.png` | 1050, 480x800 | la page complete, badge AUTO |
+      | Champ de donnees | `control-2-edge1030.png` | 1030, 282x470 | la meme, ecran moyen |
+      | Champ de donnees | `control-3-edge830.png` | 830, 246x322 | le plus petit format |
+      | Champ de donnees | `control-4-edge550.png` | 550, 420x600 | polices vectorielles |
+      | Application | `panel-1-edge1030.png` | 1030 | la page, avec l'acces aux reglages |
+      | Application | `panel-2-edge830.png` | 830 | la meme, petit ecran |
+      | Application | `panel-3-edge530.png` | 530 | modele a boutons, curseur visible |
+      | Application | `panel-4-glance-edge1050.png` | 1050 | la vignette de resume |
+
+      Les regenerer apres toute retouche d'interface : elles ne se mettent pas a jour seules.
 - [ ] Aucune permission reseau n'est demandee : pas de politique de confidentialite a fournir.
 - [ ] Verifier que le paquet contient bien la declaration des champs FIT :
       `7z l dist/bike-light-control.iq | grep fit_contributions`

@@ -224,6 +224,13 @@ tools/
 captures/                           analysis reports (raw logs and APKs stay out — .gitignore)
 ```
 
+## Publishing
+
+Everything for the first beta submission is laid out in
+[docs/depot-beta.md](docs/depot-beta.md): what must be true before opening the
+form, what goes in each of the two listings, and what only a beta can verify —
+the settings in Garmin Connect, the FIT fields, and the two distinct names.
+
 ## Status
 
 | | |

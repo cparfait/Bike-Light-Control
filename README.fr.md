@@ -227,6 +227,14 @@ tools/
 captures/                           rapports d'analyse (logs et APK bruts exclus — .gitignore)
 ```
 
+## Publication
+
+Tout ce qu'il faut pour le premier dépôt en bêta est réuni dans
+[docs/depot-beta.md](docs/depot-beta.md) : ce qui doit être vrai avant d'ouvrir
+le formulaire, ce qui va dans chacune des deux fiches, et ce que seule une bêta
+permet de vérifier — les réglages dans Garmin Connect, les champs FIT et les
+deux noms distincts.
+
 ## Où en est le projet
 
 | | |

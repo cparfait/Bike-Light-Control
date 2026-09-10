@@ -13,9 +13,13 @@ partagent `shared/`, et deux numéros divergents seraient ingérables.
 
 ---
 
-## [Non publié] — 1.0.0
+## [1.0.0-beta] — 10/09/2026
 
 Première version déposée sur le Connect IQ Store, en bêta.
+
+Numéro à saisir dans le formulaire de dépôt : **1.0.0**. Le manifeste ne porte
+pas de version — le store la demande à chaque envoi, et c'est ici qu'on garde la
+trace de ce qu'elle contenait.
 
 ### Ajouté
 

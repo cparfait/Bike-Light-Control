@@ -887,7 +887,7 @@ Deux réserves honnêtes :
 | 2 | Piloter un phare **et** un feu arrière simultanément (deux connexions BLE) | oui, deux appareils |
 | 3 | Essai de bout en bout contre une fausse lampe — voir [essai-sans-lampe.md](essai-sans-lampe.md) | non |
 | 4 | Voir la page sur un écran réel autre qu'un 1050 — sur le 1050, tout est validé | non |
-| 5 | Publication sur le Connect IQ Store (objectif O8) | oui |
+| 5 | Publication sur le Connect IQ Store (objectif O8) — voir [depot-beta.md](depot-beta.md) | oui |
 
 Le point 2 est le principal écart connu : l'application gère une lampe à la fois.
 
