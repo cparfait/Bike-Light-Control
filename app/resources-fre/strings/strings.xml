@@ -26,12 +26,13 @@
     <string id="SetLowBattery">Seuil de batterie faible (%)</string>
     <string id="SetSyncOff">Éteindre la lampe à l'arrêt de l'activité</string>
     <string id="SetLightOnStart">Allumer la lampe dès qu'elle répond</string>
+    <string id="SetSearchOnStart">Chercher la lampe au départ du chrono</string>
 
     <!-- Noms des champs ecrits dans le FIT, visibles dans Garmin Connect -->
-    <string id="FitMode">Mode lampe</string>
+    <string id="FitMode">Niveau lampe</string>
     <string id="FitBattery">Batterie lampe</string>
-    <!-- `unitLabel` est obligatoire sur chaque champ FIT : le mode
+    <!-- `unitLabel` est obligatoire sur chaque champ FIT : le niveau
          n'a pas d'unite au sens propre, on met le mot lui-meme. -->
-    <string id="FitModeUnit">mode</string>
+    <string id="FitModeUnit">niveau</string>
     <string id="FitBatteryUnit">%</string>
 </strings>

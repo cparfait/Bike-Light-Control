@@ -14,17 +14,18 @@ using LightConstants as LC;
 //!
 //! - les **automatismes de la lampe**, qui vivent dans son firmware et
 //!   continuent de s'appliquer même sans compteur ;
-//! - les **réglages de l'application**, qui ne valent que quand le data field
-//!   tourne.
+//! - les **réglages de cette application** : allumage a la decouverte,
+//!   recherche a l'ouverture, seuil de batterie.
+//!
+//! **Les seuils de vitesse et l'extinction a l'arret n'y sont plus.** Ils y
+//! etaient, et n'avaient aucun effet : Connect IQ isole les reglages par
+//! binaire, et l'ajustement selon la vitesse ne tourne que dans le champ de
+//! donnees. Un reglage qu'on tourne sans que rien ne change est pire que pas
+//! de reglage — ceux-la se font dans Garmin Connect, sur le champ.
 module SettingsMenu {
 
     // Identifiants des entrées. Les automatismes reprennent la valeur BLCS_*
     // pour éviter une table de correspondance de plus.
-    const ID_APP_AUTO      = 1000;
-    const ID_APP_SYNC_OFF  = 1001;
-    const ID_APP_SPEED1    = 1002;
-    const ID_APP_SPEED2    = 1003;
-    const ID_APP_SPEED3    = 1004;
     const ID_APP_BATTERY   = 1005;
     const ID_APP_ON_START  = 1010;
     const ID_APP_SEARCH    = 1011;
@@ -95,12 +96,6 @@ module SettingsMenu {
 
         menu.addItem(new WatchUi.MenuItem(Labels.of(Rez.Strings.AppSettings),
             Labels.of(Rez.Strings.HintSeparate), -1, null));
-        menu.addItem(new WatchUi.ToggleMenuItem(Labels.of(Rez.Strings.SpeedAdjust),
-            { :enabled => Labels.of(Rez.Strings.StateActive), :disabled => Labels.of(Rez.Strings.StateInactive) },
-            ID_APP_AUTO, auto.enabled, null));
-        menu.addItem(new WatchUi.ToggleMenuItem(Labels.of(Rez.Strings.OffAtEnd),
-            { :enabled => Labels.of(Rez.Strings.Yes), :disabled => Labels.of(Rez.Strings.No) },
-            ID_APP_SYNC_OFF, _bool("syncOff", true), null));
         menu.addItem(new WatchUi.ToggleMenuItem(Labels.of(Rez.Strings.OnAtStart),
             { :enabled => Labels.of(Rez.Strings.Yes), :disabled => Labels.of(Rez.Strings.No) },
             ID_APP_ON_START, _bool("lightOnStart", true), null));
@@ -111,12 +106,6 @@ module SettingsMenu {
             { :enabled => Labels.of(Rez.Strings.Yes), :disabled => Labels.of(Rez.Strings.No) },
             ID_APP_SEARCH, _bool("searchOnStart", false), null));
 
-        menu.addItem(new WatchUi.MenuItem(Labels.of(Rez.Strings.ThresholdLow),
-            _kmh("speed1", 8), ID_APP_SPEED1, null));
-        menu.addItem(new WatchUi.MenuItem(Labels.of(Rez.Strings.ThresholdMid),
-            _kmh("speed2", 18), ID_APP_SPEED2, null));
-        menu.addItem(new WatchUi.MenuItem(Labels.of(Rez.Strings.ThresholdHigh),
-            _kmh("speed3", 30), ID_APP_SPEED3, null));
         menu.addItem(new WatchUi.MenuItem(Labels.of(Rez.Strings.LowBattery),
             _num("lowBatteryPct", 20).format("%d") + " " + Labels.of(Rez.Strings.UnitPct), ID_APP_BATTERY, null));
 
@@ -152,10 +141,6 @@ module SettingsMenu {
         } catch (e) {
         }
         return fallback;
-    }
-
-    function _kmh(key as Lang.String, fallback as Lang.Number) as Lang.String {
-        return _num(key, fallback).format("%d") + " " + Labels.of(Rez.Strings.UnitKmh);
     }
 
     //! « 6 actifs sur 11 » : on voit d'un coup qu'il y a des modes à activer.
@@ -207,15 +192,7 @@ class SettingsMenuDelegate extends WatchUi.Menu2InputDelegate {
         // Interrupteurs.
         if (item instanceof WatchUi.ToggleMenuItem) {
             var on = item.isEnabled();
-            if (id == SettingsMenu.ID_APP_AUTO) {
-                // Le reglage lui-meme change : il l'emporte sur une tape
-                // precedente. Voir AutoController._manualHold.
-                _auto.setEnabledFromSettings(on);
-                SettingsMenu.save("autoEnabled", on);
-            } else if (id == SettingsMenu.ID_APP_SYNC_OFF) {
-                SettingsMenu.save("syncOff", on);
-                _auto.loadSettings();
-            } else if (id == SettingsMenu.ID_APP_ON_START) {
+            if (id == SettingsMenu.ID_APP_ON_START) {
                 SettingsMenu.save("lightOnStart", on);
                 _auto.loadSettings();
                 // Le reglage vaut pour la prochaine liaison. Le poser ici evite
@@ -247,15 +224,6 @@ class SettingsMenuDelegate extends WatchUi.Menu2InputDelegate {
         } else if (id == SettingsMenu.ID_APP_BATTERY) {
             _pushChoices(Labels.of(Rez.Strings.LowBattery), "lowBatteryPct",
                          [10, 15, 20, 25, 30, 40], Labels.of(Rez.Strings.UnitPct), item);
-        } else if (id == SettingsMenu.ID_APP_SPEED1) {
-            _pushChoices(Labels.of(Rez.Strings.ThresholdLow), "speed1", [5, 8, 10, 12, 15],
-                         Labels.of(Rez.Strings.UnitKmh), item);
-        } else if (id == SettingsMenu.ID_APP_SPEED2) {
-            _pushChoices(Labels.of(Rez.Strings.ThresholdMid), "speed2", [15, 18, 20, 22, 25],
-                         Labels.of(Rez.Strings.UnitKmh), item);
-        } else if (id == SettingsMenu.ID_APP_SPEED3) {
-            _pushChoices(Labels.of(Rez.Strings.ThresholdHigh), "speed3", [25, 30, 35, 40, 45],
-                         Labels.of(Rez.Strings.UnitKmh), item);
         }
     }
 

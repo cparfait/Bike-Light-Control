@@ -28,13 +28,8 @@
     <string id="AvailableModes">Verfügbare Modi</string>
     <string id="AppSettings">App-Einstellungen</string>
     <string id="HintSeparate">Getrennt vom Datenfeld</string>
-    <string id="SpeedAdjust">Anpassung nach Tempo</string>
     <string id="SearchAuto">Beim Start suchen</string>
-    <string id="OffAtEnd">Bei Fahrtende ausschalten</string>
     <string id="OnAtStart">Bei Erkennung einschalten</string>
-    <string id="ThresholdLow">Untere Schwelle</string>
-    <string id="ThresholdMid">Mittlere Schwelle</string>
-    <string id="ThresholdHigh">Obere Schwelle</string>
     <string id="LowBattery">Niedriger Akku</string>
     <string id="StateActive">Ein</string>
     <string id="StateInactive">Aus</string>
@@ -46,6 +41,5 @@
     <string id="ActiveOutOf"> aktiv von </string>
     <string id="UnitSec">s</string>
     <string id="UnitMin">Min</string>
-    <string id="UnitKmh">km/h</string>
     <string id="UnitPct">%</string>
 </strings>

@@ -65,8 +65,11 @@ bash app/build.sh package
 > Riding in daylight? Turn off "switch light on when ride starts" and the light stays as you
 > left it until you ask for it.
 >
-> Light mode and light battery are recorded in the activity file, so you can see them on the
+> Light level and light battery are recorded in the activity file, so you can see them on the
 > chart in Garmin Connect afterwards.
+>
+> Speed thresholds are set in km/h. The light's Bluetooth protocol has no authentication: any
+> device in range could drive it, whichever app is used — that is a property of the light.
 >
 > Several lights around? The app picks the closest one, and that light blinks twice at
 > connection so you can see it is yours. If it is not, switch to the next one from the settings.
@@ -102,8 +105,12 @@ bash app/build.sh package
 > Vous roulez de jour ? Decochez « allumer la lampe au depart » et la lampe reste comme vous
 > l'avez laissee jusqu'a ce que vous la demandiez.
 >
-> Le mode et la batterie de la lampe sont enregistres dans le fichier d'activite : ils
+> Le niveau et la batterie de la lampe sont enregistres dans le fichier d'activite : ils
 > apparaissent ensuite sur le graphique dans Garmin Connect.
+>
+> Les seuils de vitesse se reglent en km/h. Le protocole Bluetooth de la lampe n'a aucune
+> authentification : tout appareil a portee peut la piloter, quelle que soit l'application —
+> c'est une propriete de la lampe.
 >
 > Plusieurs lampes autour de vous ? L'application retient la plus proche, et celle-ci clignote
 > deux fois a la connexion pour que vous la reconnaissiez. Si ce n'est pas la bonne, on passe a
@@ -171,10 +178,10 @@ bash app/build.sh package
 
 ## Avant de deposer
 
-- [ ] **Remettre `panel.debug` a `false`** dans `widget/source/LampControlView.mc`. La surcouche
-      de diagnostic est allumee depuis l'essai du 09/09 pour lire le mode brut d'une lampe
-      eteinte ; elle ecrit une ligne rouge en bas de la page de pilotage. Verifier :
-      `grep -rn "debug = true" widget/ app/ shared/` doit ne rien rendre.
+- [ ] **La surcouche de diagnostic est hors du binaire** tant que les deux jungles gardent
+      `base.excludeAnnotations = debug`. Verifier : `grep -n excludeAnnotations app/monkey.jungle
+      widget/monkey.jungle` doit rendre `debug` deux fois, et `grep -rn "debug = true" widget/ app/
+      shared/` ne rien rendre.
 - [ ] **Sauvegarder `developer_key.der` hors de cette machine.** Garmin lie definitivement une
       application publiee a la cle qui l'a signee. Perdue, plus aucune mise a jour n'est
       possible : il faut redeposer sous une nouvelle fiche, et les utilisateurs deja installes

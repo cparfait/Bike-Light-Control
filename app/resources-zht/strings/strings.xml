@@ -15,8 +15,9 @@
     <string id="SetLowBattery">低電量門檻 (%)</string>
     <string id="SetSyncOff">結束騎乘時關燈</string>
     <string id="SetLightOnStart">車燈回應後即開燈</string>
-    <string id="FitMode">車燈模式</string>
+    <string id="SetSearchOnStart">計時器啟動時搜尋車燈</string>
+    <string id="FitMode">車燈等級</string>
     <string id="FitBattery">車燈電量</string>
-    <string id="FitModeUnit">模式</string>
+    <string id="FitModeUnit">等級</string>
     <string id="FitBatteryUnit">%</string>
 </strings>

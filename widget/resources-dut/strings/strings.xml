@@ -28,13 +28,8 @@
     <string id="AvailableModes">Beschikbare modi</string>
     <string id="AppSettings">App-instellingen</string>
     <string id="HintSeparate">Los van het veld</string>
-    <string id="SpeedAdjust">Aanpassen op snelheid</string>
     <string id="SearchAuto">Zoeken bij start</string>
-    <string id="OffAtEnd">Uit aan einde rit</string>
     <string id="OnAtStart">Aan bij detectie</string>
-    <string id="ThresholdLow">Lage drempel</string>
-    <string id="ThresholdMid">Middelste drempel</string>
-    <string id="ThresholdHigh">Hoge drempel</string>
     <string id="LowBattery">Lage accu</string>
     <string id="StateActive">Aan</string>
     <string id="StateInactive">Uit</string>
@@ -46,6 +41,5 @@
     <string id="ActiveOutOf"> actief van </string>
     <string id="UnitSec">s</string>
     <string id="UnitMin">min</string>
-    <string id="UnitKmh">km/h</string>
     <string id="UnitPct">%</string>
 </strings>

@@ -16,10 +16,12 @@
 <resources xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
            xsi:noNamespaceSchemaLocation="https://developer.garmin.com/downloads/connect-iq/resources.xsd">
     <fitContributions>
-        <!-- Mode de la lampe, seconde par seconde. Un entier sans unite : la
-             courbe montre les paliers, ce qui suffit a relire une sortie et
-             comprendre quand l'ajustement a change de cran. Orange, la couleur
-             du faisceau, pour la distinguer de la batterie. -->
+        <!-- Niveau d'intensite de la lampe, seconde par seconde : 0 eteint, puis
+             le cran de l'echelle a partir de 1, et 9 pour un mode hors echelle
+             (flash, effet, perso). La courbe monte quand la lampe monte —
+             l'enumeration brute faisait l'inverse. Rien n'est ecrit tant que la
+             lampe n'a pas repondu. Orange, la couleur du faisceau, pour la
+             distinguer de la batterie. -->
         <fitField id="0"
                   displayInChart="true"
                   sortOrder="0"

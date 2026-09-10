@@ -70,6 +70,7 @@
     <string id="StUnsupported">無 BLE</string>
     <string id="MsgIdle">偵測</string>
     <string id="MsgIdleHint">點按開始搜尋</string>
+    <string id="MsgIdleHintTimer">隨計時器啟動</string>
     <string id="MsgSearching">搜尋中</string>
     <string id="MsgSearchingHint">正在尋找您的車燈</string>
     <string id="MsgConnecting">連線中</string>

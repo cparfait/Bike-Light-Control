@@ -2,12 +2,9 @@
     <!-- Memes cles que le data field, mais Connect IQ isole les reglages par
          binaire : ces valeurs ne sont PAS partagees avec lui. Voir
          docs/application.md. -->
-    <property id="autoEnabled" type="boolean">true</property>
-    <property id="speed1" type="number">8</property>
-    <property id="speed2" type="number">18</property>
-    <property id="speed3" type="number">30</property>
+    <!-- Pas de seuils de vitesse ni d'extinction a l'arret ici : ces
+         automatismes ne tournent que dans le champ de donnees. -->
     <property id="lowBatteryPct" type="number">20</property>
-    <property id="syncOff" type="boolean">true</property>
     <property id="lightOnStart" type="boolean">true</property>
     <property id="searchOnStart" type="boolean">false</property>
     <property id="sleepDelay" type="number">120</property>

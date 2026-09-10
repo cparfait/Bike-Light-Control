@@ -63,13 +63,14 @@
     <string id="PrefixMode">Tryb </string>
     <string id="LightGeneric">Lampka</string>
     <string id="BadgeAuto">AUTO</string>
-    <string id="BadgeManual">RĘCZ</string>
+    <string id="BadgeManual">RĘCZNY</string>
     <string id="StScanning">Szukanie</string>
     <string id="StConnecting">Łączenie</string>
     <string id="StReady">OK</string>
     <string id="StUnsupported">Brak BLE</string>
     <string id="MsgIdle">Wykryj</string>
     <string id="MsgIdleHint">dotknij, aby rozpocząć szukanie</string>
+    <string id="MsgIdleHintTimer">rusza ze stoperem</string>
     <string id="MsgSearching">Szukanie</string>
     <string id="MsgSearchingHint">twojej lampki</string>
     <string id="MsgConnecting">Łączenie</string>

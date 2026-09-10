@@ -12,17 +12,23 @@ class LampApp extends Application.AppBase {
         AppBase.initialize();
     }
 
-    //! **Le champ de donnees ne cherche jamais la lampe de lui-meme.**
+    //! **Le champ de donnees cherche la lampe au depart du chrono, pas au
+    //! chargement.**
     //!
-    //! Ce n'est pas un reglage decoche par defaut, c'est une absence : le scan
-    //! BLE est de loin ce qui coute le plus cher en batterie du compteur, et un
-    //! champ de donnees demarre a **chaque** activite, y compris les centaines
-    //! ou la lampe est restee dans son tiroir. Un reglage aurait laisse le
-    //! mauvais cas par defaut pour qui ne le trouve pas.
+    //! Le scan BLE est de loin ce qui coute le plus cher en batterie du
+    //! compteur, et un champ de donnees demarre a **chaque** activite, y
+    //! compris les centaines ou la lampe est restee dans son tiroir. Chercher
+    //! des le chargement etait donc exclu. Une version l'a remplace par une
+    //! tape sur la case — et a rendu le champ inutilisable sur les Edge a
+    //! boutons, ou aucune tape n'atteint jamais un champ de donnees : 530, 540,
+    //! 550, MTB, plus les modeles ou la barre de controle intercepte le geste.
     //!
-    //! La case affiche donc un bouton, et la recherche part au premier geste —
-    //! voir `LampView.onTap()`. L'application compagnon, elle, garde son
-    //! reglage : on ne l'ouvre pas par accident.
+    //! Le depart du chrono est le geste delibere qui existe sur les 13 modeles.
+    //! La recherche part la, bornee dans le temps par `LampManager`, et repart
+    //! a chaque reprise du chrono si la lampe s'est perdue entre-temps. La tape
+    //! reste possible sur les modeles tactiles, et le reglage « chercher au
+    //! depart » permet de couper la recherche automatique pour les sorties de
+    //! jour — voir `LampView.compute()`.
     function onStart(state as Lang.Dictionary or Null) as Void {
         _lamp = new LampManager();
         _auto = new AutoController();

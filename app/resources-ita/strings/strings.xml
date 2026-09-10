@@ -15,8 +15,9 @@
     <string id="SetLowBattery">Soglia batteria scarica (%)</string>
     <string id="SetSyncOff">Spegni la luce a fine attività</string>
     <string id="SetLightOnStart">Accendi la luce appena risponde</string>
-    <string id="FitMode">Modo luce</string>
+    <string id="SetSearchOnStart">Cerca la luce all'avvio del timer</string>
+    <string id="FitMode">Livello luce</string>
     <string id="FitBattery">Batteria luce</string>
-    <string id="FitModeUnit">modo</string>
+    <string id="FitModeUnit">livello</string>
     <string id="FitBatteryUnit">%</string>
 </strings>

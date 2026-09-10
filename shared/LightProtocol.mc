@@ -281,6 +281,15 @@ module LightProtocol {
     //! octet 8 vaut 0x00 ou 0xFF et ne doit surtout pas être lu comme une
     //! longueur, sous peine d'attendre indéfiniment 255 octets qui ne viendront
     //! jamais.
+    //! Vrai si les 20 premiers octets forment un en-tete dont le CRC est juste.
+    //!
+    //! C'est le seul critere qui autorise a lire l'octet de longueur : sans
+    //! lui, un octet corrompu bloquait le reassemblage pour toute la liaison.
+    function headerValid(bytes as Lang.ByteArray) as Lang.Boolean {
+        if (bytes.size() < LC.HDR_LEN) { return false; }
+        return Crc8.maxim(bytes.slice(0, LC.HDR_LEN - 1)) == bytes[LC.HDR_LEN - 1];
+    }
+
     function frameLength(bytes as Lang.ByteArray) as Lang.Number {
         if (bytes.size() < LC.HDR_LEN) { return LC.HDR_LEN; }
         if (bytes[0] != LC.HDR_TYPE_DATA) { return LC.HDR_LEN; }

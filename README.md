@@ -10,7 +10,7 @@
 [![Monkey C](https://img.shields.io/badge/Monkey%20C-Toybox%203.1%2B-5c4b8a)](https://developer.garmin.com/connect-iq/monkey-c/)
 [![Edge models](https://img.shields.io/badge/Edge%20models-13-005f8c)](docs/compatibilite-edge.md)
 [![Languages](https://img.shields.io/badge/languages-13-2e7d32)](#thirteen-languages-not-thirty-six)
-[![Tests](https://img.shields.io/badge/unit%20tests-55-2e7d32)](app/source-test)
+[![Tests](https://img.shields.io/badge/unit%20tests-58-2e7d32)](app/source-test)
 [![License](https://img.shields.io/badge/license-MIT-black)](LICENSE)
 
 **English** · [Français](README.fr.md)
@@ -52,7 +52,8 @@ the 19 distinct commands the vendor app emits are reproduced exactly. The full w
 | 🔋 **Low-battery fallback** | Brightness is capped so the light survives to the end of the ride rather than dying at kilometre 40. |
 | ⏱ **Off on stop, not on pause** | The light goes out when you stop the timer. A red light at the traffic light stays on. |
 | 👆 **Manual override** | Tap the field to cycle modes, or open the full page to pick one. The next tap hands control back to the automation. |
-| 📈 **FIT recording** | Light mode and light battery are written into the FIT file and show up in Garmin Connect. |
+| ▶️ **Search starts with the timer** | The field looks for the light when you start the timer, on every model, buttons included. The search is time-boxed: no light, no scan burning the battery for the whole ride. |
+| 📈 **FIT recording** | Light level and light battery are written into the FIT file and show up in Garmin Connect. |
 | 🎯 **Light identification** | With several lights around, the closest one is picked — and **blinks twice** to say so. An escape hatch moves to the next one. |
 | 📱 **Companion app** | A control panel for use off-ride: turn the light on before you leave, set the light's own automations, check the summary tile. |
 | 🌍 **13 languages** | Follows the language of the computer, no setting to find. |
@@ -108,7 +109,7 @@ files).
 bash app/build.sh test-all
 ```
 
-Runs the 55 unit tests on **four profiles** — 530, MTB, 1040, 1050 — not just the 1050. Layout
+Runs the 58 unit tests on **four profiles** — 530, MTB, 1040, 1050 — not just the 1050. Layout
 tests walk all six screen formats whatever the profile, but the rest of the binary executes on
 the simulator's: a suite that only ever runs on a 1050 proves nothing about the other twelve.
 Use `bash app/build.sh test` for the 1050 alone.
@@ -179,7 +180,7 @@ shared/                             protocol, BLE layer, automation, control pag
 app/                                data field — "Bike Light Control"
   build.sh                          builds both binaries, runs tests, makes packages
   source/                           entry point, view, FIT recording
-  source-test/                      55 unit tests
+  source-test/                      58 unit tests
   resources/fit/                    FIT field declarations for Garmin Connect
   resources-icon-*/                 launcher icon, one per screen size (35–68 px)
 widget/                             device app — "Bike Light Panel"
@@ -210,7 +211,7 @@ captures/                           analysis reports (raw logs and APKs stay out
 | | |
 |---|---|
 | BLE protocol | ✅ complete schema, confirmed by HCI capture |
-| Monkey C implementation | ✅ 55 tests, 12 of them on real captured bytes |
+| Monkey C implementation | ✅ 58 tests, 12 of them on real captured bytes |
 | Build for 13 targets | ✅ within budget, 13 languages included |
 | Edge 1050, on the device | ✅ connection and control working — data field, app and glance validated |
 | UI | ✅ layout verified on all 6 screen formats |

@@ -38,8 +38,36 @@ Première version déposée sur le Connect IQ Store, en bêta.
   italien, portugais, néerlandais, polonais, russe, japonais, coréen, chinois simplifié et
   traditionnel.
 
+### Corrigé — audit du 10/09/2026
+
+- Le champ de données ne cherchait la lampe que sur une tape, donc jamais sur
+  les Edge à boutons (530, 540, 550, MTB). La recherche part désormais au
+  départ du chrono et à chaque reprise, sur les 13 modèles, avec un réglage
+  « chercher la lampe au départ du chrono » dans Garmin Connect.
+- L'extinction à l'arrêt du chrono était ignorée après un changement de mode
+  manuel : la lampe restait allumée. Elle s'applique quel que soit le mode, et
+  le mode manuel ne survit plus à l'arrêt.
+- La recherche BLE est bornée à cinq minutes, puis revient au repos ; elle ne
+  cyclait auparavant jusqu'à la fin de l'activité.
+- File d'écritures : plus de collision GATT sur l'abonnement batterie, chien de
+  garde sur une écriture sans acquittement, trames entières plutôt que
+  fragments, resynchronisation du tampon de réception sur CRC d'en-tête,
+  reprise après caractéristiques ou descripteur absents.
+- « Autre lampe » avec une seule lampe à portée ne la condamne plus : les
+  appareils écartés sont oubliés après deux fenêtres d'écoute vides.
+- Une tape avant le clignotement d'identification l'annule vraiment.
+- FIT : le niveau d'intensité remplace le numéro de mode, et rien n'est écrit
+  tant que la lampe n'a pas répondu.
+- Alerte sonore, une fois, au passage sous le seuil de batterie.
+- L'application compagnon ne propose plus les réglages qui n'y avaient aucun
+  effet (seuils de vitesse, ajustement, extinction à l'arrêt).
+- `IgEdgeWidget` renommé `PanelApp`.
+
 ### Notes
 
 - La reconnexion après mise en veille de la lampe est corrigée dans le code mais
   n'a pas encore été éprouvée sur le matériel.
+- Le filet d'extinction à la fermeture de l'application n'est pas garanti : la
+  trame fait 28 octets et Connect IQ n'en écrit que 20 à la fois. La garantie
+  est l'arrêt du chrono.
 - Un seul modèle a été essayé physiquement : l'Edge 1050.

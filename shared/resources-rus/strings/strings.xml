@@ -63,13 +63,14 @@
     <string id="PrefixMode">Режим </string>
     <string id="LightGeneric">Фара</string>
     <string id="BadgeAuto">АВТО</string>
-    <string id="BadgeManual">РУЧН</string>
+    <string id="BadgeManual">РУЧНОЙ</string>
     <string id="StScanning">Поиск</string>
     <string id="StConnecting">Соединение</string>
     <string id="StReady">OK</string>
     <string id="StUnsupported">Нет BLE</string>
     <string id="MsgIdle">Найти</string>
     <string id="MsgIdleHint">нажмите, чтобы начать поиск</string>
+    <string id="MsgIdleHintTimer">запуск с таймером</string>
     <string id="MsgSearching">Поиск</string>
     <string id="MsgSearchingHint">вашей фары</string>
     <string id="MsgConnecting">Соединение</string>

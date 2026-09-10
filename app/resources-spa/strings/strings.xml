@@ -15,8 +15,9 @@
     <string id="SetLowBattery">Umbral de batería baja (%)</string>
     <string id="SetSyncOff">Apagar la luz al terminar</string>
     <string id="SetLightOnStart">Encender la luz en cuanto responda</string>
-    <string id="FitMode">Modo de luz</string>
+    <string id="SetSearchOnStart">Buscar la luz al iniciar el cronómetro</string>
+    <string id="FitMode">Nivel de luz</string>
     <string id="FitBattery">Batería de la luz</string>
-    <string id="FitModeUnit">modo</string>
+    <string id="FitModeUnit">nivel</string>
     <string id="FitBatteryUnit">%</string>
 </strings>

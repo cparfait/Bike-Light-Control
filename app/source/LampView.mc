@@ -5,6 +5,7 @@ using Toybox.Lang;
 using Toybox.System;
 using Toybox.FitContributor;
 using Toybox.Application;
+using Toybox.Attention;
 using LightConstants as LC;
 
 //! Data field : affiche l'état de la lampe et applique les automatismes.
@@ -23,6 +24,14 @@ class LampView extends WatchUi.DataField {
     private var _speedSamples as Lang.Array = [0.0, 0.0, 0.0];
     private var _timerRunning as Lang.Boolean = false;
     private var _touch as Lang.Boolean = false;
+
+    //! Vrai une fois l'alerte de batterie faible jouee, pour ne la jouer
+    //! qu'une fois par passage sous le seuil.
+    private var _lowAlerted as Lang.Boolean = false;
+
+    //! Niveau FIT des modes hors echelle d'intensite — flashs, effets, modes
+    //! personnalises. Au-dessus de tout cran, pour que la courbe les distingue.
+    static const FIT_LEVEL_OTHER = 9;
 
     // Champs enregistres dans le FIT : le mode et la batterie de la lampe
     // apparaissent alors dans Garmin Connect, alignes sur la trace GPS. C'est
@@ -50,11 +59,18 @@ class LampView extends WatchUi.DataField {
         // n'affichait donc rien. Voir docs/protocole-vs1800s.md.
         _panel.debug = false;
         // Le tactile n'est pas exposé dans les profils du SDK : c'est une
-        // propriété d'exécution. Un seul binaire pour les 13 modèles.
+        // propriété d'exécution. Un seul binaire pour les 13 modèles. Sur un
+        // modele a boutons, l'ecran de repos ne peut pas inviter a taper : la
+        // precision dit alors que la recherche part avec le chrono.
         var settings = System.getDeviceSettings();
         _touch = (settings has :isTouchScreen) && settings.isTouchScreen;
+        if (!_touch) { _panel.idleHint = Labels.of(Rez.Strings.MsgIdleHintTimer); }
 
-        _fitMode = createField("light_mode", 0, FitContributor.DATA_TYPE_UINT8,
+        // Le niveau d'intensite, pas le numero de mode. L'enumeration brute
+        // donnait 12, 11, 10, 9, 8, 7 pour les six crans croissants d'une
+        // VS1800S : une courbe qui descend quand la lampe monte, illisible.
+        // Ici 0 est eteint, 1 le cran le plus faible, et ainsi de suite.
+        _fitMode = createField("light_level", 0, FitContributor.DATA_TYPE_UINT8,
             { :mesgType => FitContributor.MESG_TYPE_RECORD });
         _fitBattery = createField("light_battery", 1, FitContributor.DATA_TYPE_UINT8,
             { :mesgType => FitContributor.MESG_TYPE_RECORD, :units => "%" });
@@ -78,6 +94,17 @@ class LampView extends WatchUi.DataField {
         // AutoController.onRideState().
         var ride = AutoController.rideStateOf(info.timerState);
         var running = (ride == AutoController.RIDE_RUNNING);
+
+        // Le chrono qui part — ou repart apres une pause, un arret — lance la
+        // recherche si rien n'est en cours. C'est le seul geste commun aux 13
+        // modeles ; la tape n'existe que sur les tactiles. Et c'est ce qui
+        // retrouve une lampe perdue pendant un arret au cafe : la recherche est
+        // bornee (LampManager.SCAN_MAX_S), la reprise la relance.
+        if (running && !_timerRunning && _lamp.isIdle()
+                && AutoController.searchOnStart(true)) {
+            _lamp.start();
+        }
+
         var mode = _auto.onRideState(ride, _lamp.status.mode);
         if (mode == null && running) {
             mode = _auto.modeForSpeed(_speed, _lamp.status.batteryPct, _lamp.status.mode);
@@ -89,19 +116,51 @@ class LampView extends WatchUi.DataField {
             _lamp.status.mode = mode;
         }
 
-        // Un champ FIT non renseigne laisse un trou dans l'enregistrement : on
-        // ecrit a chaque seconde, en retombant sur « eteint » et 0 % tant que la
-        // lampe n'a rien dit.
-        if (_fitMode != null) {
-            var m = _lamp.status.mode;
-            _fitMode.setData(m == null ? LC.BLM_LIGHT_OFF : m);
+        // Rien n'est ecrit tant que la lampe n'a rien dit. Un 0 % « par
+        // defaut » passait pour une mesure dans Garmin Connect, et un trou dans
+        // la courbe est la seule facon honnete de dire « pas de lampe ».
+        var m = _lamp.status.mode;
+        if (_fitMode != null && m != null) {
+            _fitMode.setData(_fitLevel(m));
         }
-        if (_fitBattery != null) {
-            var b = _lamp.status.batteryPct;
-            _fitBattery.setData(b == null ? 0 : b);
+        var b = _lamp.status.batteryPct;
+        if (_fitBattery != null && b != null) {
+            _fitBattery.setData(b);
         }
+        _alertLowBattery(b);
 
         _timerRunning = running;
+    }
+
+    //! Niveau d'intensite ecrit dans le FIT : 0 eteint, puis le cran dans
+    //! l'echelle de la lampe a partir de 1, et une valeur a part pour ce qui
+    //! n'est pas un cran.
+    private function _fitLevel(mode as Lang.Number) as Lang.Number {
+        if (mode == LC.BLM_LIGHT_OFF) { return 0; }
+        var ladder = _auto.ladder();
+        for (var i = 0; i < ladder.size(); i++) {
+            if (ladder[i] == mode) { return i + 1; }
+        }
+        return FIT_LEVEL_OTHER;
+    }
+
+    //! Un signal sonore, une fois, au passage sous le seuil de batterie (F7).
+    //!
+    //! La couleur seule ne suffisait pas : de nuit, personne ne regarde la case
+    //! au moment precis ou elle passe au rouge. Rejoue seulement si la charge
+    //! est remontee nettement au-dessus du seuil — une lampe rechargee entre
+    //! deux sorties — et jamais pendant que la lampe est absente.
+    private function _alertLowBattery(pct as Lang.Number or Null) as Void {
+        if (pct == null) { return; }
+        if (_auto.isBatteryLow(pct)) {
+            if (_lowAlerted) { return; }
+            _lowAlerted = true;
+            if (Attention has :playTone) {
+                try { Attention.playTone(Attention.TONE_ALERT_LO); } catch (e) { }
+            }
+        } else if (!_auto.isBatteryLow(pct - 5)) {
+            _lowAlerted = false;
+        }
     }
 
     //! Moyenne des trois dernières secondes de vitesse.
@@ -367,7 +426,11 @@ class LampView extends WatchUi.DataField {
         var reference = LampManager.longestStateMessage();
         var font = _fitFont(dc, reference, w, h * 60 / 100);
 
-        var hint = _lamp.stateHint();
+        // Sur un modele a boutons, « toucher pour lancer la recherche » serait
+        // un mensonge : la case ne recoit aucune tape, c'est le chrono qui
+        // lance la recherche.
+        var hint = (_lamp.isIdle() && !_touch)
+            ? Labels.of(Rez.Strings.MsgIdleHintTimer) : _lamp.stateHint();
 
         var fh = dc.getFontHeight(font);
         var hintFont = Graphics.FONT_XTINY;

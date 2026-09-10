@@ -15,8 +15,9 @@
     <string id="SetLowBattery">Próg niskiej baterii (%)</string>
     <string id="SetSyncOff">Wyłącz lampkę po zakończeniu</string>
     <string id="SetLightOnStart">Włącz lampkę, gdy odpowie</string>
-    <string id="FitMode">Tryb lampki</string>
+    <string id="SetSearchOnStart">Szukaj lampki po starcie stopera</string>
+    <string id="FitMode">Poziom światła</string>
     <string id="FitBattery">Bateria lampki</string>
-    <string id="FitModeUnit">tryb</string>
+    <string id="FitModeUnit">poziom</string>
     <string id="FitBatteryUnit">%</string>
 </strings>

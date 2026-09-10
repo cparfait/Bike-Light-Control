@@ -15,8 +15,9 @@
     <string id="SetLowBattery">Schwelle für niedrigen Akku (%)</string>
     <string id="SetSyncOff">Licht bei Fahrtende ausschalten</string>
     <string id="SetLightOnStart">Licht einschalten, sobald es antwortet</string>
-    <string id="FitMode">Lichtmodus</string>
+    <string id="SetSearchOnStart">Licht suchen, wenn der Timer startet</string>
+    <string id="FitMode">Lichtstufe</string>
     <string id="FitBattery">Licht-Akku</string>
-    <string id="FitModeUnit">Modus</string>
+    <string id="FitModeUnit">Stufe</string>
     <string id="FitBatteryUnit">%</string>
 </strings>

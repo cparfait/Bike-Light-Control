@@ -15,8 +15,9 @@
     <string id="SetLowBattery">低电量阈值 (%)</string>
     <string id="SetSyncOff">结束骑行时关灯</string>
     <string id="SetLightOnStart">车灯响应后即开灯</string>
-    <string id="FitMode">车灯模式</string>
+    <string id="SetSearchOnStart">计时器启动时搜索车灯</string>
+    <string id="FitMode">车灯等级</string>
     <string id="FitBattery">车灯电量</string>
-    <string id="FitModeUnit">模式</string>
+    <string id="FitModeUnit">等级</string>
     <string id="FitBatteryUnit">%</string>
 </strings>

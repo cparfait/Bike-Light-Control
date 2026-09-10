@@ -28,13 +28,8 @@
     <string id="AvailableModes">Доступные режимы</string>
     <string id="AppSettings">Настройки приложения</string>
     <string id="HintSeparate">Отдельно от поля данных</string>
-    <string id="SpeedAdjust">Подстройка по скорости</string>
     <string id="SearchAuto">Искать при запуске</string>
-    <string id="OffAtEnd">Выключать в конце</string>
     <string id="OnAtStart">Включать при обнаружении</string>
-    <string id="ThresholdLow">Нижний порог</string>
-    <string id="ThresholdMid">Средний порог</string>
-    <string id="ThresholdHigh">Верхний порог</string>
     <string id="LowBattery">Низкий заряд</string>
     <string id="StateActive">Вкл</string>
     <string id="StateInactive">Выкл</string>
@@ -46,6 +41,5 @@
     <string id="ActiveOutOf"> активно из </string>
     <string id="UnitSec">с</string>
     <string id="UnitMin">мин</string>
-    <string id="UnitKmh">км/ч</string>
     <string id="UnitPct">%</string>
 </strings>

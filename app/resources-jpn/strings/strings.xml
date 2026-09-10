@@ -15,8 +15,9 @@
     <string id="SetLowBattery">バッテリー低下のしきい値 (%)</string>
     <string id="SetSyncOff">終了時にライトを消灯</string>
     <string id="SetLightOnStart">ライトが応答したら点灯</string>
-    <string id="FitMode">ライトモード</string>
+    <string id="SetSearchOnStart">タイマー開始時にライトを検索</string>
+    <string id="FitMode">ライトレベル</string>
     <string id="FitBattery">ライト残量</string>
-    <string id="FitModeUnit">モード</string>
+    <string id="FitModeUnit">レベル</string>
     <string id="FitBatteryUnit">%</string>
 </strings>

@@ -12,7 +12,7 @@ même code protocolaire.
 | Cibles | 13 modèles Edge — voir [compatibilite-edge.md](compatibilite-edge.md) |
 | Noms publiés | « Bike Light Control » (champ de données) et « Bike Light Panel » (application) |
 | Taille en release | 46 à 61 Ko par binaire, pour un budget de 128 Ko en data field |
-| Tests | 55 tests unitaires, `bash app/build.sh test` |
+| Tests | 58 tests unitaires, `bash app/build.sh test` |
 
 ## Pourquoi un data field
 
@@ -66,12 +66,12 @@ app/                    data field
     LampApp.mc          point d'entrée
     LampView.mc         affichage, entrée tactile, écriture dans le FIT
   source-test/
-    ProtocolTest.mc     55 tests unitaires
+    ProtocolTest.mc     58 tests unitaires
 
 widget/                 widget compagnon
   manifest.xml          mêmes 13 produits
   source/
-    IgEdgeWidget.mc     application, résumé, gestion des boutons et du tactile
+    PanelApp.mc         application, résumé, gestion des boutons et du tactile
     LampControlView.mc  enveloppe de vue autour du panneau partagé
     SettingsMenu.mc     menu des réglages
 ```
@@ -139,7 +139,7 @@ Stack:
   - pc: 0x100000f8
 ```
 
-L'adresse, passée dans `widget/bin/edge1050.prg.debug.xml`, donne `IgEdgeWidget.mc:120` :
+L'adresse, passée dans `widget/bin/edge1050.prg.debug.xml`, donnait `IgEdgeWidget.mc:120` — le fichier s'appelle `PanelApp.mc` depuis :
 l'appel `Labels.of(Rez.Strings.LightGeneric)`. **L'annotation `(:glance)` sur le module
 `Labels` n'avait pas suffi.**
 
@@ -399,7 +399,7 @@ seuils au lieu de trois, donc cinq réglages dans Garmin Connect — un mauvais 
 
 ### Les champs FIT ont besoin d'une ressource, pas seulement de `createField()`
 
-`createField("light_mode", 0, …)` écrit bien la donnée dans le fichier d'activité, mais Garmin
+`createField("light_level", 0, …)` écrit bien la donnée dans le fichier d'activité, mais Garmin
 Connect l'ignore tant qu'aucune ressource `fitContributions` ne la décrit : le libellé, l'unité,
 la couleur de la courbe et la présence dans le résumé viennent de là, pas du FIT. Le piège est
 entièrement silencieux — l'application compile, s'installe, enregistre, et le graphique
@@ -755,7 +755,7 @@ Deux details valent d'etre notes, parce qu'ils ont failli passer pour des verite
   mais il n'etait pas verifie. `tools/check-icons.py` le relit desormais dans `compiler.json`.
 - **`monkeydo` rend un code de retour non nul meme quand la suite passe.** Le mode `test-all`
   lit donc le verdict dans la sortie ; s'y fier autrement declarait les quatre profils en echec
-  alors que les 55 tests etaient au vert.
+  alors que les 58 tests etaient au vert.
 
 ## Construire
 

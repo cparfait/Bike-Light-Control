@@ -103,6 +103,7 @@
          un bouton. Voir le reglage « chercher au demarrage ». -->
     <string id="MsgIdle">Détecter</string>
     <string id="MsgIdleHint">toucher pour lancer la recherche</string>
+    <string id="MsgIdleHintTimer">part avec le chrono</string>
     <string id="MsgSearching">Recherche</string>
     <string id="MsgSearchingHint">de votre lampe</string>
     <string id="MsgConnecting">Connexion</string>

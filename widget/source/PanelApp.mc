@@ -19,7 +19,7 @@ using LightConstants as LC;
 //! 1040, 1050, Explore 2, MTB) ne supportent pas le type widget. `watch-app` est
 //! le seul type commun aux 13 modèles cibles — vérifiable avec
 //! `bash tools/check-app-types.sh`.
-class IgEdgeWidget extends Application.AppBase {
+class PanelApp extends Application.AppBase {
 
     private var _lamp as LampManager or Null = null;
     private var _auto as AutoController or Null = null;
@@ -61,7 +61,7 @@ class IgEdgeWidget extends Application.AppBase {
             // la trouve. Le champ de donnees, lui, garde son declenchement au
             // chrono — voir `AutoController.onRideState()`.
             _lamp.lightOnConnect = AutoController.lightOnStart();
-            if (AutoController.searchOnStart()) { _lamp.start(); }
+            if (AutoController.searchOnStart(false)) { _lamp.start(); }
         }
         var view = new LampControlView(_lamp, _auto);
         return [ view, new LampControlDelegate(_lamp, _auto, view) ];

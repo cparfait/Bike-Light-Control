@@ -15,8 +15,9 @@
     <string id="SetLowBattery">Порог низкого заряда (%)</string>
     <string id="SetSyncOff">Выключать фару в конце</string>
     <string id="SetLightOnStart">Включать фару, как только она ответит</string>
-    <string id="FitMode">Режим фары</string>
+    <string id="SetSearchOnStart">Искать фару при запуске таймера</string>
+    <string id="FitMode">Уровень света</string>
     <string id="FitBattery">Батарея фары</string>
-    <string id="FitModeUnit">режим</string>
+    <string id="FitModeUnit">уровень</string>
     <string id="FitBatteryUnit">%</string>
 </strings>

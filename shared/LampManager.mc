@@ -34,6 +34,35 @@ class LampManager extends Ble.BleDelegate {
     const SCAN_WINDOW_S = 15;
     const SCAN_PAUSE_S = 45;
 
+    //! Duree totale d'une recherche, fenetres et pauses comprises, en secondes.
+    //!
+    //! Sans plafond, une recherche lancee — ou relancee apres une deconnexion —
+    //! cyclait jusqu'a la fin de l'activite : lampe restee a la maison, ou
+    //! eteinte au bouton en cours de route, et le compteur passait un quart de
+    //! sa sortie en scan. Au bout du plafond on revient au repos ; le champ de
+    //! donnees relance au prochain depart ou reprise du chrono, l'application
+    //! compagnon au prochain geste.
+    const SCAN_MAX_S = 300;
+
+    //! Fenetres d'ecoute vides consecutives au bout desquelles les appareils
+    //! ecartes sont oublies. Une seule lampe a portee et « Autre lampe » la
+    //! condamnait pour toujours : rien ne vidait la liste avant un redemarrage.
+    const EMPTY_WINDOWS_FORGET = 2;
+
+    //! Delai de garde d'une ecriture, en battements. Un `onCharacteristicWrite`
+    //! qui ne revient jamais laissait `_busy` leve et la file bloquee jusqu'a
+    //! la deconnexion.
+    const BUSY_MAX_S = 4;
+
+    //! Trames en attente au plus. Au-dela, la lampe ne repond plus et les plus
+    //! anciennes sont abandonnees — des trames entieres, jamais des fragments :
+    //! jeter un fragment au milieu d'une trame garantit une trame corrompue.
+    const QUEUE_MAX_FRAMES = 8;
+
+    //! Taille au-dela de laquelle le tampon de reception est vide : rien de
+    //! legitime ne s'y accumule autant, c'est du bruit.
+    const RX_MAX = 512;
+
     //! Interrogation de l'autonomie restante. Rare a dessein : la lampe la
     //! notifie spontanement a chaque changement de mode (trame de type 03), ce
     //! qui rend ce rappel presque superflu.
@@ -63,11 +92,16 @@ class LampManager extends Ble.BleDelegate {
     private var _tx as Ble.Characteristic or Null = null;
     private var _rx as Ble.Characteristic or Null = null;
     private var _battery as Ble.Characteristic or Null = null;
+    //! Trames entieres en attente, et fragments de celle en cours d'envoi.
     private var _queue as Lang.Array = [];
+    private var _frags as Lang.Array = [];
     private var _busy as Lang.Boolean = false;
+    private var _busySeconds as Lang.Number = 0;
     private var _rxBuffer as Lang.ByteArray = []b;
     private var _ticks as Lang.Number = 0;
     private var _scanSeconds as Lang.Number = 0;
+    private var _searchSeconds as Lang.Number = 0;
+    private var _emptyWindows as Lang.Number = 0;
     private var _scanning as Lang.Boolean = false;
     private var _needBatterySubscribe as Lang.Boolean = false;
 
@@ -183,6 +217,7 @@ class LampManager extends Ble.BleDelegate {
         // permanent qui viderait le compteur sur une sortie entiere.
         if (state == STATE_SCANNING) {
             _scanSeconds++;
+            _searchSeconds++;
 
             // Une lampe au moins a repondu : on laisse quelques secondes aux
             // autres pour se manifester avant de choisir la plus proche.
@@ -195,7 +230,15 @@ class LampManager extends Ble.BleDelegate {
                 return;
             }
 
+            if (_searchSeconds >= SCAN_MAX_S) { _giveUp(); return; }
+
             if (_scanning && _scanSeconds >= SCAN_WINDOW_S) {
+                // Fenetre vide. Si les seuls appareils visibles sont ceux
+                // qu'on a ecartes, on finit par leur redonner leur chance.
+                _emptyWindows++;
+                if (_rejected.size() > 0 && _emptyWindows >= EMPTY_WINDOWS_FORGET) {
+                    _rejected = [];
+                }
                 _setScanning(false);
             } else if (!_scanning && _scanSeconds >= SCAN_PAUSE_S) {
                 _setScanning(true);
@@ -204,6 +247,17 @@ class LampManager extends Ble.BleDelegate {
         }
 
         if (state != STATE_READY) { return; }
+
+        // Chien de garde de la file : une ecriture dont l'acquittement ne
+        // revient pas ne doit pas figer la lampe jusqu'a la deconnexion.
+        if (_busy) {
+            _busySeconds++;
+            if (_busySeconds >= BUSY_MAX_S) {
+                _busy = false;
+                _busySeconds = 0;
+                _pump();
+            }
+        }
 
         if (_identifyStep >= 0) { _identifyTick(); return; }
 
@@ -224,7 +278,7 @@ class LampManager extends Ble.BleDelegate {
         // Le delai de garde evite qu'une lampe muette — qui ne repond jamais —
         // laisse la page bloquee sur l'ecran d'identification.
         if (!_identifiedOnce
-                && ((status.mode != null && !_busy && _queue.size() == 0)
+                && ((status.mode != null && !_busy && _queueEmpty())
                     || _readySeconds >= IDENTIFY_SETTLE_MAX_S)) {
             _identifiedOnce = true;
             // Avant l'identification, pas apres : `_startIdentify()` releve
@@ -265,8 +319,22 @@ class LampManager extends Ble.BleDelegate {
         }
         _candidates = [];
         _pickSeconds = 0;
+        _searchSeconds = 0;
+        _emptyWindows = 0;
         state = STATE_SCANNING;
         _setScanning(true);
+    }
+
+    //! Fin de recherche sans lampe : retour au repos, scan coupe.
+    //!
+    //! Les appareils ecartes sont oublies au passage : la prochaine recherche
+    //! est un nouveau depart, et rien ne dit que l'utilisateur est encore
+    //! entoure des memes voisins.
+    private function _giveUp() as Void {
+        _setScanning(false);
+        _candidates = [];
+        _rejected = [];
+        state = STATE_IDLE;
     }
 
     private function _registerProfiles() as Void {
@@ -297,28 +365,30 @@ class LampManager extends Ble.BleDelegate {
     //! parte. La lampe restait allumee apres la sortie — le defaut est
     //! silencieux, on ne le voit qu'en rentrant.
     //!
-    //! Ici la trame d'extinction est ecrite **directement**, en tete de file et
-    //! sans attendre l'acquittement de l'ecriture en cours : il n'y aura pas de
-    //! seconde suivante pour relancer la pompe. Et on ne desappaire pas : le
-    //! systeme ferme la liaison en fin d'application, ce qui laisse a l'ecriture
-    //! le temps de partir.
+    //! Ici la file est videe, l'acquittement en cours n'est pas attendu, et la
+    //! trame d'extinction part en tete. Et on ne desappaire pas : le systeme
+    //! ferme la liaison en fin d'application, ce qui laisse a l'ecriture le
+    //! temps de partir.
+    //!
+    //! **Ce filet n'est pas une garantie.** La trame d'extinction fait 28
+    //! octets — 20 d'en-tete, 8 de charge utile — et Connect IQ n'ecrit que 20
+    //! octets a la fois : le second fragment attend un acquittement qui, apres
+    //! `onStop`, n'a aucune raison d'arriver. Une version precedente prevoyait
+    //! une ecriture directe « si la trame tient en 20 octets » : elle ne pouvait
+    //! jamais s'executer. La vraie garantie d'extinction est l'**arret du
+    //! chrono**, traite par `AutoController.onRideState()` pendant que la file
+    //! tourne encore ; ceci ne couvre que la sortie d'activite sans arret
+    //! prealable, et seulement si la pile BLE laisse passer le second fragment.
     function shutdown() as Void {
         if (isReady() && _tx != null) {
-            var frame = LightProtocol.turnOff();
             _queue = [];
-            if (frame.size() <= LC.MAX_WRITE) {
-                try {
-                    _tx.requestWrite(frame, { :writeType => Ble.WRITE_TYPE_WITH_RESPONSE });
-                } catch (e) {
-                    lastError = Labels.of(Rez.Strings.ErrWriteRefused);
-                }
-            } else {
-                _busy = false;
-                send(frame);
-            }
+            _frags = [];
+            _busy = false;
+            send(LightProtocol.turnOff());
         }
         if (_scanning) { _setScanning(false); }
         _queue = [];
+        _frags = [];
         _busy = false;
         _rxBuffer = []b;
         state = STATE_IDLE;
@@ -333,6 +403,7 @@ class LampManager extends Ble.BleDelegate {
         _rx = null;
         _battery = null;
         _queue = [];
+        _frags = [];
         _busy = false;
         _rxBuffer = []b;
         state = STATE_IDLE;
@@ -353,26 +424,29 @@ class LampManager extends Ble.BleDelegate {
 
     // ---- Envoi de commandes ------------------------------------------------
 
-    //! Met une trame en file, découpée si nécessaire.
+    //! Met une trame en file. Le decoupage se fait a l'envoi, voir `_pump()`.
     //!
     //! Deux contraintes se cumulent : Connect IQ n'implémente pas les écritures
     //! longues (20 octets maximum), et une seule opération GATT peut être en vol
-    //! à la fois. On découpe donc la trame en fragments de 20 octets, qu'on
-    //! écrit l'un après l'autre — c'est aussi la taille que la lampe emploie
-    //! pour ses propres notifications.
+    //! à la fois. La file retient donc des trames entieres, et la pompe ecrit
+    //! leurs fragments de 20 octets l'un apres l'autre — c'est aussi la taille
+    //! que la lampe emploie pour ses propres notifications.
+    //!
+    //! La file etait auparavant une file de fragments, et son debordement en
+    //! jetait quatre d'un coup : au milieu d'une trame de trois fragments, la
+    //! lampe recevait un morceau orphelin.
     function send(frame as Lang.ByteArray) as Void {
         if (state != STATE_READY || _tx == null) { return; }
-        // Au-delà de quelques fragments en attente, c'est que la lampe ne répond
-        // plus : mieux vaut jeter les plus anciens que gonfler la file.
-        if (_queue.size() >= 16) { _queue = _queue.slice(4, null); }
-        var offset = 0;
-        while (offset < frame.size()) {
-            var end = offset + LC.MAX_WRITE;
-            if (end > frame.size()) { end = frame.size(); }
-            _queue.add(frame.slice(offset, end));
-            offset = end;
-        }
+        // Au-dela de quelques trames en attente, c'est que la lampe ne repond
+        // plus : mieux vaut jeter la plus ancienne que gonfler la file.
+        if (_queue.size() >= QUEUE_MAX_FRAMES) { _queue = _queue.slice(1, null); }
+        _queue.add(frame);
         _pump();
+    }
+
+    //! Vrai quand plus rien n'attend d'etre ecrit.
+    private function _queueEmpty() as Lang.Boolean {
+        return _queue.size() == 0 && _frags.size() == 0;
     }
 
     function setMode(mode as Lang.Number) as Void {
@@ -440,12 +514,25 @@ class LampManager extends Ble.BleDelegate {
     }
 
     private function _pump() as Void {
-        if (_busy || _queue.size() == 0 || _tx == null) { return; }
-        var frame = _queue[0];
-        _queue = _queue.slice(1, null);
+        if (_busy || _tx == null) { return; }
+        if (_frags.size() == 0) {
+            if (_queue.size() == 0) { return; }
+            var frame = _queue[0] as Lang.ByteArray;
+            _queue = _queue.slice(1, null);
+            var offset = 0;
+            while (offset < frame.size()) {
+                var end = offset + LC.MAX_WRITE;
+                if (end > frame.size()) { end = frame.size(); }
+                _frags.add(frame.slice(offset, end));
+                offset = end;
+            }
+        }
+        var chunk = _frags[0] as Lang.ByteArray;
+        _frags = _frags.slice(1, null);
         try {
-            _tx.requestWrite(frame, { :writeType => Ble.WRITE_TYPE_WITH_RESPONSE });
+            _tx.requestWrite(chunk, { :writeType => Ble.WRITE_TYPE_WITH_RESPONSE });
             _busy = true;
+            _busySeconds = 0;
         } catch (e) {
             _busy = false;
             lastError = Labels.of(Rez.Strings.ErrWriteRefused);
@@ -596,9 +683,26 @@ class LampManager extends Ble.BleDelegate {
         _rx = null;
         _battery = null;
         _queue = [];
+        _frags = [];
         _busy = false;
         _rxBuffer = []b;
         status = new LightProtocol.LightStatus();
+        start();
+    }
+
+    //! Ecarte un appareil connecte qui n'est pas une lampe exploitable, et
+    //! repart en recherche. Sert au service manquant comme aux caracteristiques
+    //! ou au descripteur absents : ces deux derniers cas laissaient auparavant
+    //! l'etat sur « Connexion » pour toujours, appareil appaire et rien pour en
+    //! sortir.
+    private function _abandon(device as Ble.Device, error as Lang.String) as Void {
+        lastError = error;
+        _reject(_paired);
+        try { Ble.unpairDevice(device); } catch (e) { }
+        _device = null;
+        _tx = null;
+        _rx = null;
+        _battery = null;
         start();
     }
 
@@ -616,6 +720,7 @@ class LampManager extends Ble.BleDelegate {
             _battery = null;
             _busy = false;
             _queue = [];
+            _frags = [];
             _rxBuffer = []b;
             _needBatterySubscribe = false;
             _identifyStep = -1;
@@ -635,19 +740,15 @@ class LampManager extends Ble.BleDelegate {
         _device = device;
         var service = device.getService(_uuidService);
         if (service == null) {
-            // Ce n'était pas une lampe : on retient son nom pour ne pas la
+            // Ce n'était pas une lampe : on la retient pour ne pas la
             // reprendre au scan suivant, et on relance la recherche.
-            lastError = Labels.of(Rez.Strings.ErrServiceMissing);
-            _reject(_paired);
-            Ble.unpairDevice(device);
-            _device = null;
-            start();
+            _abandon(device, Labels.of(Rez.Strings.ErrServiceMissing));
             return;
         }
         _tx = service.getCharacteristic(_uuidTx);
         _rx = service.getCharacteristic(_uuidRx);
         if (_tx == null || _rx == null) {
-            lastError = Labels.of(Rez.Strings.ErrCharsMissing);
+            _abandon(device, Labels.of(Rez.Strings.ErrCharsMissing));
             return;
         }
 
@@ -662,17 +763,28 @@ class LampManager extends Ble.BleDelegate {
         // l'oubli classique, et il est silencieux.
         var cccd = _rx.getDescriptor(Ble.cccdUuid());
         if (cccd == null) {
-            lastError = Labels.of(Rez.Strings.ErrCccdMissing);
+            _abandon(device, Labels.of(Rez.Strings.ErrCccdMissing));
             return;
         }
         state = STATE_SUBSCRIBING;
-        cccd.requestWrite([0x01, 0x00]b);
+        try {
+            cccd.requestWrite([0x01, 0x00]b);
+        } catch (e) {
+            _abandon(device, Labels.of(Rez.Strings.ErrSubscribeRefused));
+        }
     }
 
     function onDescriptorWrite(descriptor as Ble.Descriptor,
                                writeStatus as Ble.Status) as Void {
         if (writeStatus != Ble.STATUS_SUCCESS) {
             lastError = Labels.of(Rez.Strings.ErrSubscribeRefused);
+        }
+        // Abonnement a la batterie, une fois pret : c'est une operation GATT
+        // comme une autre, elle tenait `_busy` — voir onCharacteristicWrite.
+        if (state == STATE_READY) {
+            _busy = false;
+            _pump();
+            return;
         }
         if (state != STATE_SUBSCRIBING) { return; }
 
@@ -738,9 +850,21 @@ class LampManager extends Ble.BleDelegate {
     //! Appelee sur une tape. L'ecran « Celle-ci ? » posait une question sans
     //! offrir de reponse : la tape y etait avalee sans effet, et il n'y avait
     //! qu'a attendre. Une tape veut dire « c'est bon, j'ai vu » — on abrege.
+    //!
+    //! Une tape **avant** le clignotement l'annule aussi. Elle ne faisait que
+    //! baisser le drapeau d'annonce, et le battement suivant lancait la
+    //! sequence quand meme : on marque donc l'identification comme faite, en
+    //! allumant la lampe si c'etait prevu — c'est ce que le battement aurait
+    //! fait avant de clignoter.
     function cancelIdentify() as Void {
         _identifyPending = false;
-        if (_identifyStep < 0) { return; }
+        if (_identifyStep < 0) {
+            if (!_identifiedOnce && isReady()) {
+                _identifiedOnce = true;
+                _lightUp();
+            }
+            return;
+        }
         _identifyStep = -1;
         var back = (_restoreMode == null) ? LC.BLM_LIGHT_OFF : _restoreMode;
         send(LightProtocol.setMode(back));
@@ -874,11 +998,20 @@ class LampManager extends Ble.BleDelegate {
 
         // Une fois la file videe, on s'abonne a la batterie standard — en
         // supplement du chemin proprietaire, jamais en prealable.
+        //
+        // L'ecriture du descripteur **tient `_busy`** jusqu'a son
+        // `onDescriptorWrite` : c'est une operation GATT, et une commande
+        // envoyee pendant qu'elle est en vol se perdait en silence — la
+        // plateforme n'en admet qu'une a la fois.
         if (!_busy && _needBatterySubscribe && _battery != null) {
             _needBatterySubscribe = false;
             try {
                 var cccd = _battery.getDescriptor(Ble.cccdUuid());
-                if (cccd != null) { cccd.requestWrite([0x01, 0x00]b); }
+                if (cccd != null) {
+                    cccd.requestWrite([0x01, 0x00]b);
+                    _busy = true;
+                    _busySeconds = 0;
+                }
             } catch (e) {
                 lastError = Labels.of(Rez.Strings.ErrBatterySubscribe);
             }
@@ -899,10 +1032,20 @@ class LampManager extends Ble.BleDelegate {
         // La lampe fragmente ses réponses par 20 octets, quel que soit le MTU
         // négocié : il faut réassembler avant de décoder.
         _rxBuffer = _rxBuffer.addAll(value);
+        if (_rxBuffer.size() > RX_MAX) { _rxBuffer = []b; return; }
 
         // Plusieurs trames peuvent s'enchaîner dans le tampon : on les traite
         // toutes, sinon un état spontané resterait coincé derrière une réponse.
         while (_rxBuffer.size() >= LC.HDR_LEN) {
+            // Resynchronisation. La longueur etait lue avant tout controle :
+            // un octet de longueur corrompu a 0xFF faisait attendre 275 octets
+            // qui ne viendraient jamais, et plus aucune notification n'etait
+            // lue jusqu'a la deconnexion. On n'accorde foi a la longueur qu'a
+            // un en-tete dont le CRC est juste ; sinon on avance d'un octet.
+            if (!LightProtocol.headerValid(_rxBuffer)) {
+                _rxBuffer = _rxBuffer.slice(1, null);
+                continue;
+            }
             var expected = LightProtocol.frameLength(_rxBuffer);
             if (_rxBuffer.size() < expected) { return; }
             var frame = _rxBuffer.slice(0, expected);
@@ -1058,7 +1201,7 @@ class LampManager extends Ble.BleDelegate {
     static function longestStateHint() as Lang.String {
         return _longest([ Rez.Strings.MsgSearchingHint, Rez.Strings.MsgConnectingHint,
                           Rez.Strings.MsgIdentifyHint, Rez.Strings.MsgNoBleHint,
-                          Rez.Strings.MsgIdleHint ]);
+                          Rez.Strings.MsgIdleHint, Rez.Strings.MsgIdleHintTimer ]);
     }
 
     private static function _longest(ids as Lang.Array) as Lang.String {

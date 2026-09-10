@@ -109,6 +109,22 @@ class LampPanel {
 
     private var _settingsBox as Lang.Array or Null = null;
 
+    //! Precision affichee au repos a la place de « toucher pour lancer la
+    //! recherche ». Le champ de donnees la pose sur les modeles a boutons, ou
+    //! aucune tape n'atteint jamais la case : la recherche y part avec le
+    //! chrono, et c'est ce qu'il faut ecrire.
+    var idleHint as Lang.String or Null = null;
+
+    //! Caches de mesure de texte. La page se redessine chaque seconde, et
+    //! chaque image mesurait une vingtaine de chaines dans jusqu'a cinq polices
+    //! pour retomber sur le meme resultat : sur un Edge 530, c'est du
+    //! processeur — donc de la batterie — pour rien. La cle change quand la
+    //! place ou le nombre de modes change, et seulement la.
+    private var _heroKey as Lang.Number = -1;
+    private var _heroFont as Graphics.FontDefinition = Graphics.FONT_SMALL;
+    private var _labelKey as Lang.Number = -1;
+    private var _labelForm as Lang.Number = LABEL_FULL;
+
     function initialize(lamp as LampManager, auto as AutoController) {
         _lamp = lamp;
         _auto = auto;
@@ -453,12 +469,19 @@ class LampPanel {
         // La police est choisie pour le **plus long libelle que la lampe peut
         // afficher**, pas pour celui du moment : sinon passer de « Route
         // eleve » a « Croisement moyen » faisait sauter la taille du texte a
-        // chaque tape, et la page semblait bouger.
-        var font = _fitFont(dc, _longestModeLabel(label), avail, [
-            Graphics.FONT_LARGE, Graphics.FONT_MEDIUM, Graphics.FONT_SMALL,
-            Graphics.FONT_TINY, Graphics.FONT_XTINY
-        ]);
-        if (dc.getFontHeight(font) > h) { font = Graphics.FONT_XTINY; }
+        // chaque tape, et la page semblait bouger. Mise en cache sur la place
+        // disponible et le nombre de modes declares, voir `_heroKey`.
+        var declared = _lamp.declaredModes();
+        var key = (avail * 64 + h) * 128 + ((declared == null) ? 0 : declared.size());
+        if (key != _heroKey) {
+            _heroFont = _fitFont(dc, _longestModeLabel(label), avail, [
+                Graphics.FONT_LARGE, Graphics.FONT_MEDIUM, Graphics.FONT_SMALL,
+                Graphics.FONT_TINY, Graphics.FONT_XTINY
+            ]);
+            if (dc.getFontHeight(_heroFont) > h) { _heroFont = Graphics.FONT_XTINY; }
+            _heroKey = key;
+        }
+        var font = _heroFont;
         dc.setColor(_modeColor(mode), Graphics.COLOR_TRANSPARENT);
         dc.drawText(x, y + h / 2, font, label,
                     Graphics.TEXT_JUSTIFY_LEFT | Graphics.TEXT_JUSTIFY_VCENTER);
@@ -526,6 +549,15 @@ class LampPanel {
     //! défaut d'affichage, pas comme une adaptation.
     private function _labelling(dc as Graphics.Dc, cats as Lang.Array,
                                 tw as Lang.Number, h as Lang.Number) as Lang.Number {
+        var key = (tw * 1024 + h) * 8 + cats.size();
+        if (key == _labelKey) { return _labelForm; }
+        _labelForm = _measureLabelling(dc, cats, tw, h);
+        _labelKey = key;
+        return _labelForm;
+    }
+
+    private function _measureLabelling(dc as Graphics.Dc, cats as Lang.Array,
+                                       tw as Lang.Number, h as Lang.Number) as Lang.Number {
         var lh = dc.getFontHeight(Graphics.FONT_XTINY);
         if (h < lh * 5 / 2) { return LABEL_NONE; }
 
@@ -857,8 +889,9 @@ class LampPanel {
         // précisions, elle garde son corps quand le message change.
         var hintFont = _fitFont(dc, LampManager.longestStateHint(), w - margin,
             [Graphics.FONT_SMALL, Graphics.FONT_TINY, Graphics.FONT_XTINY]);
+        var hint = (idle && idleHint != null) ? idleHint : _lamp.stateHint();
         dc.setColor(LC.UI_DIM, Graphics.COLOR_TRANSPARENT);
-        dc.drawText(mid, h * 78 / 100, hintFont, _lamp.stateHint(),
+        dc.drawText(mid, h * 78 / 100, hintFont, hint,
                     Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER);
 
         // Trois points qui défilent : la seule chose qui dise « ça travaille »
@@ -963,7 +996,7 @@ class LampPanel {
                 break;
             }
         }
-        _lastTap = [x, y, hit];
+        _noteTap(x, y, hit);
         return hit;
     }
 
@@ -1020,11 +1053,34 @@ class LampPanel {
     //! Gardee volontairement. Elle a tranche en une lecture ce que ni le
     //! simulateur ni le journal de plantage ne montraient : sur l'Edge 1050,
     //! `480x707 ko t=248,304>-101` a prouve que les coordonnees etaient justes
-    //! et que le vrai probleme etait une liaison jamais etablie. Pour la
-    //! reactiver, mettre `panel.debug = true` dans la vue concernee.
+    //! et que le vrai probleme etait une liaison jamais etablie.
+    //!
+    //! **Absente des binaires de diffusion.** Les deux jungles excluent
+    //! l'annotation `debug` ; il reste alors les coquilles vides annotees
+    //! `nodebug`, et rien de tout ceci ne pese dans les 128 Ko du champ. Pour
+    //! la reactiver : dans le jungle, remplacer `excludeAnnotations = debug`
+    //! par `nodebug`, puis mettre `panel.debug = true` dans la vue concernee.
     var debug as Lang.Boolean = false;
+
+    (:debug)
     private var _lastTap as Lang.Array or Null = null;
 
+    (:debug)
+    private function _noteTap(x as Lang.Number, y as Lang.Number,
+                              hit as Lang.Number or Null) as Void {
+        _lastTap = [x, y, hit];
+    }
+
+    (:nodebug)
+    private function _noteTap(x as Lang.Number, y as Lang.Number,
+                              hit as Lang.Number or Null) as Void {
+    }
+
+    (:nodebug)
+    private function _drawDebug(dc as Graphics.Dc) as Void {
+    }
+
+    (:debug)
     private function _drawDebug(dc as Graphics.Dc) as Void {
         if (!debug) { return; }
         // `m=` est le mode **brut** annonce par la lampe, pas son libelle : c'est

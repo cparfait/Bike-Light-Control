@@ -15,8 +15,9 @@
     <string id="SetLowBattery">Limite de bateria fraca (%)</string>
     <string id="SetSyncOff">Desligar a luz no fim</string>
     <string id="SetLightOnStart">Ligar a luz assim que responder</string>
-    <string id="FitMode">Modo da luz</string>
+    <string id="SetSearchOnStart">Procurar a luz ao iniciar o cronómetro</string>
+    <string id="FitMode">Nível da luz</string>
     <string id="FitBattery">Bateria da luz</string>
-    <string id="FitModeUnit">modo</string>
+    <string id="FitModeUnit">nível</string>
     <string id="FitBatteryUnit">%</string>
 </strings>

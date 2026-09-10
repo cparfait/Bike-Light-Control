@@ -70,6 +70,7 @@
     <string id="StUnsupported">BLE非対応</string>
     <string id="MsgIdle">検出</string>
     <string id="MsgIdleHint">タップして検索を開始</string>
+    <string id="MsgIdleHintTimer">タイマー開始で検索</string>
     <string id="MsgSearching">検索中</string>
     <string id="MsgSearchingHint">ライトを探しています</string>
     <string id="MsgConnecting">接続中</string>

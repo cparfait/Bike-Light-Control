@@ -28,13 +28,8 @@
     <string id="AvailableModes">Modi disponibili</string>
     <string id="AppSettings">Impostazioni app</string>
     <string id="HintSeparate">Separate dal campo</string>
-    <string id="SpeedAdjust">Regola con la velocità</string>
     <string id="SearchAuto">Cerca all'avvio</string>
-    <string id="OffAtEnd">Spegni a fine attività</string>
     <string id="OnAtStart">Accendi al rilevamento</string>
-    <string id="ThresholdLow">Soglia bassa</string>
-    <string id="ThresholdMid">Soglia media</string>
-    <string id="ThresholdHigh">Soglia alta</string>
     <string id="LowBattery">Batteria scarica</string>
     <string id="StateActive">Acceso</string>
     <string id="StateInactive">Spento</string>
@@ -46,6 +41,5 @@
     <string id="ActiveOutOf"> attivi su </string>
     <string id="UnitSec">s</string>
     <string id="UnitMin">min</string>
-    <string id="UnitKmh">km/h</string>
     <string id="UnitPct">%</string>
 </strings>

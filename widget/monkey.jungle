@@ -1,5 +1,10 @@
 project.manifest = manifest.xml
 
+# Surcouche de diagnostic de LampPanel, hors des binaires de diffusion. Pour
+# la lire sur l'appareil : remplacer `debug` par `nodebug` ici, et mettre
+# `panel.debug = true` dans la vue concernee.
+base.excludeAnnotations = debug
+
 # Meme code protocolaire que le data field : une seule verite.
 base.sourcePath = ../shared;source
 

@@ -12,7 +12,7 @@
   Liste des produits identique au data field — voir docs/compatibilite-edge.md.
 -->
 <iq:manifest xmlns:iq="http://www.garmin.com/xml/connectiq" version="3">
-    <iq:application entry="IgEdgeWidget" id="596b574563f84202ab48cfe6842400f1" launcherIcon="@Drawables.LauncherIcon"
+    <iq:application entry="PanelApp" id="596b574563f84202ab48cfe6842400f1" launcherIcon="@Drawables.LauncherIcon"
                     minApiLevel="3.1.0" name="@Strings.AppName" type="watch-app">
         <iq:products>
             <iq:product id="edge530"/>

@@ -52,6 +52,7 @@ constructeur. Le relevé complet est dans [docs/protocole-vs1800s.md](docs/proto
 | 🔋 **Repli sur batterie faible** | L'intensité est plafonnée pour que la lampe tienne jusqu'au bout de la sortie, au lieu de mourir au 40e kilomètre. |
 | ⏱ **Extinction à l'arrêt, pas à la pause** | La lampe s'éteint quand on arrête le chronomètre. Au feu rouge, elle reste allumée. |
 | 👆 **Reprise en main** | Une tape sur le champ fait défiler les modes, la page complète permet d'en choisir un. La tape suivante rend la main à l'automatisme. |
+| ▶️ **La recherche part avec le chrono** | Le champ cherche la lampe au démarrage du chrono, sur tous les modèles, boutons compris. La recherche est bornée : sans lampe, pas de scan qui vide la batterie sur toute la sortie. |
 | 📈 **Enregistrement FIT** | Le mode et la batterie de la lampe partent dans le fichier FIT et apparaissent dans Garmin Connect. |
 | 🎯 **Identification de la lampe** | Avec plusieurs lampes autour, la plus proche est retenue — et **clignote deux fois** pour se désigner. Une sortie de secours passe à la suivante. |
 | 📱 **Application compagnon** | Un panneau de pilotage hors activité : allumer avant de partir, régler les automatismes de la lampe, consulter la tuile de résumé. |
@@ -109,7 +110,7 @@ store).
 bash app/build.sh test-all
 ```
 
-Lance les 55 tests unitaires sur **quatre profils** — 530, MTB, 1040, 1050 — et non sur le seul
+Lance les 58 tests unitaires sur **quatre profils** — 530, MTB, 1040, 1050 — et non sur le seul
 1050. Les tests de mise en page parcourent les six formats d'écran quel que soit le profil, mais
 le reste du binaire s'exécute sur celui du simulateur : une suite qui ne tourne que sur un 1050
 ne prouve rien des douze autres. `bash app/build.sh test` pour le 1050 seul.
@@ -181,7 +182,7 @@ shared/                             protocole, couche BLE, automatismes, page de
 app/                                champ de données — « Bike Light Control »
   build.sh                          construction des deux binaires, tests et paquets
   source/                           point d'entrée, vue, écriture FIT
-  source-test/                      55 tests unitaires
+  source-test/                      58 tests unitaires
   resources/fit/                    déclaration des champs FIT pour Garmin Connect
   resources-icon-*/                 icône de lanceur, une par taille d'écran (35 à 68 px)
 widget/                             application — « Bike Light Panel »
@@ -212,7 +213,7 @@ captures/                           rapports d'analyse (logs et APK bruts exclus
 | | |
 |---|---|
 | Protocole BLE | ✅ schéma complet, confirmé par capture HCI |
-| Implémentation en Monkey C | ✅ 55 tests, dont 12 sur les octets réels de la capture |
+| Implémentation en Monkey C | ✅ 58 tests, dont 12 sur les octets réels de la capture |
 | Compilation des 13 cibles | ✅ dans le budget, 13 langues comprises |
 | Edge 1050, sur l'appareil | ✅ connexion et pilotage fonctionnels — champ, application et tuile validés |
 | Interface | ✅ mise en page vérifiée sur les 6 formats d'écran |

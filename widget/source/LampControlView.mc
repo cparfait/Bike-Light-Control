@@ -27,6 +27,8 @@ class LampControlView extends WatchUi.View {
     //! `Toybox.Timer` est proscrit dans un data field (voir LampManager) mais
     //! parfaitement legitime dans une application.
     private var _timer as Timer.Timer = new Timer.Timer();
+    private var _ticking as Lang.Boolean = false;
+    private var _visible as Lang.Boolean = false;
 
     //! Dernières valeurs écrites, pour ne pas réécrire la flash à chaque image.
     private var _savedBattery as Lang.Number or Null = null;
@@ -49,12 +51,21 @@ class LampControlView extends WatchUi.View {
         panel.debug = false;
     }
 
+    //! Le minuteur n'est **pas** arrete quand la page est masquee par le menu
+    //! des reglages. Il l'etait, et `LampManager.tick()` s'arretait avec lui :
+    //! le compteur de cycle de la recherche restait fige pendant qu'on lisait
+    //! le menu, mais le scan materiel, lui, continuait — sans plafond, et sans
+    //! pause. Le battement continue donc ; seul le redessin s'interrompt.
     function onShow() as Void {
-        _timer.start(method(:onTick), 1000, true);
+        _visible = true;
+        if (!_ticking) {
+            _timer.start(method(:onTick), 1000, true);
+            _ticking = true;
+        }
     }
 
     function onHide() as Void {
-        _timer.stop();
+        _visible = false;
     }
 
     //! Cadence la liaison et force le rafraichissement : c'est ce qui fait
@@ -62,7 +73,7 @@ class LampControlView extends WatchUi.View {
     //! yeux de l'utilisateur, au lieu d'attendre qu'il touche l'ecran.
     function onTick() as Void {
         _lamp.tick();
-        WatchUi.requestUpdate();
+        if (_visible) { WatchUi.requestUpdate(); }
     }
 
     function onUpdate(dc as Graphics.Dc) as Void {

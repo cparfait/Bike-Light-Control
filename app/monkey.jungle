@@ -1,5 +1,10 @@
 project.manifest = manifest.xml
 
+# Surcouche de diagnostic de LampPanel, hors des binaires de diffusion. Pour
+# la lire sur l'appareil : remplacer `debug` par `nodebug` ici, et mettre
+# `panel.debug = true` dans la vue concernee.
+base.excludeAnnotations = debug
+
 # `shared` contient le protocole et la couche BLE, partagés avec le widget.
 # Un chemin de sources commun plutôt qu'un barrel : moins d'outillage, et les
 # deux binaires compilent depuis la même vérité.

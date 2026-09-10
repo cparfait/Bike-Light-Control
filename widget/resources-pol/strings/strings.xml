@@ -28,13 +28,8 @@
     <string id="AvailableModes">Dostępne tryby</string>
     <string id="AppSettings">Ustawienia aplikacji</string>
     <string id="HintSeparate">Osobno od pola danych</string>
-    <string id="SpeedAdjust">Dostosuj do prędkości</string>
     <string id="SearchAuto">Szukaj przy starcie</string>
-    <string id="OffAtEnd">Wyłącz po zakończeniu</string>
     <string id="OnAtStart">Włącz po wykryciu</string>
-    <string id="ThresholdLow">Próg niski</string>
-    <string id="ThresholdMid">Próg średni</string>
-    <string id="ThresholdHigh">Próg wysoki</string>
     <string id="LowBattery">Niska bateria</string>
     <string id="StateActive">Wł</string>
     <string id="StateInactive">Wył</string>
@@ -46,6 +41,5 @@
     <string id="ActiveOutOf"> aktywnych z </string>
     <string id="UnitSec">s</string>
     <string id="UnitMin">min</string>
-    <string id="UnitKmh">km/h</string>
     <string id="UnitPct">%</string>
 </strings>

@@ -63,13 +63,14 @@
     <string id="PrefixMode">Modo </string>
     <string id="LightGeneric">Luz</string>
     <string id="BadgeAuto">AUTO</string>
-    <string id="BadgeManual">MAN</string>
+    <string id="BadgeManual">MANUAL</string>
     <string id="StScanning">Buscando</string>
     <string id="StConnecting">Conectando</string>
     <string id="StReady">OK</string>
     <string id="StUnsupported">Sin BLE</string>
     <string id="MsgIdle">Detectar</string>
     <string id="MsgIdleHint">toca para iniciar la búsqueda</string>
+    <string id="MsgIdleHintTimer">arranca con el cronómetro</string>
     <string id="MsgSearching">Buscando</string>
     <string id="MsgSearchingHint">tu luz</string>
     <string id="MsgConnecting">Conectando</string>

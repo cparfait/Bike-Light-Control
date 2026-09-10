@@ -15,8 +15,9 @@
     <string id="SetLowBattery">배터리 부족 기준 (%)</string>
     <string id="SetSyncOff">종료 시 라이트 끄기</string>
     <string id="SetLightOnStart">라이트가 응답하면 켜기</string>
-    <string id="FitMode">라이트 모드</string>
+    <string id="SetSearchOnStart">타이머 시작 시 라이트 검색</string>
+    <string id="FitMode">라이트 레벨</string>
     <string id="FitBattery">라이트 배터리</string>
-    <string id="FitModeUnit">모드</string>
+    <string id="FitModeUnit">레벨</string>
     <string id="FitBatteryUnit">%</string>
 </strings>

@@ -15,8 +15,9 @@
     <string id="SetLowBattery">Drempel lage accu (%)</string>
     <string id="SetSyncOff">Licht uit aan einde rit</string>
     <string id="SetLightOnStart">Lamp aan zodra hij reageert</string>
-    <string id="FitMode">Lichtmodus</string>
+    <string id="SetSearchOnStart">Licht zoeken als de timer start</string>
+    <string id="FitMode">Lichtniveau</string>
     <string id="FitBattery">Accu licht</string>
-    <string id="FitModeUnit">modus</string>
+    <string id="FitModeUnit">niveau</string>
     <string id="FitBatteryUnit">%</string>
 </strings>

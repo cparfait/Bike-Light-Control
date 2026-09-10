@@ -43,17 +43,12 @@
     <!-- Reglages propres a l'application -->
     <string id="AppSettings">Réglages de l'application</string>
     <string id="HintSeparate">Distincts du champ de données</string>
-    <string id="SpeedAdjust">Ajustement selon vitesse</string>
     <string id="SearchAuto">Chercher au démarrage</string>
-    <string id="OffAtEnd">Éteindre en fin d'activité</string>
     <!-- Le libelle differe de celui du champ de donnees, et ce n'est pas une
          negligence : cette page n'a pas d'activite, donc pas de depart. Le
          moment equivalent est celui ou la lampe est trouvee. Meme propriete
          `lightOnStart`, mais Connect IQ isole l'etat des deux binaires. -->
     <string id="OnAtStart">Allumer à la détection</string>
-    <string id="ThresholdLow">Seuil bas</string>
-    <string id="ThresholdMid">Seuil moyen</string>
-    <string id="ThresholdHigh">Seuil haut</string>
     <string id="LowBattery">Batterie faible</string>
 
     <!-- Etats d'interrupteur et mots isoles -->
@@ -71,6 +66,5 @@
     <!-- Unites -->
     <string id="UnitSec">s</string>
     <string id="UnitMin">min</string>
-    <string id="UnitKmh">km/h</string>
     <string id="UnitPct">%</string>
 </strings>

@@ -13,10 +13,13 @@
 
     <!-- Allumage : au cran le plus faible des que la lampe repond, puis au
          depart du chrono. Decoche pour les sorties de jour : le compteur ne
-         sait pas s'il fait nuit, et allumer systematiquement viderait la lampe.
-
-         Il n'y a **pas** de reglage « chercher au demarrage » ici : le champ de
-         donnees ne cherche jamais tout seul, il attend un geste. Voir
-         LampApp.onStart(). -->
+         sait pas s'il fait nuit, et allumer systematiquement viderait la lampe. -->
     <property id="lightOnStart" type="boolean">true</property>
+
+    <!-- Recherche de la lampe au depart du chrono, et a chaque reprise si elle
+         s'est perdue. C'est le seul geste commun aux 13 modeles : sur un Edge
+         a boutons, aucune tape n'atteint un champ de donnees. Bornee dans le
+         temps par LampManager.SCAN_MAX_S. Decoche pour les sorties de jour sans
+         lampe : la tape reste possible sur les tactiles. -->
+    <property id="searchOnStart" type="boolean">true</property>
 </properties>

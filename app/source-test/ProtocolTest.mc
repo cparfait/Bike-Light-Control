@@ -169,6 +169,36 @@ module ProtocolTest {
 
     // ---- Décapsulation -----------------------------------------------------
 
+    //! Un en-tete n'est cru que si son CRC est juste : c'est ce qui autorise
+    //! le reassemblage a lire l'octet de longueur, et a se resynchroniser
+    //! sinon. Un octet de bruit devant une trame valide ne doit pas la cacher.
+    (:test)
+    function headerValidGuardsTheLengthByte(logger as Test.Logger) as Lang.Boolean {
+        var good = LightProtocol.readCurrentMode();
+        if (!LightProtocol.headerValid(good)) {
+            logger.error("un en-tete valide a ete refuse");
+            return false;
+        }
+        var corrupt = good.slice(0, null);
+        corrupt[8] = 0xFF;   // longueur corrompue : 255 octets a attendre
+        if (LightProtocol.headerValid(corrupt)) {
+            logger.error("un en-tete a longueur corrompue a ete accepte");
+            return false;
+        }
+        // Un octet de bruit devant : l'en-tete decale est refuse, et un pas
+        // de resynchronisation retrouve le bon.
+        var noisy = [0x42]b.addAll(good);
+        if (LightProtocol.headerValid(noisy)) {
+            logger.error("un en-tete decale d'un octet a ete accepte");
+            return false;
+        }
+        if (!LightProtocol.headerValid(noisy.slice(1, null))) {
+            logger.error("la resynchronisation d'un octet n'a pas retrouve l'en-tete");
+            return false;
+        }
+        return true;
+    }
+
     (:test)
     function unframeRejectsBadCrc(logger as Test.Logger) as Lang.Boolean {
         var good = LightProtocol.readCurrentMode();
@@ -578,6 +608,47 @@ module ProtocolTest {
         var m = a.onRideState(AutoController.RIDE_RUNNING, LC.BLM_LIGHT_OFF);
         if (m == null || m != a.ladder()[0]) {
             logger.error("premier cran attendu au depart, obtenu " + m);
+            return false;
+        }
+        return true;
+    }
+
+    //! L'arret eteint **meme apres un geste manuel**. Le test sur `enabled`
+    //! sortait avant : une tape sur un mode pendant la sortie, puis l'arret du
+    //! chrono, et la lampe restait allumee.
+    (:test)
+    function stoppingSwitchesOffEvenInManualMode(logger as Test.Logger) as Lang.Boolean {
+        var a = new AutoController();
+        a.setSupportedModes(null, LC.BLT_FRONT_LIGHT);
+        a.onRideState(AutoController.RIDE_RUNNING, null);
+        a.setEnabledManually(false);
+
+        var m = a.onRideState(AutoController.RIDE_STOPPED, LC.BLM_HBEAM_HSTEADY);
+        if (m == null || m != LC.BLM_LIGHT_OFF) {
+            logger.error("extinction attendue a l'arret en mode manuel, obtenu " + m);
+            return false;
+        }
+        // Et l'arret leve le verrou : la sortie suivante repart en automatique.
+        if (a.isManuallyHeld()) {
+            logger.error("le verrou manuel a survecu a l'arret");
+            return false;
+        }
+        return true;
+    }
+
+    //! Le mode manuel ne suspend que l'ajustement selon la vitesse : le depart
+    //! suivant, verrou leve, allume a nouveau le premier cran.
+    (:test)
+    function manualHoldEndsWithTheRide(logger as Test.Logger) as Lang.Boolean {
+        var a = new AutoController();
+        a.setSupportedModes(null, LC.BLT_FRONT_LIGHT);
+        a.onRideState(AutoController.RIDE_RUNNING, null);
+        a.setEnabledManually(false);
+        a.onRideState(AutoController.RIDE_STOPPED, LC.BLM_LIGHT_OFF);
+
+        var m = a.onRideState(AutoController.RIDE_RUNNING, LC.BLM_LIGHT_OFF);
+        if (m == null || m != a.ladder()[0]) {
+            logger.error("premier cran attendu au depart suivant, obtenu " + m);
             return false;
         }
         return true;

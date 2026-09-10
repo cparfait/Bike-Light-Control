@@ -28,13 +28,8 @@
     <string id="AvailableModes">Modos disponibles</string>
     <string id="AppSettings">Ajustes de la app</string>
     <string id="HintSeparate">Aparte del campo</string>
-    <string id="SpeedAdjust">Ajustar por velocidad</string>
     <string id="SearchAuto">Buscar al iniciar</string>
-    <string id="OffAtEnd">Apagar al terminar</string>
     <string id="OnAtStart">Encender al detectarla</string>
-    <string id="ThresholdLow">Umbral bajo</string>
-    <string id="ThresholdMid">Umbral medio</string>
-    <string id="ThresholdHigh">Umbral alto</string>
     <string id="LowBattery">Batería baja</string>
     <string id="StateActive">Encendido</string>
     <string id="StateInactive">Apagado</string>
@@ -46,6 +41,5 @@
     <string id="ActiveOutOf"> activos de </string>
     <string id="UnitSec">s</string>
     <string id="UnitMin">min</string>
-    <string id="UnitKmh">km/h</string>
     <string id="UnitPct">%</string>
 </strings>

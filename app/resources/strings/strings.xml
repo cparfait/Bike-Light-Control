@@ -26,12 +26,15 @@
     <string id="SetLowBattery">Low battery threshold (%)</string>
     <string id="SetSyncOff">Switch light off when ride ends</string>
     <string id="SetLightOnStart">Switch light on when found, and at ride start</string>
+    <string id="SetSearchOnStart">Search for the light when the timer starts</string>
 
     <!-- Noms des champs ecrits dans le FIT, visibles dans Garmin Connect -->
-    <string id="FitMode">Light mode</string>
+    <!-- Le niveau d'intensite, pas le numero de mode : 0 eteint, puis le cran
+         a partir de 1. Voir LampView._fitLevel(). -->
+    <string id="FitMode">Light level</string>
     <string id="FitBattery">Light battery</string>
-    <!-- `unitLabel` est obligatoire sur chaque champ FIT : le mode
+    <!-- `unitLabel` est obligatoire sur chaque champ FIT : le niveau
          n'a pas d'unite au sens propre, on met le mot lui-meme. -->
-    <string id="FitModeUnit">mode</string>
+    <string id="FitModeUnit">level</string>
     <string id="FitBatteryUnit">%</string>
 </strings>

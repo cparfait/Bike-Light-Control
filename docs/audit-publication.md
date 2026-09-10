@@ -51,9 +51,41 @@ Deux points de l'audit sont volontairement laissés en l'état :
 
 - **Le budget mémoire n'est toujours pas mesuré.** La taille du `.prg` n'est pas celle du tas,
   et rien dans le SDK ne la donne hors exécution.
-- **Les noms internes** (`LampApp`, `IgEdgeWidget`, identifiants du manifeste) gardent leur
-  ancienne forme. Ils ne sont visibles ni dans le store ni sur le compteur, et changer un
-  identifiant d'application couperait le lien avec les réglages déjà enregistrés.
+- **Les identifiants du manifeste** gardent leur ancienne forme : changer un identifiant
+  d'application couperait le lien avec les réglages déjà enregistrés. Les noms de classe, eux,
+  ont été renommés le 10/09 (`IgEdgeWidget` → `PanelApp`).
+
+---
+
+## 0 ter. Troisième passage — 10/09/2026
+
+Audit en profondeur du code, de l'énergie, de l'ergonomie et de la sécurité, corrigé le jour
+même. Le constat détaillé est dans le CHANGELOG ; l'essentiel :
+
+| Point | Gravité | Ce qui a été fait |
+|---|---|---|
+| Le champ ne cherchait la lampe que sur une tape : jamais sur 530, 540, 550, MTB | bloquant | recherche au départ et à chaque reprise du chrono, réglage `searchOnStart` dans Garmin Connect |
+| L'extinction à l'arrêt était ignorée après un geste manuel | bloquant | `onRideState()` traite l'arrêt avant le test sur `enabled` ; 2 tests |
+| Le filet `shutdown()` avait une branche impossible (trame de 28 octets) | bloquant | branche retirée, limite documentée : la garantie est l'arrêt du chrono |
+| Recherche BLE jamais bornée | énergie | plafond `SCAN_MAX_S`, retour au repos |
+| Scan actif pendant le menu de l'application | énergie | le battement survit à `onHide` |
+| Mesures de texte répétées à chaque image | énergie | caches de police dans `LampPanel` |
+| Abonnement batterie sans `_busy` : collision GATT | BLE | `_busy` tenu jusqu'à `onDescriptorWrite` |
+| Pas de chien de garde sur `_busy` | BLE | `BUSY_MAX_S` |
+| Tampon de réception sans resynchronisation | BLE | `headerValid()` avant lecture de la longueur ; 1 test |
+| Caractéristiques ou CCCD absents : état figé | BLE | `_abandon()` écarte et relance |
+| File de fragments jetés au milieu d'une trame | BLE | file de trames entières |
+| « Autre lampe » avec une seule lampe : condamnée | ergonomie | rejets oubliés après deux fenêtres vides |
+| Annulation de l'identification avant le clignotement sans effet | ergonomie | `cancelIdentify()` marque l'identification faite |
+| Réglages sans effet dans l'application compagnon | ergonomie | seuils et extinction retirés du menu |
+| Batterie faible : couleur seule | ergonomie | un signal sonore au passage du seuil |
+| FIT : 0 % par défaut, mode brut illisible | FIT | rien tant que la lampe n'a pas répondu ; niveau d'intensité au lieu du numéro de mode |
+| Surcouche de diagnostic compilée en release | code | annotation `debug` exclue par les jungles |
+| Badge anglais « MAN », compte de tests périmé | détail | « MANUAL », 58 tests |
+
+Ce qui n'a **pas** été fait, et pourquoi : le découpage de `LampManager` en scan / identification
+/ GATT. Il rendrait la machine à états testable sans pile BLE, mais c'est un chantier à part, et
+la profondeur de pile documentée dans `LampPanel` invite à la prudence.
 
 ---
 

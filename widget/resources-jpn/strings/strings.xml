@@ -28,13 +28,8 @@
     <string id="AvailableModes">使用可能なモード</string>
     <string id="AppSettings">アプリ設定</string>
     <string id="HintSeparate">データ項目とは別</string>
-    <string id="SpeedAdjust">速度で調整</string>
     <string id="SearchAuto">起動時に探す</string>
-    <string id="OffAtEnd">終了時に消灯</string>
     <string id="OnAtStart">検出時に点灯</string>
-    <string id="ThresholdLow">低しきい値</string>
-    <string id="ThresholdMid">中しきい値</string>
-    <string id="ThresholdHigh">高しきい値</string>
     <string id="LowBattery">バッテリー低下</string>
     <string id="StateActive">オン</string>
     <string id="StateInactive">オフ</string>
@@ -46,6 +41,5 @@
     <string id="ActiveOutOf"> 有効 / </string>
     <string id="UnitSec">秒</string>
     <string id="UnitMin">分</string>
-    <string id="UnitKmh">km/h</string>
     <string id="UnitPct">%</string>
 </strings>

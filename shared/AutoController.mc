@@ -108,15 +108,18 @@ class AutoController {
     //! Statique et lue a la volee : elle ne concerne pas l'ajustement selon la
     //! vitesse, mais les deux binaires ont besoin de la meme reponse et c'est
     //! ici que vit deja l'acces aux reglages.
-    static function searchOnStart() as Lang.Boolean {
+    //!
+    //! `fallback` est la valeur de `properties.xml` du binaire appelant : vrai
+    //! pour le champ de donnees, faux pour l'application compagnon. Un repli
+    //! unique ferait chercher la lampe — ou ne pas la chercher — a contresens
+    //! du reglage le jour ou la propriete devient illisible.
+    static function searchOnStart(fallback as Lang.Boolean) as Lang.Boolean {
         try {
             var v = Application.Properties.getValue("searchOnStart");
             if (v instanceof Lang.Boolean) { return v; }
         } catch (e) {
         }
-        // Meme valeur que `properties.xml` : un repli qui dirait le contraire
-        // ferait chercher la lampe le jour ou la propriete devient illisible.
-        return false;
+        return fallback;
     }
 
     //! Vrai si la lampe doit s'allumer d'elle-meme, sans qu'on le demande.
@@ -151,6 +154,11 @@ class AutoController {
     function setEnabledFromSettings(on as Lang.Boolean) as Void {
         enabled = on;
         _manualHold = false;
+    }
+
+    //! Vrai tant qu'un geste manuel tient l'ajustement suspendu.
+    function isManuallyHeld() as Lang.Boolean {
+        return _manualHold;
     }
 
     private function _sortedAscending(values as Lang.Array) as Lang.Array {
@@ -285,23 +293,39 @@ class AutoController {
     //! Reprendre après une pause ne renvoie pas non plus d'allumage doux : la
     //! lampe est restée dans son mode, et le geste manuel de l'utilisateur ne
     //! doit pas être annulé par un redémarrage de chrono.
+    //!
+    //! **L'arret eteint meme en mode manuel.** Le test sur `enabled` sortait
+    //! avant le traitement de l'arret : une tape sur un mode pendant la sortie,
+    //! puis l'arret du chrono, et la lampe restait allumee — a rebours de ce que
+    //! promet le reglage, et sans que rien ne le dise. Seul l'ajustement selon
+    //! la vitesse est suspendu par un geste manuel ; l'extinction de fin de
+    //! sortie, elle, est un reglage a part entiere et s'applique toujours.
+    //!
+    //! L'arret leve aussi le verrou manuel : un choix fait a la main vaut pour
+    //! la sortie en cours, pas pour la suivante — le champ de donnees reste
+    //! charge d'une activite a l'autre.
     function onRideState(rideState as Lang.Number,
                          currentMode as Lang.Number or Null) as Lang.Number or Null {
         if (rideState == _rideState) { return null; }
         var previous = _rideState;
         _rideState = rideState;
         _riding = (rideState == RIDE_RUNNING);
-        if (!enabled) { return null; }
 
         if (rideState == RIDE_PAUSED) { return null; }
 
         if (rideState == RIDE_STOPPED) {
             _index = 0;
             _band = 0;
+            if (_manualHold) {
+                _manualHold = false;
+                enabled = _boolSetting("autoEnabled", true);
+            }
             if (!_syncOff) { return null; }
             if (currentMode != null && currentMode == LC.BLM_LIGHT_OFF) { return null; }
             return LC.BLM_LIGHT_OFF;            // F6 : extinction en fin de sortie
         }
+
+        if (!enabled) { return null; }
 
         // Reprise après pause : rien à faire, la lampe n'a pas changé d'état.
         if (previous == RIDE_PAUSED) { return null; }
