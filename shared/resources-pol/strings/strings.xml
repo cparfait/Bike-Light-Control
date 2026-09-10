@@ -71,7 +71,7 @@
     <string id="MsgIdle">Wykryj</string>
     <string id="MsgIdleHint">dotknij, aby szukać</string>
     <string id="MsgIdleHintTimer">rusza ze stoperem</string>
-    <string id="MsgIdleHintLap">Lap, aby szukać</string>
+    <string id="MsgIdleHintLap">naciśnij Lap, aby szukać</string>
     <string id="MsgSearching">Szukanie</string>
     <string id="MsgSearchingHint">twojej lampki</string>
     <string id="MsgConnecting">Łączenie</string>

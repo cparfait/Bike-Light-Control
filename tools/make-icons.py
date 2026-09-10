@@ -59,6 +59,57 @@ SIZES = {
 }
 
 
+def draw_headlight(size, frame):
+    """Icone de l'application compagnon : le pictogramme de phare.
+
+    **Le meme que sur ses tuiles**, celui du tableau de bord d'une voiture : un
+    « D » couche — le reflecteur, vu de dessus — et les barres du faisceau. La
+    page de pilotage le montre en grand des qu'on l'ouvre ; le retrouver dans le
+    menu des applications, c'est reconnaitre l'application avant de l'avoir
+    lue. La lampe de poche et son eventail, elle, reste au champ de donnees.
+
+    Trace comme un arc et une barre verticale, jamais comme un disque qu'on
+    masquerait : le masque se verrait des que le fond change, ce qui etait deja
+    le defaut d'une ancienne icone d'extinction dans l'application.
+    """
+    n = size * SS
+    im = Image.new("RGB", (n, n), BG)
+    d = ImageDraw.Draw(im)
+
+    inset = 0
+    if frame:
+        w = max(2 * SS, int(n * 0.055))
+        d.rectangle([0, 0, n - 1, n - 1], outline=frame, width=w)
+        inset = w
+
+    x0, y0 = inset, inset
+    span = n - 2 * inset
+    cx, cy = x0 + span * 0.5, y0 + span * 0.5
+    r = span * 0.40
+    pen = max(1, int(span * 0.085))
+
+    # Le « D » : demi-cercle a gauche, cote plat a droite.
+    dr = (r - pen / 2.0) * 0.86
+    dx = cx - r + pen / 2.0 + dr
+    d.arc([dx - dr, cy - dr, dx + dr, cy + dr], 90, 270, fill=BEAM, width=pen)
+    d.line([dx, cy - dr, dx, cy + dr], fill=BEAM, width=pen)
+
+    # Quatre barres du faisceau, calees a droite et reparties sur la hauteur du
+    # « D ». Horizontales : c'est le feu de route, le plus lisible des deux
+    # pictogrammes a cette taille — le croisement se distingue par des barres
+    # inclinees, qui a 35 pixels ne se distinguent plus de rien.
+    bx0 = dx + dr * 0.45
+    bx1 = cx + r - pen / 2.0
+    for k in (-3, -1, 1, 3):
+        y = cy + k * dr / 4.0
+        d.line([bx0, y, bx1, y], fill=BEAM, width=pen)
+        for x in (bx0, bx1):
+            h = pen / 2.0
+            d.ellipse([x - h, y - h, x + h, y + h], fill=BEAM)
+
+    return im.resize((size, size), Image.LANCZOS)
+
+
 def draw_icon(size, frame):
     """Dessine l'icone a `size` pixels.
 
@@ -132,19 +183,24 @@ DRAWABLES_XML = """<!--
 
 
 def main():
-    for binary, frame in (("app", None), ("widget", PANEL_FRAME)):
+    # Deux dessins, un par binaire : la lampe de poche et son eventail pour le
+    # champ de donnees, le pictogramme de phare pour l'application. Ils etaient
+    # identiques a un cadre pres, et le cadre seul ne suffisait pas a les
+    # distinguer dans une liste ou ils se suivent.
+    for binary, frame, draw in (("app", None, draw_icon),
+                                ("widget", PANEL_FRAME, draw_headlight)):
         print("%s :" % binary)
         for size in sorted(SIZES):
             folder = os.path.join(ROOT, binary, "resources-icon-%d" % size)
             write(os.path.join(folder, "drawables", "launcher.png"),
-                  draw_icon(size, frame))
+                  draw(size, frame))
             with open(os.path.join(folder, "drawables", "drawables.xml"),
                       "w", encoding="utf-8", newline="\n") as f:
                 f.write(DRAWABLES_XML)
         # Icone de la fiche du store : 500x500. Meme dessin, meme fond que le
         # lanceur — la fiche et le compteur doivent montrer la meme image.
         write(os.path.join(ROOT, "store", "%s-icon-500.png" % binary),
-              draw_icon(500, frame))
+              draw(500, frame))
 
 
 if __name__ == "__main__":

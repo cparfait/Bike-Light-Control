@@ -104,7 +104,7 @@
     <string id="MsgIdle">Détecter</string>
     <string id="MsgIdleHint">toucher pour chercher</string>
     <string id="MsgIdleHintTimer">part avec le chrono</string>
-    <string id="MsgIdleHintLap">Lap pour chercher</string>
+    <string id="MsgIdleHintLap">appui Lap pour chercher</string>
     <string id="MsgSearching">Recherche</string>
     <string id="MsgSearchingHint">de votre lampe</string>
     <string id="MsgConnecting">Connexion</string>

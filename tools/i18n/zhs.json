@@ -75,7 +75,7 @@
   "MsgIdentifySoon": "车灯即将闪烁",
   "MsgIdle": "检测",
   "MsgIdleHint": "点击搜索",
-  "MsgIdleHintLap": "按 Lap 搜索",
+  "MsgIdleHintLap": "按 Lap 键搜索",
   "MsgIdleHintTimer": "随计时器启动",
   "MsgNearby": " 个车灯在附近",
   "MsgNoBle": "蓝牙",

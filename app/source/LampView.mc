@@ -467,17 +467,19 @@ class LampView extends WatchUi.DataField {
 
     //! Ce qu'il faut faire pour lancer la recherche, en trois mots.
     //!
-    //! **Le bouton Lap, et non la tape, sur les treize modeles.** La tape ne
-    //! marche que sur les Edge sans barre de controle — 830, 1030, 1030 Plus,
-    //! Explore. Ailleurs le systeme la prend avant nous, et sur un modele a
-    //! boutons il n'y en a pas du tout. Annoncer un geste qui ne marche que sur
-    //! quatre appareils sur treize, c'est laisser les neuf autres devant un
-    //! bouton mort. Lap, lui, atteint le champ partout : c'est donc lui qu'on
-    //! nomme. La tape continue de fonctionner la ou elle passe, sans etre
-    //! annoncee.
+    //! **Le geste depend de l'appareil**, et il est choisi a la compilation :
+    //! voir `FieldGesture` et la repartition du jungle. Un champ de donnees ne
+    //! recoit la tape que sur un ecran tactile *sans* barre de controle —
+    //! quatre modeles sur treize. Ailleurs, c'est le bouton Lap.
+    //!
+    //! Deux versions s'y sont trompees, chacune dans un sens : « toucher »
+    //! partout promettait un geste sans effet sur un Edge 1050, et « Lap »
+    //! partout envoyait chercher un bouton la ou le doigt suffit.
     private function _idleHint() as Lang.String {
-        return Labels.of(AutoController.searchOnStart(false)
-            ? Rez.Strings.MsgIdleHintTimer : Rez.Strings.MsgIdleHintLap);
+        if (AutoController.searchOnStart(false)) {
+            return Labels.of(Rez.Strings.MsgIdleHintTimer);
+        }
+        return FieldGesture.idleHint();
     }
 
     //! Le bouton Lap : le seul geste qu'un champ de donnees recoive **sur les

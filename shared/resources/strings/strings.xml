@@ -108,13 +108,18 @@
     <!-- Sur un Edge a boutons, la case ne recoit aucune tape : c'est le
          chrono qui lance la recherche, et c'est ce qu'il faut ecrire. -->
     <string id="MsgIdleHintTimer">starts with the timer</string>
-    <!-- Champ de donnees au repos : le geste qui lance la recherche.
-         C'est **Lap** et non la tape, sur les treize modeles — la tape n'atteint
-         le champ que sur les Edge sans barre de controle. Cette chaine sert de
-         valeur principale dans une petite case, ou elle remplace le mot d'etape :
-         la garder courte n'est pas une coquetterie, c'est ce qui la rend
-         lisible. Voir LampView._idleHint(). -->
-    <string id="MsgIdleHintLap">Lap to search</string>
+    <!-- Champ de donnees au repos, sur les neuf modeles ou la tape n'atteint
+         pas le champ. Voir `app/source-hint-lap/FieldGesture.mc`.
+
+         **« appui Lap » et non « Lap » tout court.** Ecrit seul, le mot se lit
+         comme une coquille de « Tap » — c'est arrive, et sur un compteur ou la
+         tape ne marche justement pas, la confusion coute cher. Nommer l'appui
+         dit qu'il s'agit d'une touche.
+
+         Cette chaine sert de valeur principale dans une petite case, ou elle
+         remplace le mot d'etape : la garder courte reste ce qui la rend
+         lisible. -->
+    <string id="MsgIdleHintLap">press Lap to search</string>
     <string id="MsgSearching">Searching</string>
     <string id="MsgSearchingHint">for your light</string>
     <string id="MsgConnecting">Connecting</string>

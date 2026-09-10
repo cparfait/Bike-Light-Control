@@ -75,7 +75,7 @@
   "MsgIdentifySoon": "라이트가 곧 깜박입니다",
   "MsgIdle": "검색",
   "MsgIdleHint": "탭하여 검색",
-  "MsgIdleHintLap": "Lap으로 검색",
+  "MsgIdleHintLap": "Lap 버튼으로 검색",
   "MsgIdleHintTimer": "타이머 시작 시 검색",
   "MsgNearby": "개가 근처에 있음",
   "MsgNoBle": "Bluetooth",

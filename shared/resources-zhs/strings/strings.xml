@@ -71,7 +71,7 @@
     <string id="MsgIdle">检测</string>
     <string id="MsgIdleHint">点击搜索</string>
     <string id="MsgIdleHintTimer">随计时器启动</string>
-    <string id="MsgIdleHintLap">按 Lap 搜索</string>
+    <string id="MsgIdleHintLap">按 Lap 键搜索</string>
     <string id="MsgSearching">搜索中</string>
     <string id="MsgSearchingHint">正在寻找您的车灯</string>
     <string id="MsgConnecting">连接中</string>

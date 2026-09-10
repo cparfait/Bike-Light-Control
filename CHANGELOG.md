@@ -57,8 +57,15 @@ trace de ce qu'elle contenait.
   reçoive ; il marque aussi un tour.
 - La case du champ de données n'écrit plus « Détecter » en gros au-dessus d'une
   consigne illisible : au repos, la consigne **est** la valeur affichée.
-- Les deux consignes de repos sont raccourcies dans les treize langues — « Lap
-  pour chercher », « toucher pour chercher ». La plus longue sert de référence
+- **La consigne de repos nomme le geste qui marche sur l'appareil.** Un champ
+  de données ne reçoit la tape que sur un écran tactile *sans* barre de contrôle
+  système : quatre modèles sur treize — 830, 1030, 1030 Plus, Explore. Ailleurs
+  c'est le bouton Lap. Le choix se fait à la compilation, à partir de
+  `display.isTouch` et `controlBarSupport` des profils du SDK.
+- L'icône de l'application compagnon est désormais le **pictogramme de phare**,
+  celui de ses propres tuiles, au lieu de la lampe de poche du champ de données
+  à un cadre près. Deux dessins distincts se reconnaissent mieux qu'un cadre
+  dans une liste où les deux applications se suivent. La plus longue sert de référence
   pour choisir la police de toute la ligne de précision : une consigne bavarde
   rapetissait « lampe trouvée » et « 3 lampes à proximité » avec elle.
 
