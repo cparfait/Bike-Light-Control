@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Genere l'image de banniere des fiches du store, 1440x720.
+"""Genere les images de banniere des fiches du store, 1440x720.
 
     python tools/make-hero.py
 
@@ -60,11 +60,26 @@ def headlight(d, cx, cy, r, color):
             d.ellipse([x - h, y - h, x + h, y + h], fill=color)
 
 
-def main():
-    shot_path = os.path.join(ROOT, "store", "screenshots", "control-1-edge1050.png")
+#: Une banniere par fiche : la capture qu'elle montre, son titre, sa promesse.
+#:
+#: La capture du champ de donnees vient d'un Edge 1050, celle du panneau d'un
+#: 1030 — c'est le plus grand des ecrans ou le simulateur ouvre la page de
+#: pilotage plutot que la vignette de resume.
+CARDS = [
+    ("hero-control-1440x720.png", "control-1-edge1050.png",
+     "Bike Light Control", "Pilotez votre lampe iGPSPORT",
+     "depuis votre compteur, en roulant."),
+    ("hero-panel-1440x720.png", "panel-1-edge1030.png",
+     "Bike Light Panel", "Votre lampe iGPSPORT en main",
+     "avant de partir, sans sortir le téléphone."),
+]
+
+
+def hero(out_name, shot_name, title, line1, line2):
+    shot_path = os.path.join(ROOT, "store", "screenshots", shot_name)
     if not os.path.exists(shot_path):
         raise SystemExit("Capture absente : %s\n"
-                         "La produire avec `bash tools/sim-captures.sh app edge1050`."
+                         "La produire avec `bash tools/sim-captures.sh`."
                          % os.path.relpath(shot_path, ROOT))
 
     im = Image.new("RGB", (W, H), BG)
@@ -89,16 +104,28 @@ def main():
     # Le titre et la ligne d'explication, a gauche.
     left = 96
     headlight(d, left + 62, 250, 62, BEAM)
-    d.text((left, 340), "Bike Light Control", font=font(FONTS, 72), fill=TEXT)
-    d.text((left, 432), "Pilotez votre lampe iGPSPORT", font=font(FONTS_LIGHT, 38), fill=BEAM)
-    d.text((left, 486), "depuis votre compteur, en roulant.", font=font(FONTS_LIGHT, 38), fill=DIM)
+    # Le titre se met a la taille qui tient dans la colonne de gauche : « Bike
+    # Light Control » et « Bike Light Panel » n'ont pas la meme longueur, et un
+    # titre qui deborderait sous la capture ne se verrait qu'a l'image finie.
+    avail = shot_x - left - 60
+    size = 72
+    while size > 40 and d.textlength(title, font=font(FONTS, size)) > avail:
+        size -= 2
+    d.text((left, 340), title, font=font(FONTS, size), fill=TEXT)
+    d.text((left, 432), line1, font=font(FONTS_LIGHT, 38), fill=BEAM)
+    d.text((left, 486), line2, font=font(FONTS_LIGHT, 38), fill=DIM)
 
-    out = os.path.join(ROOT, "store", "hero-1440x720.png")
+    out = os.path.join(ROOT, "store", out_name)
     im.save(out)
-    size = os.path.getsize(out)
-    print("  %-34s %dx%d  %.0f Ko" % (os.path.relpath(out, ROOT), W, H, size / 1024))
-    if size > 2048 * 1024:
+    weight = os.path.getsize(out)
+    print("  %-34s %dx%d  %.0f Ko" % (os.path.relpath(out, ROOT), W, H, weight / 1024))
+    if weight > 2048 * 1024:
         raise SystemExit("Trop lourde : le formulaire plafonne a 2048 Ko.")
+
+
+def main():
+    for card in CARDS:
+        hero(*card)
 
 
 if __name__ == "__main__":
