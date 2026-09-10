@@ -49,9 +49,18 @@ trace de ce qu'elle contenait.
   départ du chrono », **décoché par défaut**, lance la recherche au départ et
   à chaque reprise du chrono. La tape reste le geste normal : chercher sans
   qu'on l'ait demandé, c'est allumer une lampe qu'on ne voulait pas utiliser.
-- Sur les Edge sans tactile, le bouton Lap lance la recherche depuis le champ
-  de données, et l'arrête pendant qu'elle tourne. C'est le seul appui qu'un
-  champ reçoive ; il marque aussi un tour.
+- **Le bouton Lap lance la recherche depuis le champ de données, sur les treize
+  modèles.** Il ne valait d'abord que pour les modèles sans tactile, au motif
+  qu'ailleurs la tape suffisait — elle ne suffit pas : sur un Edge 1050 la barre
+  de contrôle du système intercepte la tape avant le champ, qui annonçait donc
+  un bouton qu'aucun geste ne pouvait presser. C'est le seul appui qu'un champ
+  reçoive ; il marque aussi un tour.
+- La case du champ de données n'écrit plus « Détecter » en gros au-dessus d'une
+  consigne illisible : au repos, la consigne **est** la valeur affichée.
+- Les deux consignes de repos sont raccourcies dans les treize langues — « Lap
+  pour chercher », « toucher pour chercher ». La plus longue sert de référence
+  pour choisir la police de toute la ligne de précision : une consigne bavarde
+  rapetissait « lampe trouvée » et « 3 lampes à proximité » avec elle.
 
 ### Corrigé — vu dans le simulateur
 

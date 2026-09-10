@@ -99,13 +99,22 @@
     <!-- Au repos : la recherche ne demarre pas seule, la page propose
          un bouton. Voir le reglage « chercher au demarrage ». -->
     <string id="MsgIdle">Detect</string>
-    <string id="MsgIdleHint">tap to start searching</string>
+    <!-- Trois mots, pas une phrase. Cette chaine sert de **reference de
+         mesure** a toute la ligne de precision de l'ecran d'attente : la police
+         est choisie sur la plus longue, jamais sur celle du moment. Une
+         consigne bavarde rapetissait donc « lampe trouvee » et « 3 lampes a
+         proximite » avec elle. -->
+    <string id="MsgIdleHint">tap to search</string>
     <!-- Sur un Edge a boutons, la case ne recoit aucune tape : c'est le
          chrono qui lance la recherche, et c'est ce qu'il faut ecrire. -->
     <string id="MsgIdleHintTimer">starts with the timer</string>
-    <!-- Meme situation, reglage decoche : le bouton Lap est le seul geste
-         qu'un champ recoive sur un Edge sans tactile. -->
-    <string id="MsgIdleHintLap">press Lap to search</string>
+    <!-- Champ de donnees au repos : le geste qui lance la recherche.
+         C'est **Lap** et non la tape, sur les treize modeles — la tape n'atteint
+         le champ que sur les Edge sans barre de controle. Cette chaine sert de
+         valeur principale dans une petite case, ou elle remplace le mot d'etape :
+         la garder courte n'est pas une coquetterie, c'est ce qui la rend
+         lisible. Voir LampView._idleHint(). -->
+    <string id="MsgIdleHintLap">Lap to search</string>
     <string id="MsgSearching">Searching</string>
     <string id="MsgSearchingHint">for your light</string>
     <string id="MsgConnecting">Connecting</string>

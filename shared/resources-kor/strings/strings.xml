@@ -69,9 +69,9 @@
     <string id="StReady">OK</string>
     <string id="StUnsupported">BLE 없음</string>
     <string id="MsgIdle">검색</string>
-    <string id="MsgIdleHint">탭하여 검색 시작</string>
+    <string id="MsgIdleHint">탭하여 검색</string>
     <string id="MsgIdleHintTimer">타이머 시작 시 검색</string>
-    <string id="MsgIdleHintLap">Lap 버튼으로 검색</string>
+    <string id="MsgIdleHintLap">Lap으로 검색</string>
     <string id="MsgSearching">검색 중</string>
     <string id="MsgSearchingHint">라이트를 찾는 중</string>
     <string id="MsgConnecting">연결 중</string>

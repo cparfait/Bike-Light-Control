@@ -69,9 +69,9 @@
     <string id="StReady">OK</string>
     <string id="StUnsupported">Нет BLE</string>
     <string id="MsgIdle">Найти</string>
-    <string id="MsgIdleHint">нажмите, чтобы начать поиск</string>
+    <string id="MsgIdleHint">нажмите для поиска</string>
     <string id="MsgIdleHintTimer">запуск с таймером</string>
-    <string id="MsgIdleHintLap">нажмите Lap для поиска</string>
+    <string id="MsgIdleHintLap">Lap для поиска</string>
     <string id="MsgSearching">Поиск</string>
     <string id="MsgSearchingHint">вашей фары</string>
     <string id="MsgConnecting">Соединение</string>

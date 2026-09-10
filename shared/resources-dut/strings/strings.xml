@@ -71,7 +71,7 @@
     <string id="MsgIdle">Zoeken</string>
     <string id="MsgIdleHint">tik om te zoeken</string>
     <string id="MsgIdleHintTimer">start met de timer</string>
-    <string id="MsgIdleHintLap">druk op Lap om te zoeken</string>
+    <string id="MsgIdleHintLap">Lap om te zoeken</string>
     <string id="MsgSearching">Zoeken</string>
     <string id="MsgSearchingHint">naar je licht</string>
     <string id="MsgConnecting">Verbinden</string>

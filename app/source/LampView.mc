@@ -291,7 +291,7 @@ class LampView extends WatchUi.DataField {
         // Plein écran : on affiche le panneau complet, avec ses catégories et
         // ses niveaux. C'est la même mise en page que l'application compagnon.
         if (LampPanel.fits(dc.getWidth(), dc.getHeight())) {
-            if (!_touch && _lamp.isIdle()) { _panel.idleHint = _idleHintNoTouch(); }
+            if (_lamp.isIdle()) { _panel.idleHint = _idleHint(); }
             _panel.draw(dc);
             return;
         }
@@ -421,11 +421,17 @@ class LampView extends WatchUi.DataField {
     //! qu'il fallait écrire, dans la police des titres et rien d'autre.
     private function _drawWaiting(dc as Graphics.Dc, w as Lang.Number,
                                   h as Lang.Number, fg as Lang.Number) as Void {
-        var message = _lamp.stateMessage();
-        var reference = LampManager.longestStateMessage();
+        // **Au repos, la consigne tient lieu de valeur.** La case affichait
+        // « Detecter » en gros, et la consigne en dessous, en tout petit — donc
+        // le mot qui ne dit rien etait le seul lisible, et celui qui dit quoi
+        // faire etait illisible. Une case de page de donnees n'a pas la place
+        // des deux : on garde celui qui sert.
+        var idle = _lamp.isIdle();
+        var message = idle ? _idleHint() : _lamp.stateMessage();
+        var reference = idle ? message : LampManager.longestStateMessage();
         var font = _fitFont(dc, reference, w, h * 60 / 100);
 
-        var hint = (_lamp.isIdle() && !_touch) ? _idleHintNoTouch() : _lamp.stateHint();
+        var hint = idle ? null : _lamp.stateHint();
 
         var fh = dc.getFontHeight(font);
         var hintFont = Graphics.FONT_XTINY;
@@ -459,28 +465,41 @@ class LampView extends WatchUi.DataField {
         }
     }
 
-    //! Precision de repos sur un modele a boutons, ou « toucher pour lancer la
-    //! recherche » serait un mensonge : la case ne recoit aucune tape. Si le
-    //! reglage est coche, la recherche part avec le chrono ; sinon c'est le
-    //! bouton Lap, voir `onTimerLap()`.
-    private function _idleHintNoTouch() as Lang.String {
+    //! Ce qu'il faut faire pour lancer la recherche, en trois mots.
+    //!
+    //! **Le bouton Lap, et non la tape, sur les treize modeles.** La tape ne
+    //! marche que sur les Edge sans barre de controle — 830, 1030, 1030 Plus,
+    //! Explore. Ailleurs le systeme la prend avant nous, et sur un modele a
+    //! boutons il n'y en a pas du tout. Annoncer un geste qui ne marche que sur
+    //! quatre appareils sur treize, c'est laisser les neuf autres devant un
+    //! bouton mort. Lap, lui, atteint le champ partout : c'est donc lui qu'on
+    //! nomme. La tape continue de fonctionner la ou elle passe, sans etre
+    //! annoncee.
+    private function _idleHint() as Lang.String {
         return Labels.of(AutoController.searchOnStart(false)
             ? Rez.Strings.MsgIdleHintTimer : Rez.Strings.MsgIdleHintLap);
     }
 
-    //! Le bouton Lap, seul geste qu'un champ de donnees recoive sur un Edge
-    //! sans tactile.
+    //! Le bouton Lap : le seul geste qu'un champ de donnees recoive **sur les
+    //! treize modeles**.
     //!
     //! Un champ ne recoit aucun appui de bouton, sauf celui-ci, que le systeme
-    //! transmet a tous les champs quand un tour est marque. Sur un 530, un 540,
-    //! un 550 ou un MTB, c'est donc la seule facon de lancer la recherche d'un
-    //! geste — l'equivalent de la tape sur un tactile. Au repos il cherche,
-    //! pendant la recherche il l'arrete. Sur un tactile on ne fait rien : la
-    //! tape existe, et un tour marque en roulant ne doit pas reveiller le scan.
+    //! transmet a tous les champs quand un tour est marque. Au repos il lance la
+    //! recherche, pendant la recherche il l'arrete.
     //!
-    //! Effet de bord assume : l'appui marque aussi un tour dans l'activite.
+    //! **Il valait auparavant pour les seuls modeles sans tactile**, au motif
+    //! qu'ailleurs la tape suffisait. Elle ne suffit pas : sur un Edge 1050, la
+    //! barre de controle du systeme intercepte la tape avant le champ — c'est
+    //! la raison d'etre de l'application compagnon, et c'est constate sur
+    //! l'appareil. Le champ y annoncait donc un bouton qu'aucun geste ne pouvait
+    //! presser : « Detecter », et rien ne se passait. Le meme trou guette les
+    //! 840, 850, 1040 et Explore 2, qui ont eux aussi une barre de controle.
+    //!
+    //! Deux effets de bord, assumes l'un et l'autre : l'appui marque aussi un
+    //! tour dans l'activite — c'est son role — et un tour marque sans lampe a
+    //! portee lance une recherche. Celle-ci est bornee a cinq minutes, puis rend
+    //! la main ; un second appui l'abrege.
     function onTimerLap() as Void {
-        if (_touch) { return; }
         if (_lamp.isIdle()) { _lamp.start(); return; }
         if (_lamp.state == LampManager.STATE_SCANNING) { _lamp.stop(); }
     }
