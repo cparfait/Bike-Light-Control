@@ -124,11 +124,10 @@ class LampPanel {
         // d'usine avec ses deux flashs desactives, et la categorie « Flash »
         // disparaissait purement et simplement. L'utilisateur en concluait que
         // l'application ne les connaissait pas.
-        var supported = _lamp.declaredModes();
         var out = [];
         for (var i = 0; i < LC.CATEGORY_ORDER.size(); i++) {
             var cat = LC.CATEGORY_ORDER[i] as Lang.Number;
-            if (cat == LC.CAT_OFF || LC.modesInCategory(cat, supported).size() > 0) {
+            if (cat == LC.CAT_OFF || _lamp.modesFor(cat).size() > 0) {
                 out.add(cat);
             }
         }
@@ -139,6 +138,15 @@ class LampPanel {
     function draw(dc as Graphics.Dc) as Void {
         _auto.setSupportedModes(_lamp.status.supportedModes, _lamp.status.lightType);
 
+        // **Lissage des contours.** Il n'était activé nulle part, et c'est la
+        // première raison pour laquelle les icônes paraissaient sales : tout est
+        // tracé en primitives, donc chaque diagonale, chaque cercle et chaque
+        // coin arrondi sortait en escalier. Le dessin n'y était pour rien.
+        //
+        // Sous condition : les Edge anciens (530, 830, 1030, Explore, MTB) n'ont
+        // pas de composition alpha et ne déclarent pas `setAntiAlias`.
+        if (dc has :setAntiAlias) { dc.setAntiAlias(true); }
+
         dc.setColor(LC.UI_TEXT, LC.UI_BG);
         dc.clear();
         hitBoxes = [];
@@ -147,12 +155,17 @@ class LampPanel {
         var w = dc.getWidth();
         var h = dc.getHeight();
 
-        // Tant que la lampe n'est pas la — et pendant qu'elle se designe en
-        // clignotant — la page ne montre qu'une chose : ou on en est. Afficher
-        // les tuiles d'une lampe absente etait un mensonge poli : elles ne
-        // repondaient pas a la tape, et l'etat se lisait en petit dans un coin,
-        // dans une police differente de tout le reste.
-        if (!_lamp.isReady() || _lamp.isIdentifying()) {
+        // Tant que la lampe n'est pas la — pendant qu'elle repond au bilan
+        // initial, et pendant qu'elle se designe en clignotant — la page ne
+        // montre qu'une chose : ou on en est. Afficher les tuiles d'une lampe
+        // absente etait un mensonge poli : elles ne repondaient pas a la tape,
+        // et l'etat se lisait en petit dans un coin, dans une police differente
+        // de tout le reste.
+        //
+        // `isSettling()` couvre la seconde ou deux qui suivent l'abonnement :
+        // liaison faite, mais mode encore inconnu, donc cinq tuiles grises et
+        // aucune allumee. Voir LampManager.isSettling().
+        if (!_lamp.isReady() || _lamp.isSettling() || _lamp.isIdentifying()) {
             _drawWaiting(dc, w, h);
             // La surcouche vaut surtout **ici** : c'est l'ecran ou l'on attend,
             // ou l'on identifie, et donc celui ou l'on a le plus besoin de voir
@@ -195,9 +208,13 @@ class LampPanel {
 
         _drawCategories(dc, m.x, m.rowsY, m.cw, cats, m.tw, m.catH, m.cols, m.gap);
         // La rangée peut être réservée mais vide — « Éteint » n'a pas de crans.
-        // On ne dessine rien, et la place reste prise : rien ne se déplace.
+        // La place reste prise pour que rien ne se déplace ; c'est exactement là
+        // que va le rappel d'extinction, dans un espace déjà réservé plutôt que
+        // par-dessus quelque chose.
         if (m.levH > 0 && levels.size() > 0) {
             _drawLevels(dc, m.x, m.levY, m.cw, m.levH, levels, m.gap);
+        } else if (m.levH > 0) {
+            _drawOffNotice(dc, m.x, m.levY, m.cw, m.levH);
         }
 
         if (_settingsBox != null) {
@@ -213,7 +230,7 @@ class LampPanel {
     //! seul mode, et une rangée d'une seule tuile n'apprendrait rien.
     private function _levelModes() as Lang.Array {
         if (selectedCategory == null || selectedCategory == LC.CAT_OFF) { return []; }
-        var modes = LC.modesInCategory(selectedCategory, _lamp.declaredModes());
+        var modes = _lamp.modesFor(selectedCategory as Lang.Number);
         return (modes.size() > 1) ? modes : [];
     }
 
@@ -224,11 +241,9 @@ class LampPanel {
     //! précisément ce qui empêche la page de bouger quand on passe d'une
     //! catégorie à « Éteint » et retour.
     private function _hasLevelRow() as Lang.Boolean {
-        var supported = _lamp.declaredModes();
         for (var i = 0; i < LC.CATEGORY_ORDER.size(); i++) {
             var cat = LC.CATEGORY_ORDER[i] as Lang.Number;
-            if (cat != LC.CAT_OFF
-                    && LC.modesInCategory(cat, supported).size() > 1) {
+            if (cat != LC.CAT_OFF && _lamp.modesFor(cat).size() > 1) {
                 return true;
             }
         }
@@ -467,7 +482,7 @@ class LampPanel {
     //! Le libellé du mode courant a donc exactement la teinte de sa tuile.
     private function _modeColor(mode as Lang.Number or Null) as Lang.Number {
         if (mode == null || mode == LC.BLM_LIGHT_OFF) { return LC.UI_OFF; }
-        var modes = LC.modesInCategory(LC.categoryOf(mode), _lamp.declaredModes());
+        var modes = _lamp.modesFor(LC.categoryOf(mode));
         for (var i = 0; i < modes.size(); i++) {
             if (modes[i] == mode) { return LC.intensityColor(i, modes.size()); }
         }
@@ -599,66 +614,109 @@ class LampPanel {
     //! C'est une contrainte, pas une remarque : le réflecteur du faisceau était
     //! posé en `cx - r` avec des rayons jusqu'à `cx + 2r`, soit une icône trois
     //! fois plus large que son rayon, qui empiétait sur la tuile voisine.
+    //!
+    //! **Ne pas découper cette fonction en sous-fonctions.** Elle est au fond de
+    //! la pile la plus profonde de l'application :
+    //!
+    //!     LampView.onUpdate → draw → _drawCategories → _drawCategoryTile
+    //!                       → _drawCategoryIcon
+    //!
+    //! Cinq niveaux, et un champ de données n'en supporte guère plus. Une
+    //! version l'avait scindée en `_drawBeam()` puis `_stroke()` — deux niveaux
+    //! de plus — et le champ plantait en « Stack Overflow Error » dès que la
+    //! page complète s'affichait, c'est-à-dire juste après la recherche. Le
+    //! compilateur ne dit rien, le simulateur non plus : ça ne s'est vu que dans
+    //! `CIQ_LOG.YML` de l'appareil, où les sept adresses de pile s'empilaient
+    //! proprement jusqu'ici. Voir `tools/pull-ciq-log.sh`.
+    //!
+    //! D'où le calcul d'épaisseur écrit en ligne plus bas, et l'écran d'attente
+    //! qui appelle cette fonction directement au lieu de passer par un
+    //! intermédiaire à lui.
     private function _drawCategoryIcon(dc as Graphics.Dc, cx as Lang.Number,
                                        cy as Lang.Number, r as Lang.Number,
                                        cat as Lang.Number,
                                        color as Lang.Number) as Void {
         if (r < 6) { return; }
         dc.setColor(color, Graphics.COLOR_TRANSPARENT);
-        dc.setPenWidth(_pen(r, 8));
 
-        if (cat == LC.CAT_LOW_BEAM || cat == LC.CAT_HIGH_BEAM) {
-            // Réflecteur puis faisceau : incliné vers le bas pour le
-            // croisement, horizontal et plus ouvert pour la route.
-            var br = r * 42 / 100;
-            var bx = cx - r + br;
-            dc.fillCircle(bx, cy, br);
-            var drop = (cat == LC.CAT_LOW_BEAM) ? r * 35 / 100 : 0;
-            var spread = (cat == LC.CAT_LOW_BEAM) ? r * 22 / 100 : r * 30 / 100;
-            for (var i = -1; i <= 1; i++) {
-                var y0 = cy + i * br * 65 / 100;
-                dc.drawLine(bx + br + r / 8, y0, cx + r, y0 + drop + i * spread);
+        // Épaisseur de trait, proportionnelle à la taille de l'icône. Calculée
+        // ici et pas dans une fonction : voir l'avertissement sur la pile, en
+        // tête de cette section. `_pen()` ne conviendrait pas non plus, il
+        // plafonne à cinq pixels et donnerait un filet sur le grand
+        // pictogramme de l'écran d'attente.
+        var pen = r * 17 / 100;
+        if (pen < 2) { pen = 2; }
+
+        if (cat == LC.CAT_LOW_BEAM || cat == LC.CAT_HIGH_BEAM
+                || cat == LC.CAT_STEADY) {
+            // Le pictogramme automobile, celui du tableau de bord : un « D »
+            // couché — le réflecteur, vu de dessus — et les barres du faisceau.
+            // Croisement et route s'y distinguent comme sur une voiture : barres
+            // inclinées vers le bas d'un côté, horizontales de l'autre. Une
+            // lampe sans faisceau prend le symbole du feu de route, le plus
+            // neutre des deux.
+            dc.setPenWidth(pen);
+
+            // Le « D » : demi-cercle à gauche, côté plat à droite. Tracé comme
+            // un arc, jamais comme un disque qu'on masquerait — le masque
+            // resterait visible dès que la tuile change de fond, ce qui était
+            // déjà le défaut de l'ancienne icône d'extinction.
+            var dr = (r - pen / 2) * 82 / 100;
+            var dx = cx - r + pen / 2 + dr;
+            if (dc has :drawArc) {
+                dc.drawArc(dx, cy, dr, Graphics.ARC_COUNTER_CLOCKWISE, 90, 270);
+            } else {
+                dc.drawCircle(dx, cy, dr);
             }
-        } else if (cat == LC.CAT_STEADY) {
-            // Ampoule pleine, rayons tout autour.
-            dc.fillCircle(cx, cy, r * 45 / 100);
-            var dxs = [1, 0, -1, 0]; var dys = [0, 1, 0, -1];
-            for (var k = 0; k < 4; k++) {
-                dc.drawLine(cx + dxs[k] * r * 65 / 100, cy + dys[k] * r * 65 / 100,
-                            cx + dxs[k] * r, cy + dys[k] * r);
+            dc.drawLine(dx, cy - dr, dx, cy + dr);
+
+            // Quatre barres, réparties sur la hauteur du « D » et calées à
+            // droite.
+            var x0 = dx + dr * 45 / 100;
+            var x1 = cx + r - pen / 2;
+            if (x1 > x0) {
+                var slant = (cat == LC.CAT_LOW_BEAM) ? dr * 22 / 100 : 0;
+                var ys = [-3, -1, 1, 3];
+                for (var i = 0; i < 4; i++) {
+                    var y = cy + (ys[i] as Lang.Number) * dr / 4 - slant / 2;
+                    dc.drawLine(x0, y, x1, y + slant);
+                }
             }
         } else if (cat == LC.CAT_FLASH) {
-            // Éclair : un zigzag plein, plus étroit que haut.
+            // Éclair. Les six sommets sont rangés dans l'ordre du tracé, la
+            // pointe basse revenant sous la pointe haute : le zigzag précédent
+            // se croisait légèrement au milieu, et le remplissage y laissait une
+            // encoche visible dès que la tuile dépassait quarante pixels.
             dc.fillPolygon([
-                [cx + r * 45 / 100, cy - r],
-                [cx - r * 45 / 100, cy + r / 10],
-                [cx + r / 20,       cy + r / 10],
-                [cx - r * 45 / 100, cy + r],
-                [cx + r * 45 / 100, cy - r / 10],
-                [cx - r / 20,       cy - r / 10]
+                [cx + r * 52 / 100, cy - r],
+                [cx - r * 46 / 100, cy + r * 14 / 100],
+                [cx + r *  4 / 100, cy + r * 14 / 100],
+                [cx - r * 52 / 100, cy + r],
+                [cx + r * 46 / 100, cy - r * 14 / 100],
+                [cx - r *  4 / 100, cy - r * 14 / 100]
             ]);
         } else if (cat == LC.CAT_CUSTOM) {
             // Silhouette : tête et épaules. Les modes « perso » sont ceux que
             // l'utilisateur a réglés lui-même dans l'app iGPSPORT ; un bonhomme
             // le dit directement, là où l'étoile précédente évoquait plutôt un
             // favori ou une mise en avant.
-            var hr = r * 32 / 100;
+            var hr = r * 30 / 100;
             dc.fillCircle(cx, cy - r + hr, hr);
-            var bw = r * 130 / 100;
-            var by = cy - r + 2 * hr + r / 8;
-            dc.fillRoundedRectangle(cx - bw / 2, by, bw, cy + r - by, bw * 40 / 100);
+            var bw = r * 128 / 100;
+            var by = cy - r + 2 * hr + r / 12;
+            dc.fillRoundedRectangle(cx - bw / 2, by, bw, cy + r - by, bw * 42 / 100);
         } else {
-            // Éteint : symbole d'alimentation. L'arc est tracé comme un arc —
-            // la version précédente masquait le haut du cercle avec un
-            // rectangle gris, qui restait visible dès que la tuile changeait
-            // de fond.
-            var ar = r * 72 / 100;
+            // Éteint : le symbole d'alimentation ⏻. Il ne dit pas « lampe », et
+            // c'est justement pour ça qu'il marche : les autres tuiles disent
+            // toutes « lampe », celle-ci dit seulement « couper ».
+            dc.setPenWidth(pen);
+            var ar = r * 74 / 100;
             if (dc has :drawArc) {
-                dc.drawArc(cx, cy, ar, Graphics.ARC_COUNTER_CLOCKWISE, 118, 62);
+                dc.drawArc(cx, cy, ar, Graphics.ARC_COUNTER_CLOCKWISE, 115, 65);
             } else {
                 dc.drawCircle(cx, cy, ar);
             }
-            dc.drawLine(cx, cy - r, cx, cy - r / 6);
+            dc.drawLine(cx, cy - r, cx, cy - r / 5);
         }
         dc.setPenWidth(1);
     }
@@ -753,11 +811,21 @@ class LampPanel {
         // Pictogramme de lampe. Pendant l'identification il s'allume et
         // s'éteint au rythme de la vraie lampe : c'est ce qui fait le lien
         // entre le guidon et l'écran, sans une ligne d'explication.
+        //
+        // **La lampe trouvée s'annonce par le pictogramme, pas par le texte.**
+        // Tant qu'on cherche, c'est un phare éteint : croisement, gris. Dès
+        // qu'elle répond, il passe au feu de route et au jaune — le dessin
+        // s'ouvre et s'allume, ce qui se voit d'un coup d'œil là où « lampe
+        // trouvée » écrit en petit sous le mot « Connexion » demandait d'être lu.
+        var found = _lamp.isConnecting();
         var r = ((w < h) ? w : h) * 15 / 100;
         var glyphY = h * 30 / 100;
         var lit = identifying && _lamp.identifyLit();
-        _drawLampGlyph(dc, mid, glyphY, r,
-                       identifying ? (lit ? LC.UI_ACCENT : LC.UI_TILE) : LC.UI_EDGE);
+        var ink = LC.UI_EDGE;
+        if (identifying) { ink = lit ? LC.UI_ACCENT : LC.UI_TILE; }
+        else if (found)  { ink = LC.UI_LEVEL_LOW; }
+        _drawCategoryIcon(dc, mid, glyphY, r,
+                          found ? LC.CAT_HIGH_BEAM : LC.CAT_LOW_BEAM, ink);
 
         // Au repos, le message est le libelle d'un bouton : on lui dessine un
         // cadre, sinon rien ne dit qu'il est touchable. C'est le seul etat ou la
@@ -802,27 +870,6 @@ class LampPanel {
         if (!identifying && !idle) {
             _drawProgress(dc, mid, h * 90 / 100, r / 5);
         }
-    }
-
-    //! Lampe stylisée : une tête et trois rayons, le dessin de l'icône.
-    private function _drawLampGlyph(dc as Graphics.Dc, cx as Lang.Number,
-                                    cy as Lang.Number, r as Lang.Number,
-                                    color as Lang.Number) as Void {
-        dc.setColor(color, Graphics.COLOR_TRANSPARENT);
-        dc.fillCircle(cx - r / 3, cy, r / 2);
-
-        var pen = _pen(r, 8);
-        dc.setPenWidth(pen);
-        // Trois rayons en éventail, approximés sans trigonométrie : le décalage
-        // vertical vaut la moitié de la longueur, ce qui donne environ 30°.
-        var x0 = cx - r / 3 + r * 3 / 4;
-        var x1 = cx + r;
-        var dys = [-1, 0, 1];
-        for (var i = 0; i < 3; i++) {
-            var dy = dys[i] as Lang.Number;
-            dc.drawLine(x0, cy + dy * r * 3 / 8, x1, cy + dy * r * 3 / 4);
-        }
-        dc.setPenWidth(1);
     }
 
     //! Trois points, celui de la phase courante allumé.
@@ -920,6 +967,51 @@ class LampPanel {
         return hit;
     }
 
+    // ---- Rappel d'extinction -----------------------------------------------
+
+    //! « Pensez à l'éteindre au bouton », tant que la lampe est éteinte.
+    //!
+    //! **Permanent, pas passager.** C'était un bandeau de cinq secondes déclenché
+    //! par la tape ; cinq secondes suffisent à le rater, et le rappel ne porte
+    //! pas sur le geste qu'on vient de faire mais sur l'état où l'on est —
+    //! éteindre depuis le compteur coupe le faisceau, pas la lampe, qui reste
+    //! connectée et continue de se décharger. Tant que c'est vrai, il faut que
+    //! ça soit écrit.
+    //!
+    //! Il occupe la rangée des crans, réservée et vide quand la catégorie est
+    //! « Éteint » : le rappel ne recouvre donc jamais une tuile, et rien ne se
+    //! déplace quand il apparaît.
+    //!
+    //! **Un pavé qui clignote, pas une ligne de texte.** Il était écrit en gris
+    //! sur le fond noir de la page, au motif que ce n'est pas une alerte : sauf
+    //! qu'à cet endroit-là, du gris sur du noir, ça ne se voit pas — et un
+    //! rappel qu'on ne voit pas ne rappelle rien. Il bat donc entre l'orange et
+    //! le rouge, une seconde chacun, tant que la lampe est éteinte.
+    private function _drawOffNotice(dc as Graphics.Dc, x as Lang.Number,
+                                    y as Lang.Number, w as Lang.Number,
+                                    h as Lang.Number) as Void {
+        var mode = _lamp.status.mode;
+        if (mode == null || mode != LC.BLM_LIGHT_OFF) { return; }
+
+        var text = Labels.of(Rez.Strings.NoticeOff);
+        var pad = w / 24;
+        var font = _fitFont(dc, text, w - 2 * pad, [
+            Graphics.FONT_SMALL, Graphics.FONT_TINY, Graphics.FONT_XTINY
+        ]);
+
+        var back = _lamp.blink() ? LC.UI_WARN : LC.UI_ALERT;
+        var radius = h / 5;
+        if (radius > w / 12) { radius = w / 12; }
+        dc.setColor(back, Graphics.COLOR_TRANSPARENT);
+        dc.fillRoundedRectangle(x, y, w, h, radius);
+
+        // Le texte prend la couleur qui se lit sur le fond du moment : l'orange
+        // et le rouge n'appellent pas la meme encre.
+        dc.setColor(LC.contrastOn(back), Graphics.COLOR_TRANSPARENT);
+        dc.drawText(x + w / 2, y + h / 2, font, text,
+                    Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER);
+    }
+
     // ---- Diagnostic ------------------------------------------------------
 
     //! Surcouche de diagnostic, inactive par defaut : taille du Dc, nombre de
@@ -941,10 +1033,18 @@ class LampPanel {
         // qu'elle annonce un mode memorise alors qu'elle n'eclaire pas, et que
         // l'application ne peut pas distinguer les deux situations.
         var m = _lamp.status.mode;
+        // `r=` est l'autonomie restante annoncee, en minutes. C'est le dernier
+        // indicateur candidat pour distinguer une lampe qui eclaire d'une lampe
+        // eteinte qui se souvient de son mode : `curMode` ne le dit pas — une
+        // VS1800S eteinte au bouton annonce 12 — et si `r=0` accompagne
+        // l'extinction, on tient enfin de quoi le savoir. Voir
+        // docs/protocole-vs1800s.md, « Ce qu'il reste a etablir ».
+        var r = _lamp.status.remainingMinutes;
         var text = dc.getWidth() + "x" + dc.getHeight()
                  + " z=" + hitBoxes.size()
                  + " " + (_lamp.isReady() ? "OK" : "ko")
                  + " m=" + ((m == null) ? "-" : m.toString())
+                 + " r=" + ((r == null) ? "-" : r.toString())
                  + (_lamp.isIdentifying() ? " id" : "");
         if (_lastTap != null) {
             var a = _lastTap[2];

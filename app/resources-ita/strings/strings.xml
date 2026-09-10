@@ -13,9 +13,8 @@
     <string id="SetSpeed2">Soglia media (km/h)</string>
     <string id="SetSpeed3">Soglia alta (km/h)</string>
     <string id="SetLowBattery">Soglia batteria scarica (%)</string>
-    <string id="SetSearchOnStart">Cerca la luce all'avvio</string>
     <string id="SetSyncOff">Spegni la luce a fine attività</string>
-    <string id="SetLightOnStart">Accendi la luce alla partenza</string>
+    <string id="SetLightOnStart">Accendi la luce appena risponde</string>
     <string id="FitMode">Modo luce</string>
     <string id="FitBattery">Batteria luce</string>
     <string id="FitModeUnit">modo</string>

@@ -129,17 +129,27 @@ l'utilisateur : la lampe s'allume sans qu'il ait touché au bouton.
 
 **Ce qu'il reste à établir**, et qui décide de la correction :
 
-- La valeur brute de `curMode` annoncée par une lampe éteinte au bouton. `0` (`BLM_LIGHT_OFF`)
-  et tout va bien : il suffit d'en tenir compte. Toute autre valeur, et il faut chercher un
-  autre indicateur — un champ de `blt_light_self` non encore exploité, ou l'autonomie restante
-  qui vaudrait alors zéro.
+- ~~La valeur brute de `curMode` annoncée par une lampe éteinte au bouton.~~ **Tranché le
+  09/09/2026 : c'est `12` (`BLM_LBEAM_LSTEADY`), son mode mémorisé — pas `0`.** La lampe ne dit
+  donc rien de son extinction, et il faut bien chercher un autre indicateur : un champ de
+  `blt_light_self` non encore exploité, ou l'autonomie restante qui vaudrait alors zéro.
+  C'est cette seconde piste que la surcouche affiche désormais (`r=`).
 - Si le bouton physique est réellement neutralisé par la connexion BLE, ou s'il ne l'est
   qu'en état éteint — auquel cas c'est le comportement normal d'un appui court sur une lampe
   hors tension.
 
-La surcouche de diagnostic de `LampPanel` affiche désormais `m=<mode brut>` et `id` pendant
-l'identification, précisément pour trancher le premier point sans matériel de capture. Elle
-s'active par `panel.debug = true` dans la vue concernée.
+La surcouche de diagnostic de `LampPanel` affiche `m=<mode brut>`, `r=<autonomie restante, en
+minutes>` et `id` pendant l'identification, précisément pour trancher ces points sans matériel de
+capture. Elle s'active par `panel.debug = true` dans la vue concernée.
+
+**Contournement retenu, faute de pouvoir lire l'état.** L'application compagnon pose elle-même le
+mode dès qu'elle trouve la lampe — le cran le plus faible, `BLM_LBEAM_LSTEADY` — au lieu de croire
+ce que la lampe annonce. À partir de là, elle sait ce qu'elle a demandé, et l'affichage redevient
+vrai. Réglable par `lightOnStart` ; voir `LampManager._lightUp()`.
+
+Et puisque éteindre depuis le compteur coupe le faisceau sans couper la radio, la page affiche
+cinq secondes un rappel après chaque extinction demandée à la main : l'appui long sur le bouton
+reste le seul geste qui arrête réellement la lampe.
 
 ### Pour F6, la lampe a sa propre fonction
 

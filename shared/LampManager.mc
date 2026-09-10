@@ -133,6 +133,22 @@ class LampManager extends Ble.BleDelegate {
     private var _restoreMode as Lang.Number or Null = null;
     private var _identifiedOnce as Lang.Boolean = false;
 
+    //! Allumer la lampe des qu'on la trouve, au cran le plus faible.
+    //!
+    //! Faux par defaut : le champ de donnees n'allume pas a la connexion mais au
+    //! depart de l'activite, ce que decide `AutoController.onRideState()`. Seule
+    //! l'application compagnon le met a vrai — on l'ouvre precisement pour
+    //! allumer sa lampe avant de partir, et attendre un second geste apres la
+    //! recherche n'a pas de sens.
+    //!
+    //! Cet allumage a une seconde vertu, moins evidente : il rend l'affichage
+    //! **vrai**. Une VS1800S eteinte au bouton annonce son mode memorise, pas
+    //! `BLM_LIGHT_OFF` (voir `_startIdentify()`), et rien dans le protocole ne
+    //! dit si elle eclaire. Tant que l'application n'a rien impose, elle ne peut
+    //! qu'afficher ce que la lampe raconte. Des qu'elle a pose le mode
+    //! elle-meme, elle le sait.
+    var lightOnConnect as Lang.Boolean = false;
+
     // UUID convertis une fois pour toutes : appeler stringToUuid a chaque
     // notification serait du gaspillage pur.
     private var _uuidService as Ble.Uuid;
@@ -211,6 +227,11 @@ class LampManager extends Ble.BleDelegate {
                 && ((status.mode != null && !_busy && _queue.size() == 0)
                     || _readySeconds >= IDENTIFY_SETTLE_MAX_S)) {
             _identifiedOnce = true;
+            // Avant l'identification, pas apres : `_startIdentify()` releve
+            // `status.mode` pour savoir ou remettre la lampe, et c'est le mode
+            // d'accueil qu'il doit remettre — sinon le clignotement se termine
+            // sur l'etat d'avant et defait l'allumage qu'on vient de faire.
+            _lightUp();
             _startIdentify();
             return;
         }
@@ -375,6 +396,29 @@ class LampManager extends Ble.BleDelegate {
     function declaredModes() as Lang.Array or Null {
         if (status.modeStates != null) { return status.modeStates.keys(); }
         return status.supportedModes;
+    }
+
+    //! Modes d'une categorie que la lampe peut reellement prendre.
+    //!
+    //! **Les emplacements perso vides sont exclus.** La lampe declare ses douze
+    //! emplacements personnalisables comme n'importe quel autre mode, et marque
+    //! desactives ceux qu'on n'a pas remplis : la page affichait donc douze
+    //! tuiles « Perso » la ou l'utilisateur n'en a regle que trois dans
+    //! l'application iGPSPORT. Neuf tuiles grises qui ne menent nulle part.
+    //!
+    //! La regle ne vaut que pour cette categorie. Un flash desactive, lui, reste
+    //! affiche : c'est un vrai mode que la lampe sait faire, sorti d'usine
+    //! decoche, et le toucher l'active — voir `setMode()`. Un emplacement perso
+    //! vide n'a rien a activer.
+    function modesFor(cat as Lang.Number) as Lang.Array {
+        var modes = LC.modesInCategory(cat, declaredModes());
+        if (cat != LC.CAT_CUSTOM) { return modes; }
+        var kept = [];
+        for (var i = 0; i < modes.size(); i++) {
+            var m = modes[i] as Lang.Number;
+            if (isModeEnabled(m)) { kept.add(m); }
+        }
+        return kept;
     }
 
     //! Vrai sauf si la lampe a explicitement dit que ce mode est desactive.
@@ -642,7 +686,15 @@ class LampManager extends Ble.BleDelegate {
         // L'identification est decidee **ici**, pas quand elle demarre : la page
         // enchaine ainsi « Connexion » et « Celle-ci ? » sans montrer ses tuiles
         // entre les deux, pour les reprendre aussitot. Voir `_identifyPending`.
-        _identifyPending = !_identifiedOnce;
+        //
+        // Et on decide avec **toutes** les conditions, pas seulement la
+        // premiere. Les deux autres n'etaient verifiees qu'au demarrage effectif,
+        // deux secondes plus tard : la page annoncait donc « votre lampe va
+        // clignoter » avant de se raviser, ce qui est la pire des deux options —
+        // on promet, puis rien ne vient.
+        _identifyPending = !_identifiedOnce
+                        && nearbyCount() > 1
+                        && _identifyPermitted();
 
         // Premier bilan : ce que la lampe sait faire, ou elle en est.
         send(LightProtocol.readSelf());
@@ -700,6 +752,29 @@ class LampManager extends Ble.BleDelegate {
     //! voit sur le guidon et ce qu'on lit sur le compteur.
     function identifyLit() as Lang.Boolean {
         return _identifyStep >= 0 && _identifyStep % 2 == 0;
+    }
+
+    //! Allume la lampe au cran le plus faible, une fois la liaison etablie.
+    //!
+    //! **Le cran le plus faible, et pas un autre.** `ladderFor()` rend une
+    //! echelle croissante : son premier cran est le feu de croisement d'intensite
+    //! basse sur une lampe a faisceau, l'intensite basse sur une lampe qui n'en a
+    //! pas. C'est le seul choix qui n'eblouisse personne et ne vide rien, et
+    //! c'est deja celui que prend le champ de donnees au depart de l'activite.
+    //!
+    //! Appelee au point de stabilisation, pas des READY : l'echelle depend des
+    //! modes que la lampe declare, et ils arrivent en notification. Une lampe
+    //! muette retombe sur l'echelle a faisceau, celle de la VS1800S.
+    private function _lightUp() as Void {
+        if (!lightOnConnect || _tx == null) { return; }
+        var ladder = LC.ladderFor(status.supportedModes, status.lightType);
+        if (ladder.size() == 0) { return; }
+        var target = ladder[0] as Lang.Number;
+        send(LightProtocol.setMode(target));
+        // Sans attendre la confirmation : la page doit montrer la lampe allumee
+        // au moment ou elle cesse d'annoncer « Recherche ». C'est aussi ce que
+        // `_startIdentify()` lira comme etat a restaurer.
+        status.mode = target;
     }
 
     //! Lance le clignotement d'identification, si le moment s'y prete.
@@ -895,6 +970,42 @@ class LampManager extends Ble.BleDelegate {
         return _ticks % 3;
     }
 
+    //! Battement a deux temps, une seconde chacun.
+    //!
+    //! `pulse()` en compte trois : il cadence les points qui defilent, ou une
+    //! phase sur trois est allumee. Un clignotement, lui, veut deux temps de
+    //! meme duree — sur trois, il boiterait.
+    function blink() as Lang.Boolean {
+        return _ticks % 2 == 0;
+    }
+
+    //! Vrai apres l'abonnement, tant qu'on ne sait pas ce que fait la lampe.
+    //!
+    //! Le canal est ouvert, le bilan initial est parti, mais les reponses
+    //! arrivent en notification : `status.mode` est encore nul, et les modes
+    //! declares aussi. Cet intervalle dure une a deux secondes, cinq au pire —
+    //! c'est le plafond de `IDENTIFY_SETTLE_MAX_S`, qui garantit qu'une lampe
+    //! muette ne bloque pas la page.
+    //!
+    //! **Il ne faut rien montrer pendant ce temps-la.** La page passait aux
+    //! tuiles des l'abonnement, avec cinq tuiles grises et aucune allumee,
+    //! puisqu'aucun mode n'etait connu — puis la lampe repondait et la tuile
+    //! « Croisement » s'allumait. Un ecran intermediaire qui ne dit rien de vrai,
+    //! juste assez long pour qu'on le voie et qu'on se demande ce qui cloche.
+    function isSettling() as Lang.Boolean {
+        return state == STATE_READY && !_identifiedOnce;
+    }
+
+    //! Vrai quand la lampe est trouvee et qu'on s'y raccroche.
+    //!
+    //! Les trois etapes comptent pour une : « Connexion », « Abonnement » et le
+    //! bilan initial ne sont qu'une seule chose vue de l'utilisateur — la lampe
+    //! est la, ca se branche.
+    function isConnecting() as Lang.Boolean {
+        return state == STATE_CONNECTING || state == STATE_SUBSCRIBING
+            || isSettling();
+    }
+
     //! L'etape en un mot, pour l'ecran d'attente.
     //!
     //! Un mot, pas une phrase : c'est lui qui s'affiche en gros, et une phrase
@@ -904,11 +1015,8 @@ class LampManager extends Ble.BleDelegate {
     function stateMessage() as Lang.String {
         if (isIdle()) { return Labels.of(Rez.Strings.MsgIdle); }
         if (isIdentifying()) { return Labels.of(Rez.Strings.MsgIdentify); }
-        switch (state) {
-            case STATE_CONNECTING:
-            case STATE_SUBSCRIBING: return Labels.of(Rez.Strings.MsgConnecting);
-            case STATE_UNSUPPORTED: return Labels.of(Rez.Strings.MsgNoBle);
-        }
+        if (isConnecting()) { return Labels.of(Rez.Strings.MsgConnecting); }
+        if (state == STATE_UNSUPPORTED) { return Labels.of(Rez.Strings.MsgNoBle); }
         return Labels.of(Rez.Strings.MsgSearching);
     }
 
@@ -930,11 +1038,8 @@ class LampManager extends Ble.BleDelegate {
             if (n > 1) { return n.format("%d") + Labels.of(Rez.Strings.MsgNearby); }
             return Labels.of(Rez.Strings.MsgIdentifyHint);
         }
-        switch (state) {
-            case STATE_CONNECTING:
-            case STATE_SUBSCRIBING: return Labels.of(Rez.Strings.MsgConnectingHint);
-            case STATE_UNSUPPORTED: return Labels.of(Rez.Strings.MsgNoBleHint);
-        }
+        if (isConnecting()) { return Labels.of(Rez.Strings.MsgConnectingHint); }
+        if (state == STATE_UNSUPPORTED) { return Labels.of(Rez.Strings.MsgNoBleHint); }
         return Labels.of(Rez.Strings.MsgSearchingHint);
     }
 

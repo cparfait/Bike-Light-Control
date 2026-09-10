@@ -109,7 +109,7 @@ module SettingsMenu {
         // pas toujours avec sa lampe.
         menu.addItem(new WatchUi.ToggleMenuItem(Labels.of(Rez.Strings.SearchAuto),
             { :enabled => Labels.of(Rez.Strings.Yes), :disabled => Labels.of(Rez.Strings.No) },
-            ID_APP_SEARCH, _bool("searchOnStart", true), null));
+            ID_APP_SEARCH, _bool("searchOnStart", false), null));
 
         menu.addItem(new WatchUi.MenuItem(Labels.of(Rez.Strings.ThresholdLow),
             _kmh("speed1", 8), ID_APP_SPEED1, null));
@@ -218,6 +218,9 @@ class SettingsMenuDelegate extends WatchUi.Menu2InputDelegate {
             } else if (id == SettingsMenu.ID_APP_ON_START) {
                 SettingsMenu.save("lightOnStart", on);
                 _auto.loadSettings();
+                // Le reglage vaut pour la prochaine liaison. Le poser ici evite
+                // de rouvrir la page pour qu'il prenne effet.
+                _lamp.lightOnConnect = on;
             } else if (id == SettingsMenu.ID_APP_SEARCH) {
                 SettingsMenu.save("searchOnStart", on);
             } else {

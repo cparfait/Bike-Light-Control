@@ -37,22 +37,22 @@
     <string id="ModeOff">Off</string>
 
     <!-- Modes abreges, pour les champs de donnees etroits -->
-    <string id="ShortDipLow">Dip low</string>
-    <string id="ShortDipMid">Dip mid</string>
-    <string id="ShortDipHigh">Dip high</string>
-    <string id="ShortMainLow">Main low</string>
-    <string id="ShortMainMid">Main mid</string>
-    <string id="ShortMainHigh">Main high</string>
-    <string id="ShortFlashDay">Day flash</string>
-    <string id="ShortFlashNight">Night flash</string>
+    <string id="ShortDipLow">Dipped 1</string>
+    <string id="ShortDipMid">Dipped 2</string>
+    <string id="ShortDipHigh">Dipped 3</string>
+    <string id="ShortMainLow">Main 1</string>
+    <string id="ShortMainMid">Main 2</string>
+    <string id="ShortMainHigh">Main 3</string>
+    <string id="ShortFlashDay">Daytime</string>
+    <string id="ShortFlashNight">Night</string>
 
     <!-- Modes en toutes lettres, vocabulaire de l'app iGPSPORT -->
-    <string id="ModeDipLow">Dipped low</string>
-    <string id="ModeDipMid">Dipped medium</string>
-    <string id="ModeDipHigh">Dipped high</string>
-    <string id="ModeMainLow">Main low</string>
-    <string id="ModeMainMid">Main medium</string>
-    <string id="ModeMainHigh">Main high</string>
+    <string id="ModeDipLow">Dipped 1</string>
+    <string id="ModeDipMid">Dipped 2</string>
+    <string id="ModeDipHigh">Dipped 3</string>
+    <string id="ModeMainLow">Main 1</string>
+    <string id="ModeMainMid">Main 2</string>
+    <string id="ModeMainHigh">Main 3</string>
     <string id="ModeSteadyLow">Steady low</string>
     <string id="ModeSteadyMid">Steady medium</string>
     <string id="ModeSteadyHigh">Steady high</string>
@@ -98,14 +98,21 @@
          mesuree sur le plus long, donc ils s'affichent tous a la meme taille. -->
     <!-- Au repos : la recherche ne demarre pas seule, la page propose
          un bouton. Voir le reglage « chercher au demarrage ». -->
-    <string id="MsgIdle">Find light</string>
-    <string id="MsgIdleHint">tap to start</string>
+    <string id="MsgIdle">Detect</string>
+    <string id="MsgIdleHint">tap to start searching</string>
     <string id="MsgSearching">Searching</string>
     <string id="MsgSearchingHint">for your light</string>
     <string id="MsgConnecting">Connecting</string>
     <string id="MsgConnectingHint">light found</string>
     <string id="MsgNoBle">Bluetooth</string>
     <string id="MsgNoBleHint">unavailable</string>
+
+    <!-- Rappel affiche cinq secondes apres une extinction demandee depuis le
+         compteur. Eteindre par l'application coupe le faisceau, pas la radio :
+         la lampe reste connectee et continue de se decharger. Le seul geste qui
+         l'arrete vraiment est l'appui long sur son bouton. Voir
+         docs/protocole-vs1800s.md. -->
+    <string id="NoticeOff">Also switch it off at the light</string>
 
     <!-- Identification : la lampe clignote pour se designer elle-meme -->
     <string id="MsgIdentify">This one?</string>

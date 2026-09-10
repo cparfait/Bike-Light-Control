@@ -24,8 +24,4 @@
     <setting propertyKey="@Properties.lightOnStart" title="@Strings.SetLightOnStart">
         <settingConfig type="boolean"/>
     </setting>
-
-    <setting propertyKey="@Properties.searchOnStart" title="@Strings.SetSearchOnStart">
-        <settingConfig type="boolean"/>
-    </setting>
 </settings>

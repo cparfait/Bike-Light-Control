@@ -31,7 +31,7 @@
     <string id="SpeedAdjust">Ajustar pela velocidade</string>
     <string id="SearchAuto">Procurar ao iniciar</string>
     <string id="OffAtEnd">Desligar no fim</string>
-    <string id="OnAtStart">Ligar ao iniciar</string>
+    <string id="OnAtStart">Ligar ao detetar</string>
     <string id="ThresholdLow">Limite baixo</string>
     <string id="ThresholdMid">Limite médio</string>
     <string id="ThresholdHigh">Limite alto</string>

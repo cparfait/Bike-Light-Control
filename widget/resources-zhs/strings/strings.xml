@@ -31,7 +31,7 @@
     <string id="SpeedAdjust">按速度调节</string>
     <string id="SearchAuto">启动时查找</string>
     <string id="OffAtEnd">结束时关灯</string>
-    <string id="OnAtStart">开始时开灯</string>
+    <string id="OnAtStart">检测到时开灯</string>
     <string id="ThresholdLow">低阈值</string>
     <string id="ThresholdMid">中阈值</string>
     <string id="ThresholdHigh">高阈值</string>

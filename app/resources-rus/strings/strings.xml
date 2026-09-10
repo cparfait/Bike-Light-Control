@@ -13,9 +13,8 @@
     <string id="SetSpeed2">Средний порог (км/ч)</string>
     <string id="SetSpeed3">Верхний порог (км/ч)</string>
     <string id="SetLowBattery">Порог низкого заряда (%)</string>
-    <string id="SetSearchOnStart">Искать фару при запуске</string>
     <string id="SetSyncOff">Выключать фару в конце</string>
-    <string id="SetLightOnStart">Включать фару на старте</string>
+    <string id="SetLightOnStart">Включать фару, как только она ответит</string>
     <string id="FitMode">Режим фары</string>
     <string id="FitBattery">Батарея фары</string>
     <string id="FitModeUnit">режим</string>

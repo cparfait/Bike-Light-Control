@@ -46,7 +46,11 @@
     <string id="SpeedAdjust">Adjust by speed</string>
     <string id="SearchAuto">Search on startup</string>
     <string id="OffAtEnd">Switch off when ride ends</string>
-    <string id="OnAtStart">Switch on when ride starts</string>
+    <!-- Le libelle differe de celui du champ de donnees, et ce n'est pas une
+         negligence : cette page n'a pas d'activite, donc pas de depart. Le
+         moment equivalent est celui ou la lampe est trouvee. Meme propriete
+         `lightOnStart`, mais Connect IQ isole l'etat des deux binaires. -->
+    <string id="OnAtStart">Switch on when light is found</string>
     <string id="ThresholdLow">Low threshold</string>
     <string id="ThresholdMid">Medium threshold</string>
     <string id="ThresholdHigh">High threshold</string>

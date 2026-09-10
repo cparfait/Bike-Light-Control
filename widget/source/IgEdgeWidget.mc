@@ -55,6 +55,12 @@ class IgEdgeWidget extends Application.AppBase {
         if (_lamp == null) {
             _lamp = new LampManager();
             _auto = new AutoController();
+            // Ici, « au demarrage » ne peut pas vouloir dire « au depart de
+            // l'activite » : il n'y en a pas. On ouvre cette page pour allumer
+            // sa lampe avant de partir, et le moment equivalent est celui ou on
+            // la trouve. Le champ de donnees, lui, garde son declenchement au
+            // chrono — voir `AutoController.onRideState()`.
+            _lamp.lightOnConnect = AutoController.lightOnStart();
             if (AutoController.searchOnStart()) { _lamp.start(); }
         }
         var view = new LampControlView(_lamp, _auto);
@@ -174,7 +180,7 @@ class LampControlDelegate extends WatchUi.BehaviorDelegate {
         if (_lamp.isIdle()) { _lamp.start(); WatchUi.requestUpdate(); return true; }
         // Hors liaison, on ne pilote rien — mais on redessine, pour que la
         // surcouche de diagnostic montre le point touche.
-        if (!_lamp.isReady()) { WatchUi.requestUpdate(); return true; }
+        if (!_lamp.isReady() || _lamp.isSettling()) { WatchUi.requestUpdate(); return true; }
         // Pendant l'identification, une tape veut dire « c'est bon, j'ai vu » :
         // on abrege et on remet la lampe comme on l'a trouvee. Voir
         // LampManager.cancelIdentify().
@@ -216,7 +222,7 @@ class LampControlDelegate extends WatchUi.BehaviorDelegate {
         // inatteignable.
         if (_lamp.isIdle()) { _lamp.start(); WatchUi.requestUpdate(); return true; }
         if (!_view.panel.usesCursor()) { return false; }
-        if (!_lamp.isReady()) { return false; }
+        if (!_lamp.isReady() || _lamp.isSettling()) { return false; }
         var boxes = _view.panel.hitBoxes;
         if (_view.panel.cursor >= 0 && _view.panel.cursor < boxes.size()) {
             _activate(boxes[_view.panel.cursor][4]);
@@ -253,7 +259,7 @@ class LampControlDelegate extends WatchUi.BehaviorDelegate {
         if (action <= LampPanel.ACTION_CATEGORY) {
             var cat = LampPanel.ACTION_CATEGORY - action;
             _view.panel.chooseCategory(cat);
-            var modes = LC.modesInCategory(cat, _lamp.declaredModes());
+            var modes = _lamp.modesFor(cat);
             if (modes.size() > 0) {
                 // Toujours le cran le plus faible : personne n'a envie
                 // d'eblouir quelqu'un en touchant une icone.

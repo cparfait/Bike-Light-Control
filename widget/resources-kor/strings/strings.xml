@@ -31,7 +31,7 @@
     <string id="SpeedAdjust">속도로 조정</string>
     <string id="SearchAuto">시작할 때 검색</string>
     <string id="OffAtEnd">종료 시 끄기</string>
-    <string id="OnAtStart">출발 시 켜기</string>
+    <string id="OnAtStart">감지되면 켜기</string>
     <string id="ThresholdLow">낮은 기준</string>
     <string id="ThresholdMid">중간 기준</string>
     <string id="ThresholdHigh">높은 기준</string>

@@ -31,7 +31,7 @@
     <string id="SpeedAdjust">Подстройка по скорости</string>
     <string id="SearchAuto">Искать при запуске</string>
     <string id="OffAtEnd">Выключать в конце</string>
-    <string id="OnAtStart">Включать на старте</string>
+    <string id="OnAtStart">Включать при обнаружении</string>
     <string id="ThresholdLow">Нижний порог</string>
     <string id="ThresholdMid">Средний порог</string>
     <string id="ThresholdHigh">Верхний порог</string>

@@ -114,6 +114,26 @@ class AutoController {
             if (v instanceof Lang.Boolean) { return v; }
         } catch (e) {
         }
+        // Meme valeur que `properties.xml` : un repli qui dirait le contraire
+        // ferait chercher la lampe le jour ou la propriete devient illisible.
+        return false;
+    }
+
+    //! Vrai si la lampe doit s'allumer d'elle-meme, sans qu'on le demande.
+    //!
+    //! Le moment n'est pas le meme dans les deux binaires, et c'est voulu : le
+    //! champ de donnees allume **au depart de l'activite** (`onRideState()`),
+    //! l'application compagnon **des qu'elle trouve la lampe** — elle n'a pas
+    //! d'activite, et le moment equivalent est celui ou la liaison s'etablit.
+    //!
+    //! Statique, pour la meme raison que `searchOnStart()` : `LampManager` en a
+    //! besoin sans avoir d'instance sous la main.
+    static function lightOnStart() as Lang.Boolean {
+        try {
+            var v = Application.Properties.getValue("lightOnStart");
+            if (v instanceof Lang.Boolean) { return v; }
+        } catch (e) {
+        }
         return true;
     }
 

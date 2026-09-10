@@ -44,12 +44,11 @@ class LampView extends WatchUi.DataField {
         // Un data field ne recoit jamais d'evenement de touche, meme plein
         // ecran : le curseur des modeles a boutons y serait immobile.
         _panel.hideCursor();
-        // TEMPORAIRE — surcouche de diagnostic, a remettre a `false` avant tout
-        // depot sur le store. Elle est allumee dans les DEUX binaires : le
-        // drapeau ne vivait que dans l'application compagnon, et la page pleine
-        // du champ de donnees — celle qu'on regarde en roulant — n'affichait
-        // donc rien. Voir docs/protocole-vs1800s.md.
-        _panel.debug = true;
+        // Surcouche de diagnostic, eteinte. Le drapeau existe dans les DEUX
+        // binaires : il ne vivait que dans l'application compagnon, et la page
+        // pleine du champ de donnees — celle qu'on regarde en roulant —
+        // n'affichait donc rien. Voir docs/protocole-vs1800s.md.
+        _panel.debug = false;
         // Le tactile n'est pas exposé dans les profils du SDK : c'est une
         // propriété d'exécution. Un seul binaire pour les 13 modèles.
         var settings = System.getDeviceSettings();
@@ -131,6 +130,11 @@ class LampView extends WatchUi.DataField {
         // sans effet.
         if (_lamp.isIdle()) { _lamp.start(); return true; }
         if (!_lamp.isReady()) { return false; }
+        // Liaison faite mais bilan initial pas encore revenu : la page affiche
+        // « Connexion », pas ses tuiles. On avale la tape — sans quoi elle
+        // retombait sur le cycle a l'aveugle et posait un mode juste avant que
+        // `LampManager` ne pose le sien. Voir LampManager.isSettling().
+        if (_lamp.isSettling()) { return true; }
         // Pendant l'identification, une tape veut dire « c'est bon, j'ai vu » :
         // on abrege et on remet la lampe comme on l'a trouvee. La tape etait
         // auparavant avalee sans effet, ce qui faisait de cet ecran une
@@ -144,8 +148,7 @@ class LampView extends WatchUi.DataField {
             var action = _panel.actionAt(p[0], p[1]);
             if (action != null && action >= 0) {
                 _auto.setEnabledManually(false);
-                _lamp.setMode(action);
-                _lamp.status.mode = action;
+                _apply(action);
                 _panel.chooseCategory(LC.categoryOf(action));
                 return true;
             }
@@ -158,12 +161,10 @@ class LampView extends WatchUi.DataField {
             if (action != null && action <= LampPanel.ACTION_CATEGORY) {
                 var cat = LampPanel.ACTION_CATEGORY - action;
                 _panel.chooseCategory(cat);
-                var modes = LC.modesInCategory(cat, _lamp.declaredModes());
+                var modes = _lamp.modesFor(cat);
                 if (modes.size() > 0) {
                     _auto.setEnabledManually(false);
-                    var m = modes[0] as Lang.Number;
-                    _lamp.setMode(m);
-                    _lamp.status.mode = m;
+                    _apply(modes[0] as Lang.Number);
                 }
                 return true;
             }
@@ -207,9 +208,19 @@ class LampView extends WatchUi.DataField {
                 next = ladder[idx + 1];
             }
         }
-        _lamp.setMode(next);
-        _lamp.status.mode = next;
+        _apply(next);
         return true;
+    }
+
+    //! Applique un mode demande par un geste.
+    //!
+    //! L'ecriture part, et l'etat local suit sans attendre la notification de la
+    //! lampe : l'ecran doit repondre au doigt. Le rappel « pensez a l'eteindre au
+    //! bouton » n'est plus declenche ici — il depend de l'etat, pas du geste, et
+    //! vit dans `LampPanel._drawOffNotice()`.
+    private function _apply(mode as Lang.Number) as Void {
+        _lamp.setMode(mode);
+        _lamp.status.mode = mode;
     }
 
     // ---- Affichage ---------------------------------------------------------
@@ -248,55 +259,60 @@ class LampView extends WatchUi.DataField {
         // police recalculee sur chaque mot : « Recherche » s'ecrivait deux fois
         // plus petit que « OK », et une ligne « -- » completait le tout. Trois
         // informations pour dire une seule chose.
-        if (!_lamp.isReady() || _lamp.isIdentifying()) {
+        if (!_lamp.isReady() || _lamp.isSettling() || _lamp.isIdentifying()) {
             _drawWaiting(dc, w, h, fg);
             return;
         }
 
         var battery = _lamp.status.batteryPct;
         var alert = _auto.isBatteryLow(battery);
-
-        // Valeur principale : le pourcentage de batterie de la lampe.
-        //
-        // Le nombre et son unité sont dessinés séparément. Les polices
-        // `FONT_NUMBER_*` de Garmin — celles qui donnent aux champs natifs leurs
-        // gros chiffres — **ne contiennent pas le caractère `%`**. Mesurer
-        // « 54% » d'un bloc les écartait donc toutes, et la case retombait sur
-        // une police de texte bien plus petite que ses voisines. C'est visible
-        // à l'oeil sur une page de données : notre valeur était deux fois plus
-        // petite que la vitesse ou l'heure d'à côté.
-        // Connectee mais batterie pas encore annoncee : « -- » plutot qu'un
-        // mot d'etat, qui ferait croire a un probleme alors que tout va bien.
-        var value = (battery == null) ? "--" : battery.format("%d");
-        var unit = (battery == null) ? null : "%";
-
-        // Ligne secondaire : l'erreur si la liaison a échoué, sinon le mode et
-        // l'autonomie. Un mode inconnu s'affiche « -- », jamais « Off ».
         var mode = _lamp.status.mode;
         var off = (mode != null && mode == LC.BLM_LIGHT_OFF);
-        var detail;
+
+        // **Le mode est la valeur principale, le pourcentage la note en bas.**
+        //
+        // C'etait l'inverse, et c'etait l'inverse du besoin : la charge de la
+        // lampe se consulte une fois avant de partir, le mode se verifie a
+        // chaque fois qu'on baisse les yeux — c'est lui qui dit si on eblouit la
+        // voiture d'en face. Un « 54 » en gros caracteres au-dessus d'un
+        // « Croisement 1 » minuscule faisait lire le mauvais des deux, et le mot
+        // qui compte etait justement celui qu'on ne pouvait pas dechiffrer.
+        //
+        // Corollaire : plus de police `FONT_NUMBER_*`. Elles donnent aux champs
+        // natifs leurs gros chiffres, mais n'ont **pas de lettres** — elles ne
+        // savent ecrire ni « Croisement 1 » ni « Off ».
+        var value;
         if (_lamp.lastError != null && !_lamp.isReady()) {
-            detail = _lamp.lastError;
+            value = _lamp.lastError;
         } else {
-            detail = (mode == null) ? "--" : _modeText(mode, w);
-            // Eteint en manuel : la tape suivante rend la main a l'automatisme.
-            // Le dire, sinon personne ne le devine.
-            if (off && !_auto.enabled) {
-                detail += "  > " + Labels.of(Rez.Strings.BadgeAuto);
-            }
-            // Lampe eteinte : l'autonomie affichee serait celle d'avant
-            // l'extinction, donc fausse. Mieux vaut ne rien montrer.
-            var left = _lamp.status.remainingMinutes;
-            if (!off && left != null && left > 0 && w > 150) {
-                detail += "  " + _duration(left);
-            }
+            // Mode inconnu : « -- », jamais « Off ». La lampe n'a pas encore
+            // repondu, ce n'est pas la meme chose qu'une lampe eteinte.
+            value = (mode == null) ? "--" : _modeText(mode, w);
+        }
+
+        // Ligne secondaire : la charge, puis l'autonomie quand la place le
+        // permet. Connectee mais batterie pas encore annoncee : « -- » plutot
+        // qu'un mot d'etat, qui ferait croire a un probleme alors que tout va
+        // bien.
+        // Plus de « > AUTO » accroche derriere la charge. Il voulait dire « une
+        // tape de plus rend la main a l'ajustement automatique » ; colle apres
+        // un pourcentage, il se lisait comme une precision sur la batterie, et
+        // il apparaissait puis disparaissait sans qu'on sache ce qui l'appelait.
+        // Le titre de la case dit deja AUTO ou MANUEL, en toutes lettres et a
+        // sa place.
+        var detail = (battery == null) ? "--" : battery.format("%d") + " %";
+        // Lampe eteinte : l'autonomie affichee serait celle d'avant
+        // l'extinction, donc fausse. Mieux vaut ne rien montrer.
+        var left = _lamp.status.remainingMinutes;
+        if (!off && left != null && left > 0 && w > 150) {
+            detail += "  " + _duration(left);
         }
 
         // Choix des polices : la plus grande qui tienne en largeur et en hauteur.
-        var unitFont = Graphics.FONT_XTINY;
-        var unitW = (unit == null) ? 0 : dc.getTextWidthInPixels(unit, unitFont);
-        var valueFont = _fitFont(dc, value, w - unitW, h * 55 / 100, unit != null);
-        var detailFont = _fitFont(dc, detail, w, h * 25 / 100, false);
+        // La part de hauteur suit la nouvelle hierarchie — la moitie au mode, un
+        // quart au reste.
+        var valueFont = _fitFont(dc, value, w, h * 50 / 100);
+        var detailFont = _fitFont(dc, detail, w, h * 25 / 100);
 
         var vh = dc.getFontHeight(valueFont);
         var dh = dc.getFontHeight(detailFont);
@@ -322,23 +338,14 @@ class LampView extends WatchUi.DataField {
             y += lh;
         }
 
-        // Même rouge que la jauge de la page complète : les deux affichages
-        // doivent parler d'une seule voix (F7).
-        dc.setColor(alert ? LC.UI_ALERT : fg, Graphics.COLOR_TRANSPARENT);
-        if (unit == null) {
-            dc.drawText(mid, y, valueFont, value, Graphics.TEXT_JUSTIFY_CENTER);
-        } else {
-            // L'unité est calée en haut du nombre, comme dans les champs
-            // natifs : c'est ce qui donne le « 54 % » avec le pour-cent en
-            // exposant plutôt qu'aligné sur la base des chiffres.
-            var numW = dc.getTextWidthInPixels(value, valueFont);
-            var x0 = mid - (numW + unitW) / 2;
-            dc.drawText(x0, y, valueFont, value, Graphics.TEXT_JUSTIFY_LEFT);
-            dc.drawText(x0 + numW, y, unitFont, unit, Graphics.TEXT_JUSTIFY_LEFT);
-        }
+        dc.setColor(fg, Graphics.COLOR_TRANSPARENT);
+        dc.drawText(mid, y, valueFont, value, Graphics.TEXT_JUSTIFY_CENTER);
         y += vh;
 
-        dc.setColor(fg, Graphics.COLOR_TRANSPARENT);
+        // Le rouge suit la charge, et donc la ligne du bas : c'est le meme rouge
+        // que la jauge de la page complete, les deux affichages doivent parler
+        // d'une seule voix (F7).
+        dc.setColor(alert ? LC.UI_ALERT : fg, Graphics.COLOR_TRANSPARENT);
         dc.drawText(mid, y, detailFont, detail, Graphics.TEXT_JUSTIFY_CENTER);
     }
 
@@ -346,13 +353,19 @@ class LampView extends WatchUi.DataField {
     //!
     //! Même règle que la page complète : la police est mesurée sur le **plus
     //! long** des messages, pas sur celui qu'on affiche, sinon le texte change
-    //! de corps à chaque étape. Une seule ligne, centrée ; l'étiquette
-    //! « LAMPE - AUTO » disparaît, elle ne veut rien dire sans lampe.
+    //! de corps à chaque étape.
+    //!
+    //! **Le titre est là, comme sur les cases voisines.** Il n'y était pas :
+    //! « LAMPE - AUTO » ne veut rien dire sans lampe, et on l'avait donc
+    //! supprimé de cet écran. Sauf qu'une case sans titre au milieu de cases qui
+    //! en ont une ne se lit pas comme une case sobre, elle se lit comme une case
+    //! cassée — on ne sait plus de quoi elle parle. C'est « Lampe » tout court
+    //! qu'il fallait écrire, dans la police des titres et rien d'autre.
     private function _drawWaiting(dc as Graphics.Dc, w as Lang.Number,
                                   h as Lang.Number, fg as Lang.Number) as Void {
         var message = _lamp.stateMessage();
         var reference = LampManager.longestStateMessage();
-        var font = _fitFont(dc, reference, w, h * 60 / 100, false);
+        var font = _fitFont(dc, reference, w, h * 60 / 100);
 
         var hint = _lamp.stateHint();
 
@@ -363,8 +376,22 @@ class LampView extends WatchUi.DataField {
         // un huitième d'écran, mieux vaut la sacrifier.
         if (h < fh + hh + 4) { hint = null; hh = 0; }
 
-        var y = (h - fh - hh) / 2;
+        // Même police, même gris et même règle de place que l'affichage normal :
+        // les deux écrans de cette case doivent avoir le même titre au même
+        // endroit, sinon il saute d'une ligne quand la lampe répond.
+        var labelFont = Graphics.FONT_XTINY;
+        var lh = dc.getFontHeight(labelFont);
+        var showLabel = (h > fh + hh + lh + 6);
+
+        var y = (h - fh - hh - (showLabel ? lh : 0)) / 2;
         if (y < 0) { y = 0; }
+
+        if (showLabel) {
+            dc.setColor(Graphics.COLOR_DK_GRAY, Graphics.COLOR_TRANSPARENT);
+            dc.drawText(w / 2, y, labelFont, Labels.of(Rez.Strings.LightGeneric),
+                        Graphics.TEXT_JUSTIFY_CENTER);
+            y += lh;
+        }
 
         dc.setColor(fg, Graphics.COLOR_TRANSPARENT);
         dc.drawText(w / 2, y, font, message, Graphics.TEXT_JUSTIFY_CENTER);
@@ -374,38 +401,39 @@ class LampView extends WatchUi.DataField {
         }
     }
 
-    //! Modes parcourus par la tape sur une case : l'echelle d'intensite, puis
-    //! les effets declares par la lampe. Un flash desactive dans la lampe y
-    //! figure aussi : `LampManager.setMode()` l'active au passage.
+    //! Modes parcourus par la tape sur une case : l'echelle d'intensite, les
+    //! effets declares par la lampe, puis ses modes personnalises. Un mode
+    //! desactive dans la lampe y figure aussi : `LampManager.setMode()`
+    //! l'active au passage.
+    //!
+    //! **Les modes perso en font partie.** Ils manquaient, et c'est exactement
+    //! ceux-la qu'on ne veut pas rater : ce sont les seuls que l'utilisateur a
+    //! regles lui-meme dans l'application iGPSPORT. Les laisser hors du cycle,
+    //! c'est les rendre injoignables depuis une case de page de donnees — le
+    //! panneau complet, lui, les proposait deja dans sa categorie « Perso ».
     private function _cycle() as Lang.Array {
         var out = _auto.ladder().slice(0, null);
-        var flashes = LC.modesInCategory(LC.CAT_FLASH, _lamp.declaredModes());
-        for (var i = 0; i < flashes.size(); i++) {
-            if (out.indexOf(flashes[i]) < 0) { out.add(flashes[i]); }
+        var extra = [LC.CAT_FLASH, LC.CAT_CUSTOM];
+        for (var c = 0; c < extra.size(); c++) {
+            var modes = _lamp.modesFor(extra[c] as Lang.Number);
+            for (var i = 0; i < modes.size(); i++) {
+                if (out.indexOf(modes[i]) < 0) { out.add(modes[i]); }
+            }
         }
         return out;
     }
 
     //! Plus grande police dont le texte tienne dans la place disponible.
     //! Le texte tronqué est le défaut le plus visible d'un data field mal fait.
-    //! `numeric` autorise les polices `FONT_NUMBER_*`, réservées aux chiffres :
-    //! elles n'ont ni lettres ni signe de pourcentage, et les employer pour du
-    //! texte donnerait des caractères manquants.
+    //!
+    //! Que des polices de texte : les `FONT_NUMBER_*` de Garmin, celles qui
+    //! donnent aux champs natifs leurs gros chiffres, **n'ont pas de lettres**.
+    //! La case n'affiche plus un nombre en valeur principale mais un nom de
+    //! mode — elles n'ont plus rien à y écrire.
     private function _fitFont(dc as Graphics.Dc, text as Lang.String,
                               maxWidth as Lang.Number,
-                              maxHeight as Lang.Number,
-                              numeric as Lang.Boolean) as Graphics.FontDefinition {
-        var fonts = numeric ? [
-            Graphics.FONT_NUMBER_THAI_HOT,
-            Graphics.FONT_NUMBER_HOT,
-            Graphics.FONT_NUMBER_MEDIUM,
-            Graphics.FONT_NUMBER_MILD,
-            Graphics.FONT_LARGE,
-            Graphics.FONT_MEDIUM,
-            Graphics.FONT_SMALL,
-            Graphics.FONT_TINY,
-            Graphics.FONT_XTINY
-        ] : [
+                              maxHeight as Lang.Number) as Graphics.FontDefinition {
+        var fonts = [
             Graphics.FONT_LARGE,
             Graphics.FONT_MEDIUM,
             Graphics.FONT_SMALL,

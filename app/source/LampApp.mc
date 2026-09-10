@@ -12,13 +12,24 @@ class LampApp extends Application.AppBase {
         AppBase.initialize();
     }
 
+    //! **Le champ de donnees ne cherche jamais la lampe de lui-meme.**
+    //!
+    //! Ce n'est pas un reglage decoche par defaut, c'est une absence : le scan
+    //! BLE est de loin ce qui coute le plus cher en batterie du compteur, et un
+    //! champ de donnees demarre a **chaque** activite, y compris les centaines
+    //! ou la lampe est restee dans son tiroir. Un reglage aurait laisse le
+    //! mauvais cas par defaut pour qui ne le trouve pas.
+    //!
+    //! La case affiche donc un bouton, et la recherche part au premier geste —
+    //! voir `LampView.onTap()`. L'application compagnon, elle, garde son
+    //! reglage : on ne l'ouvre pas par accident.
     function onStart(state as Lang.Dictionary or Null) as Void {
         _lamp = new LampManager();
         _auto = new AutoController();
-        // La recherche ne part pas toujours seule : le scan BLE est ce qui coute
-        // le plus cher en batterie du compteur, et on ne roule pas toujours avec
-        // sa lampe. Reglage decoche, la page propose un bouton.
-        if (AutoController.searchOnStart()) { _lamp.start(); }
+        // Chercher la lampe est un geste deliberé : si on l'a fait, c'est qu'on
+        // veut sa lampe allumee. Elle s'allume donc au cran le plus faible des
+        // qu'elle repond, sans attendre le depart du chrono.
+        _lamp.lightOnConnect = AutoController.lightOnStart();
     }
 
     //! Rappelee par le systeme quand les reglages changent depuis Garmin
@@ -33,6 +44,9 @@ class LampApp extends Application.AppBase {
     function onSettingsChanged() as Void {
         if (_auto != null) {
             _auto.loadSettings();
+        }
+        if (_lamp != null) {
+            _lamp.lightOnConnect = AutoController.lightOnStart();
         }
         WatchUi.requestUpdate();
     }

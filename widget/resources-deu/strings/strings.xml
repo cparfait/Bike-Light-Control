@@ -31,7 +31,7 @@
     <string id="SpeedAdjust">Anpassung nach Tempo</string>
     <string id="SearchAuto">Beim Start suchen</string>
     <string id="OffAtEnd">Bei Fahrtende ausschalten</string>
-    <string id="OnAtStart">Bei Fahrtbeginn einschalten</string>
+    <string id="OnAtStart">Bei Erkennung einschalten</string>
     <string id="ThresholdLow">Untere Schwelle</string>
     <string id="ThresholdMid">Mittlere Schwelle</string>
     <string id="ThresholdHigh">Obere Schwelle</string>

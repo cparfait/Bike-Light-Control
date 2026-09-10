@@ -34,25 +34,25 @@
     <string id="LvlMid">Moyen</string>
     <string id="LvlHigh">Élevé</string>
     <string id="LvlMax">Maxi</string>
-    <string id="ModeOff">Éteint</string>
+    <string id="ModeOff">Off</string>
 
     <!-- Modes abreges, pour les champs de donnees etroits -->
-    <string id="ShortDipLow">Cr. faible</string>
-    <string id="ShortDipMid">Cr. moyen</string>
-    <string id="ShortDipHigh">Cr. élevé</string>
-    <string id="ShortMainLow">Rt. faible</string>
-    <string id="ShortMainMid">Rt. moyen</string>
-    <string id="ShortMainHigh">Rt. élevé</string>
-    <string id="ShortFlashDay">Flash jour</string>
-    <string id="ShortFlashNight">Flash nuit</string>
+    <string id="ShortDipLow">Croisement 1</string>
+    <string id="ShortDipMid">Croisement 2</string>
+    <string id="ShortDipHigh">Croisement 3</string>
+    <string id="ShortMainLow">Route 1</string>
+    <string id="ShortMainMid">Route 2</string>
+    <string id="ShortMainHigh">Route 3</string>
+    <string id="ShortFlashDay">Diurne</string>
+    <string id="ShortFlashNight">Nuit</string>
 
     <!-- Modes en toutes lettres, vocabulaire de l'app iGPSPORT -->
-    <string id="ModeDipLow">Croisement faible</string>
-    <string id="ModeDipMid">Croisement moyen</string>
-    <string id="ModeDipHigh">Croisement élevé</string>
-    <string id="ModeMainLow">Route faible</string>
-    <string id="ModeMainMid">Route moyen</string>
-    <string id="ModeMainHigh">Route élevé</string>
+    <string id="ModeDipLow">Croisement 1</string>
+    <string id="ModeDipMid">Croisement 2</string>
+    <string id="ModeDipHigh">Croisement 3</string>
+    <string id="ModeMainLow">Route 1</string>
+    <string id="ModeMainMid">Route 2</string>
+    <string id="ModeMainHigh">Route 3</string>
     <string id="ModeSteadyLow">Fixe faible</string>
     <string id="ModeSteadyMid">Fixe moyen</string>
     <string id="ModeSteadyHigh">Fixe élevé</string>
@@ -101,14 +101,21 @@
          mesuree sur le plus long, donc ils s'affichent tous a la meme taille. -->
     <!-- Au repos : la recherche ne demarre pas seule, la page propose
          un bouton. Voir le reglage « chercher au demarrage ». -->
-    <string id="MsgIdle">Chercher</string>
-    <string id="MsgIdleHint">toucher pour lancer</string>
+    <string id="MsgIdle">Détecter</string>
+    <string id="MsgIdleHint">toucher pour lancer la recherche</string>
     <string id="MsgSearching">Recherche</string>
     <string id="MsgSearchingHint">de votre lampe</string>
     <string id="MsgConnecting">Connexion</string>
     <string id="MsgConnectingHint">lampe trouvée</string>
     <string id="MsgNoBle">Bluetooth</string>
     <string id="MsgNoBleHint">indisponible</string>
+
+    <!-- Rappel affiche cinq secondes apres une extinction demandee depuis le
+         compteur. Eteindre par l'application coupe le faisceau, pas la radio :
+         la lampe reste connectee et continue de se decharger. Le seul geste qui
+         l'arrete vraiment est l'appui long sur son bouton. Voir
+         docs/protocole-vs1800s.md. -->
+    <string id="NoticeOff">Pensez à l'éteindre au bouton</string>
 
     <!-- Identification : la lampe clignote pour se designer elle-meme -->
     <string id="MsgIdentify">Celle-ci ?</string>

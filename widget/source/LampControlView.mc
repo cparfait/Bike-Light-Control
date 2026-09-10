@@ -42,11 +42,11 @@ class LampControlView extends WatchUi.View {
         // L'automatisme ne tourne que dans le champ de donnees, et chaque
         // binaire a son propre etat : le badge n'aurait ici aucun effet.
         panel.showAuto = false;
-        // TEMPORAIRE — surcouche de diagnostic, a remettre a `false` avant tout
-        // depot sur le store. Elle est allumee pour trancher un seul point : ce
-        // qu'une lampe eteinte au bouton annonce comme mode courant (`m=`).
-        // Voir docs/protocole-vs1800s.md, « Ce que l'essai a donne ensuite ».
-        panel.debug = true;
+        // Surcouche de diagnostic, eteinte. Elle avait tranche ce qu'une lampe
+        // eteinte au bouton annonce comme mode courant : `m=12`, son mode
+        // memorise. La remettre a `true` pour lire `m=` et `r=` sur l'appareil ;
+        // voir docs/protocole-vs1800s.md.
+        panel.debug = false;
     }
 
     function onShow() as Void {

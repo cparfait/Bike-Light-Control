@@ -31,7 +31,7 @@
     <string id="SpeedAdjust">Regola con la velocità</string>
     <string id="SearchAuto">Cerca all'avvio</string>
     <string id="OffAtEnd">Spegni a fine attività</string>
-    <string id="OnAtStart">Accendi alla partenza</string>
+    <string id="OnAtStart">Accendi al rilevamento</string>
     <string id="ThresholdLow">Soglia bassa</string>
     <string id="ThresholdMid">Soglia media</string>
     <string id="ThresholdHigh">Soglia alta</string>

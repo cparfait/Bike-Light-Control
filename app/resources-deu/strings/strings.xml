@@ -13,9 +13,8 @@
     <string id="SetSpeed2">Mittlere Schwelle (km/h)</string>
     <string id="SetSpeed3">Obere Schwelle (km/h)</string>
     <string id="SetLowBattery">Schwelle für niedrigen Akku (%)</string>
-    <string id="SetSearchOnStart">Licht beim Start suchen</string>
     <string id="SetSyncOff">Licht bei Fahrtende ausschalten</string>
-    <string id="SetLightOnStart">Licht bei Fahrtbeginn einschalten</string>
+    <string id="SetLightOnStart">Licht einschalten, sobald es antwortet</string>
     <string id="FitMode">Lichtmodus</string>
     <string id="FitBattery">Licht-Akku</string>
     <string id="FitModeUnit">Modus</string>

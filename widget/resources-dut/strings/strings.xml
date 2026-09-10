@@ -31,7 +31,7 @@
     <string id="SpeedAdjust">Aanpassen op snelheid</string>
     <string id="SearchAuto">Zoeken bij start</string>
     <string id="OffAtEnd">Uit aan einde rit</string>
-    <string id="OnAtStart">Aan bij start rit</string>
+    <string id="OnAtStart">Aan bij detectie</string>
     <string id="ThresholdLow">Lage drempel</string>
     <string id="ThresholdMid">Middelste drempel</string>
     <string id="ThresholdHigh">Hoge drempel</string>
