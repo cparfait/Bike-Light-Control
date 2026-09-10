@@ -64,7 +64,8 @@ bash app/build.sh edge1050
 ```
 
 Brancher l'Edge en USB, puis copier `app/bin/edge1050.prg` dans le dossier `GARMIN/Apps` du
-compteur. Débrancher, ajouter le champ **iG-Edge** à un écran de données d'un profil vélo.
+compteur. Débrancher, ajouter le champ **Bike Light Control** à un écran de données d'un profil
+vélo.
 
 ## 3. Ce qu'on doit observer
 
