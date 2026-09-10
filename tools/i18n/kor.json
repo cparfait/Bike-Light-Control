@@ -29,8 +29,6 @@
   "CatOffShort": "꺼짐",
   "CatSteady": "상시 점등",
   "CatSteadyShort": "상시",
-  "DfAuto": "라이트 - 자동",
-  "DfManual": "라이트 - 수동",
   "ErrBatterySubscribe": "배터리 구독 거부",
   "ErrBleUnavailable": "BLE 사용 불가",
   "ErrCccdMissing": "CCCD 없음",

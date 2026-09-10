@@ -95,7 +95,5 @@
     <string id="ErrSubscribeRefused">abonneren geweigerd</string>
     <string id="ErrWriteFailed">schrijven mislukt</string>
     <string id="ErrBatterySubscribe">accu-abonnement geweigerd</string>
-    <string id="DfAuto">LICHT - AUTO</string>
-    <string id="DfManual">LICHT - HAND</string>
     <string id="UnitMin">min</string>
 </strings>

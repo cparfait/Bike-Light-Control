@@ -29,8 +29,6 @@
   "CatOffShort": "消灯",
   "CatSteady": "常時点灯",
   "CatSteadyShort": "常時",
-  "DfAuto": "ライト - 自動",
-  "DfManual": "ライト - 手動",
   "ErrBatterySubscribe": "電池通知の登録拒否",
   "ErrBleUnavailable": "BLE利用不可",
   "ErrCccdMissing": "CCCDがありません",

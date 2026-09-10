@@ -95,7 +95,5 @@
     <string id="ErrSubscribeRefused">подписка отклонена</string>
     <string id="ErrWriteFailed">сбой записи</string>
     <string id="ErrBatterySubscribe">подписка на батарею отклонена</string>
-    <string id="DfAuto">ФАРА - АВТО</string>
-    <string id="DfManual">ФАРА - РУЧНОЙ</string>
     <string id="UnitMin">мин</string>
 </strings>

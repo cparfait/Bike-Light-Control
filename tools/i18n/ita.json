@@ -29,8 +29,6 @@
   "CatOffShort": "Spento",
   "CatSteady": "Fisso",
   "CatSteadyShort": "Fisso",
-  "DfAuto": "LUCE - AUTO",
-  "DfManual": "LUCE - MANUALE",
   "ErrBatterySubscribe": "iscrizione batteria rifiutata",
   "ErrBleUnavailable": "BLE non disponibile",
   "ErrCccdMissing": "CCCD assente",

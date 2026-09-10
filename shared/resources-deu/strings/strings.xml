@@ -95,7 +95,5 @@
     <string id="ErrSubscribeRefused">Abo abgelehnt</string>
     <string id="ErrWriteFailed">Schreiben fehlgeschlagen</string>
     <string id="ErrBatterySubscribe">Akku-Abo abgelehnt</string>
-    <string id="DfAuto">LICHT - AUTO</string>
-    <string id="DfManual">LICHT - MANUELL</string>
     <string id="UnitMin">Min</string>
 </strings>

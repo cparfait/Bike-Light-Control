@@ -29,8 +29,6 @@
   "CatOffShort": "Выкл",
   "CatSteady": "Постоянный",
   "CatSteadyShort": "Пост",
-  "DfAuto": "ФАРА - АВТО",
-  "DfManual": "ФАРА - РУЧНОЙ",
   "ErrBatterySubscribe": "подписка на батарею отклонена",
   "ErrBleUnavailable": "BLE недоступен",
   "ErrCccdMissing": "нет CCCD",

@@ -29,8 +29,6 @@
   "CatOffShort": "Wył",
   "CatSteady": "Ciągłe",
   "CatSteadyShort": "Ciągłe",
-  "DfAuto": "LAMPKA - AUTO",
-  "DfManual": "LAMPKA - RĘCZNIE",
   "ErrBatterySubscribe": "subskrypcja baterii odrzucona",
   "ErrBleUnavailable": "BLE niedostępne",
   "ErrCccdMissing": "brak CCCD",

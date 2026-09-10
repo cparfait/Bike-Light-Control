@@ -95,7 +95,5 @@
     <string id="ErrSubscribeRefused">suscripción rechazada</string>
     <string id="ErrWriteFailed">fallo de escritura</string>
     <string id="ErrBatterySubscribe">suscripción batería rechazada</string>
-    <string id="DfAuto">LUZ - AUTO</string>
-    <string id="DfManual">LUZ - MANUAL</string>
     <string id="UnitMin">min</string>
 </strings>

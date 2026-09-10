@@ -686,6 +686,22 @@ class LampPanel {
     }
 
 
+    //! Pictogramme d'une catégorie, pour un appelant extérieur au panneau.
+    //!
+    //! Le champ de données s'en sert comme **titre de sa case** : un phare
+    //! ambre à la place du mot « Lampe ». Une case de page de données fait un
+    //! sixième d'écran, le mot y était minuscule, et il fallait le traduire —
+    //! le dessin, lui, se lit à toutes les tailles et dans toutes les langues.
+    //!
+    //! Un point d'entrée à part plutôt qu'un accès direct : `_drawCategoryIcon`
+    //! est au fond de la pile la plus profonde de l'application, et l'appeler
+    //! d'ici n'ajoute qu'un niveau — voir l'avertissement ci-dessous.
+    function drawGlyph(dc as Graphics.Dc, cx as Lang.Number, cy as Lang.Number,
+                       r as Lang.Number, cat as Lang.Number,
+                       color as Lang.Number) as Void {
+        _drawCategoryIcon(dc, cx, cy, r, cat, color);
+    }
+
     //! Icônes dessinées en primitives : rien à embarquer, et elles s'adaptent à
     //! toutes les tailles d'écran, de 240x320 à 480x800.
     //!

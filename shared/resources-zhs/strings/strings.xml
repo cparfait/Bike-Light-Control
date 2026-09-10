@@ -95,7 +95,5 @@
     <string id="ErrSubscribeRefused">订阅被拒绝</string>
     <string id="ErrWriteFailed">写入失败</string>
     <string id="ErrBatterySubscribe">电量订阅被拒绝</string>
-    <string id="DfAuto">车灯 - 自动</string>
-    <string id="DfManual">车灯 - 手动</string>
     <string id="UnitMin">分</string>
 </strings>

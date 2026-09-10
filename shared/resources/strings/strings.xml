@@ -154,9 +154,6 @@
     <string id="ErrWriteFailed">write failed</string>
     <string id="ErrBatterySubscribe">battery subscribe refused</string>
 
-    <!-- Champ de donnees etroit : etat de l'ajustement automatique -->
-    <string id="DfAuto">LIGHT - AUTO</string>
-    <string id="DfManual">LIGHT - MANUAL</string>
 
     <!-- Unite d'autonomie -->
     <string id="UnitMin">min</string>

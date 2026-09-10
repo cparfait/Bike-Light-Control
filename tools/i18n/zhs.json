@@ -29,8 +29,6 @@
   "CatOffShort": "关闭",
   "CatSteady": "常亮",
   "CatSteadyShort": "常亮",
-  "DfAuto": "车灯 - 自动",
-  "DfManual": "车灯 - 手动",
   "ErrBatterySubscribe": "电量订阅被拒绝",
   "ErrBleUnavailable": "BLE 不可用",
   "ErrCccdMissing": "缺少 CCCD",

@@ -29,8 +29,6 @@
   "CatOffShort": "Apag",
   "CatSteady": "Fija",
   "CatSteadyShort": "Fija",
-  "DfAuto": "LUZ - AUTO",
-  "DfManual": "LUZ - MANUAL",
   "ErrBatterySubscribe": "suscripción batería rechazada",
   "ErrBleUnavailable": "BLE no disponible",
   "ErrCccdMissing": "falta CCCD",

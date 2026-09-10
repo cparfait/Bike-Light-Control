@@ -95,7 +95,5 @@
     <string id="ErrSubscribeRefused">구독 거부</string>
     <string id="ErrWriteFailed">쓰기 실패</string>
     <string id="ErrBatterySubscribe">배터리 구독 거부</string>
-    <string id="DfAuto">라이트 - 자동</string>
-    <string id="DfManual">라이트 - 수동</string>
     <string id="UnitMin">분</string>
 </strings>

@@ -95,7 +95,5 @@
     <string id="ErrSubscribeRefused">通知登録の拒否</string>
     <string id="ErrWriteFailed">書き込み失敗</string>
     <string id="ErrBatterySubscribe">電池通知の登録拒否</string>
-    <string id="DfAuto">ライト - 自動</string>
-    <string id="DfManual">ライト - 手動</string>
     <string id="UnitMin">分</string>
 </strings>

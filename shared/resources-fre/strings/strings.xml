@@ -140,9 +140,6 @@
     <string id="ErrWriteFailed">écriture en échec</string>
     <string id="ErrBatterySubscribe">abonnement batterie refusé</string>
 
-    <!-- Champ de donnees etroit : etat de l'ajustement automatique -->
-    <string id="DfAuto">LAMPE - AUTO</string>
-    <string id="DfManual">LAMPE - MANUEL</string>
 
     <!-- Unite d'autonomie -->
     <string id="UnitMin">min</string>

@@ -57,6 +57,15 @@ trace de ce qu'elle contenait.
   reçoive ; il marque aussi un tour.
 - La case du champ de données n'écrit plus « Détecter » en gros au-dessus d'une
   consigne illisible : au repos, la consigne **est** la valeur affichée.
+- **La case ne peint plus son fond.** Le compteur dessine le sien — sur un Edge
+  1050, un dégradé bleu nuit qui traverse la page — et `clear()` posait
+  par-dessus un rectangle noir plat : au milieu de cinq cases fondues dans le
+  dégradé, la nôtre était une tache.
+- **Le titre de la case est le pictogramme de phare, plus le mot « Lampe ».**
+  Le mot était écrit dans la plus petite police du jeu et en gris foncé, quand
+  les cases voisines annoncent « DISTANCE » ou « VITESSE MOY. » en blanc et deux
+  fois plus gros. Le dessin se lit à toutes les tailles, et dans toutes les
+  langues — deux chaînes traduites de moins.
 - **La consigne de repos ne nomme plus le geste : « Appuyer pour détecter ».**
   Elle couvre ainsi la tape comme le bouton Lap, en une seule phrase pour les
   treize modèles. Deux versions ont essayé de nommer le geste juste, chacune

@@ -29,8 +29,6 @@
   "CatOffShort": "Aus",
   "CatSteady": "Dauerlicht",
   "CatSteadyShort": "Dauer",
-  "DfAuto": "LICHT - AUTO",
-  "DfManual": "LICHT - MANUELL",
   "ErrBatterySubscribe": "Akku-Abo abgelehnt",
   "ErrBleUnavailable": "BLE nicht verfügbar",
   "ErrCccdMissing": "CCCD fehlt",

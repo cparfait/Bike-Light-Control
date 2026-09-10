@@ -308,10 +308,18 @@ class LampView extends WatchUi.DataField {
         // tuile au lieu de faire defiler les modes — la case ne repondait plus.
         _panel.clearHitBoxes();
 
+        // **On ne peint pas le fond de la case.** Le compteur dessine le sien
+        // — sur un Edge 1050, un degrade bleu nuit qui traverse toute la page
+        // de donnees — et `clear()` posait par-dessus un rectangle noir plat :
+        // au milieu de cinq cases fondues dans le degrade, la notre etait une
+        // tache. `getBackgroundColor()` ne rend qu'une couleur unie, elle ne
+        // peut pas reproduire un degrade ; la seule facon de s'y accorder est
+        // de ne rien mettre.
+        //
+        // La couleur d'encre, elle, continue d'en dependre : c'est elle qui dit
+        // si l'utilisateur a choisi un theme clair ou sombre.
         var bg = getBackgroundColor();
         var fg = (bg == Graphics.COLOR_BLACK) ? Graphics.COLOR_WHITE : Graphics.COLOR_BLACK;
-        dc.setColor(bg, bg);
-        dc.clear();
 
         var w = dc.getWidth();
         var h = dc.getHeight();
@@ -380,7 +388,10 @@ class LampView extends WatchUi.DataField {
 
         var vh = dc.getFontHeight(valueFont);
         var dh = dc.getFontHeight(detailFont);
-        var labelFont = Graphics.FONT_XTINY;
+        // Le titre de la case : le phare, et le mot d'etat de l'ajustement.
+        var state = Labels.of(_auto.enabled ? Rez.Strings.BadgeAuto
+                                            : Rez.Strings.BadgeManual);
+        var labelFont = _labelFont(dc, state, w, h);
         var lh = dc.getFontHeight(labelFont);
 
         // L'étiquette n'apparaît que si elle ne mange pas la valeur : sur un
@@ -395,10 +406,7 @@ class LampView extends WatchUi.DataField {
             // d'orange, qui ferait croire a un probleme. Et le mot ne vaut que
             // pour l'ajustement de l'application : les automatismes internes de
             // la lampe, eux, continuent quoi qu'il arrive.
-            dc.setColor(Graphics.COLOR_DK_GRAY, Graphics.COLOR_TRANSPARENT);
-            dc.drawText(mid, y, labelFont,
-                        Labels.of(_auto.enabled ? Rez.Strings.DfAuto : Rez.Strings.DfManual),
-                        Graphics.TEXT_JUSTIFY_CENTER);
+            _drawTitle(dc, mid, y, lh, labelFont, state, fg);
             y += lh;
         }
 
@@ -449,17 +457,16 @@ class LampView extends WatchUi.DataField {
         // Même police, même gris et même règle de place que l'affichage normal :
         // les deux écrans de cette case doivent avoir le même titre au même
         // endroit, sinon il saute d'une ligne quand la lampe répond.
-        var labelFont = Graphics.FONT_XTINY;
+        var labelFont = _labelFont(dc, "", w, h);
         var lh = dc.getFontHeight(labelFont);
         var showLabel = (h > fh + hh + lh + 6);
 
         var y = (h - fh - hh - (showLabel ? lh : 0)) / 2;
         if (y < 0) { y = 0; }
 
+        // Le phare seul : sans lampe, il n'y a pas d'ajustement a annoncer.
         if (showLabel) {
-            dc.setColor(Graphics.COLOR_DK_GRAY, Graphics.COLOR_TRANSPARENT);
-            dc.drawText(w / 2, y, labelFont, Labels.of(Rez.Strings.LightGeneric),
-                        Graphics.TEXT_JUSTIFY_CENTER);
+            _drawTitle(dc, w / 2, y, lh, labelFont, null, fg);
             y += lh;
         }
 
@@ -529,6 +536,63 @@ class LampView extends WatchUi.DataField {
             }
         }
         return out;
+    }
+
+    //! Le titre de la case : **le phare, pas le mot**.
+    //!
+    //! La case s'intitulait « Lampe », ou « LAMPE - AUTO » une fois connectee.
+    //! Deux defauts, visibles sur une photo de l'appareil : le mot etait ecrit
+    //! dans la plus petite police du jeu et en gris fonce, quand les cases
+    //! voisines annoncent « DISTANCE » ou « VITESSE MOY. » en blanc et deux
+    //! fois plus gros ; et il fallait le traduire en treize langues pour dire
+    //! ce qu'un dessin dit d'un coup.
+    //!
+    //! C'est donc le pictogramme de phare, en ambre — le meme que sur les
+    //! tuiles de la page complete et sur l'icone de l'application. Le mot
+    //! d'etat de l'ajustement, « AUTO » ou « MANUEL », reste a cote quand la
+    //! lampe repond : lui n'a pas d'equivalent dessine.
+    private function _drawTitle(dc as Graphics.Dc, mid as Lang.Number,
+                                y as Lang.Number, rowH as Lang.Number,
+                                font as Graphics.FontDefinition,
+                                state as Lang.String or Null,
+                                fg as Lang.Number) as Void {
+        var r = rowH * 45 / 100;
+        var cy = y + rowH / 2;
+        if (state == null) {
+            _panel.drawGlyph(dc, mid, cy, r, LC.CAT_HIGH_BEAM, LC.UI_ACCENT);
+            return;
+        }
+        // Pictogramme et mot forment un groupe centre : le mot bascule de
+        // « AUTO » a « MANUEL » sans deplacer le phare de plus de quelques
+        // pixels, et l'ensemble reste au milieu de la case.
+        var gap = r / 2;
+        var tw = dc.getTextWidthInPixels(state, font);
+        var total = 2 * r + gap + tw;
+        var left = mid - total / 2;
+        _panel.drawGlyph(dc, left + r, cy, r, LC.CAT_HIGH_BEAM, LC.UI_ACCENT);
+        dc.setColor(fg, Graphics.COLOR_TRANSPARENT);
+        dc.drawText(left + 2 * r + gap, cy, font, state,
+                    Graphics.TEXT_JUSTIFY_LEFT | Graphics.TEXT_JUSTIFY_VCENTER);
+    }
+
+    //! Police du mot d'etat, et hauteur de la rangee du titre.
+    //!
+    //! Elle etait figee a la plus petite du jeu : a cote de « VITESSE MOY. »
+    //! ecrit deux fois plus gros, la case passait pour une note de bas de page.
+    //! Elle prend donc la plus grande qui tienne dans un cinquieme de la
+    //! hauteur — c'est aussi elle qui donne sa taille au pictogramme.
+    private function _labelFont(dc as Graphics.Dc, text as Lang.String,
+                                w as Lang.Number, h as Lang.Number) as Graphics.FontDefinition {
+        var fonts = [Graphics.FONT_MEDIUM, Graphics.FONT_SMALL,
+                     Graphics.FONT_TINY, Graphics.FONT_XTINY];
+        for (var i = 0; i < fonts.size(); i++) {
+            var f = fonts[i] as Graphics.FontDefinition;
+            if (dc.getFontHeight(f) <= h * 22 / 100
+                    && dc.getTextWidthInPixels(text, f) <= w - 4) {
+                return f;
+            }
+        }
+        return Graphics.FONT_XTINY;
     }
 
     //! Plus grande police dont le texte tienne dans la place disponible.

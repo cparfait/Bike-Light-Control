@@ -95,7 +95,5 @@
     <string id="ErrSubscribeRefused">subskrypcja odrzucona</string>
     <string id="ErrWriteFailed">błąd zapisu</string>
     <string id="ErrBatterySubscribe">subskrypcja baterii odrzucona</string>
-    <string id="DfAuto">LAMPKA - AUTO</string>
-    <string id="DfManual">LAMPKA - RĘCZNIE</string>
     <string id="UnitMin">min</string>
 </strings>
