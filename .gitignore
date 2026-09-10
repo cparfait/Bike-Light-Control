@@ -20,6 +20,11 @@ captures/CIQ_LOG.YML
 # Manuel constructeur : document sous droit d'auteur iGPSPORT.
 captures/doc/
 
+# Captures du simulateur : des artefacts, regenerables par
+# `bash tools/sim-captures.sh`. Les garder ferait grossir le depot d'images
+# qui changent a chaque retouche d'interface.
+captures/sim/
+
 # Build Connect IQ
 *.prg
 *.prg.debug.xml

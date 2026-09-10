@@ -31,9 +31,18 @@ class LampApp extends Application.AppBase {
     //! reprise du chrono. Il est decoche parce que chercher sans qu'on l'ait
     //! demande, c'est trouver — et allumer — une lampe qu'on ne voulait pas
     //! utiliser. Voir `LampView.compute()`.
+    //! Lampe factice du mode demonstration, absente des binaires de
+    //! diffusion : voir `shared/LampDemo.mc`.
+    (:demo)
+    private function _demo(lamp as LampManager) as Void { LampDemo.apply(lamp); }
+
+    (:nodemo)
+    private function _demo(lamp as LampManager) as Void { }
+
     function onStart(state as Lang.Dictionary or Null) as Void {
         _lamp = new LampManager();
         _auto = new AutoController();
+        _demo(_lamp as LampManager);
         // Chercher la lampe est un geste deliberé : si on l'a fait, c'est qu'on
         // veut sa lampe allumee. Elle s'allume donc au cran le plus faible des
         // qu'elle repond, sans attendre le depart du chrono.

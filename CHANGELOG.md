@@ -48,6 +48,33 @@ Première version déposée sur le Connect IQ Store, en bêta.
 - Sur les Edge sans tactile, le bouton Lap lance la recherche depuis le champ
   de données, et l'arrête pendant qu'elle tourne. C'est le seul appui qu'un
   champ reçoive ; il marque aussi un tour.
+
+### Corrigé — vu dans le simulateur
+
+Quatre défauts d'affichage qu'aucun essai sur Edge 1050 ne pouvait montrer, et
+que le mode démonstration (`bash app/build.sh sim`) a rendus visibles :
+
+- **La vignette de résumé écrivait en blanc sur blanc.** Les sept thèmes de
+  vignette ont une zone de contenu blanche sur un Edge MTB et sombre sur un
+  1050 : le texte blanc y était donc invisible sur la moitié des modèles, et la
+  tuile paraissait vide. Elle porte maintenant son propre fond, une pastille
+  sombre, lisible quel que soit le thème choisi.
+- **La vignette était vide avant la première ouverture de la page.** Elle
+  affiche désormais le nom de l'application à défaut de relevé.
+- **Le libellé du mode tombait en police minuscule** sur les Edge 1030, 1030
+  Plus et Explore : la police était choisie sur la seule largeur, puis rabattue
+  sur la plus petite du jeu dès qu'elle ne tenait pas en hauteur.
+- **La roue dentée des réglages se lisait comme un soleil**, c'est-à-dire comme
+  une commande de luminosité, sur une page qui pilote une lampe. Dents plus
+  courtes et plus larges, anneau plus épais.
+
+### Modifié — lisibilité de la page
+
+- Le pourcentage de charge sort de la jauge : à gauche, dans la police de
+  l'autonomie, et de la couleur de la charge. Il était écrit dans la barre, en
+  corps quatorze sur un Edge 1050.
+- Le libellé du mode courant prend moins de hauteur, au profit des tuiles : son
+  plafond passe de 1,8 fois la grande police à 1,5 fois la moyenne.
 - L'extinction à l'arrêt du chrono était ignorée après un changement de mode
   manuel : la lampe restait allumée. Elle s'applique quel que soit le mode, et
   le mode manuel ne survit plus à l'arrêt.

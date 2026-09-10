@@ -330,30 +330,63 @@ class LampPanel {
         return (g < 3) ? 3 : g;
     }
 
+    //! Roue dentée : un anneau épais, et huit dents courtes et larges.
+    //!
+    //! Elle était dessinée avec des rayons **fins et longs**, partant de 55 %
+    //! du rayon jusqu'au bord : à l'écran, ça ne se lit pas comme un
+    //! engrenage mais comme un **soleil**, c'est-à-dire comme une commande de
+    //! luminosité — sur une page qui pilote une lampe, la confusion est
+    //! particulièrement mal choisie. Une dent d'engrenage est courte et aussi
+    //! large que le vide qui la sépare de la suivante ; c'est ce rapport-là,
+    //! pas le nombre de dents, qui fait reconnaître le symbole.
     private function _drawGear(dc as Graphics.Dc, cx as Lang.Number,
                                cy as Lang.Number, r as Lang.Number) as Void {
         if (r < 5) { return; }
         dc.setColor(LC.UI_DIM, Graphics.COLOR_TRANSPARENT);
-        dc.setPenWidth(_pen(r, 10));
-        dc.drawCircle(cx, cy, r * 55 / 100);
-        var dxs = [1, 1, 0, -1, -1, -1, 0, 1];
-        var dys = [0, 1, 1, 1, 0, -1, -1, -1];
+
+        // L'anneau, épais : c'est lui qui porte le dessin. Le trait vaut le
+        // quart du rayon, tracé à mi-chemin du centre et du bord.
+        var ring = r * 52 / 100;
+        var pen = r * 26 / 100;
+        if (pen < 2) { pen = 2; }
+        dc.setPenWidth(pen);
+        dc.drawCircle(cx, cy, ring);
+
+        // Huit dents, aux quatre axes et aux quatre diagonales, de l'anneau au
+        // bord. Les diagonales sont posées à 70 % de leur composante — la
+        // valeur de cos(45°) — pour que toutes tombent sur le même cercle.
+        var dxs = [10, 7, 0, -7, -10, -7,  0,  7];
+        var dys = [ 0, 7, 10, 7,   0, -7, -10, -7];
+        var from = ring + pen / 4;
+        dc.setPenWidth(pen * 105 / 100);
         for (var i = 0; i < 8; i++) {
-            // Huit rayons approximés par des segments : aucune trigonométrie,
-            // ce qui compte sur un appareil lent.
-            dc.drawLine(cx + dxs[i] * r * 55 / 100, cy + dys[i] * r * 55 / 100,
-                        cx + dxs[i] * r, cy + dys[i] * r);
+            var dx = dxs[i] as Lang.Number;
+            var dy = dys[i] as Lang.Number;
+            dc.drawLine(cx + dx * from / 10, cy + dy * from / 10,
+                        cx + dx * r / 10, cy + dy * r / 10);
         }
         dc.setPenWidth(1);
     }
 
+    //! Charge de la lampe : le pourcentage en clair, une jauge, l'autonomie.
+    //!
+    //! **Le pourcentage est sorti de la jauge.** Il y était écrit à l'intérieur,
+    //! dans la plus petite police du jeu : sur un Edge 1050, un « 62 % » de
+    //! quatorze pixels au milieu d'une barre de quatre cents. C'est pourtant le
+    //! nombre qui décide si on part ou si on recharge, et le seul de la page
+    //! qu'on lit avant de sortir — il n'avait aucune raison d'être le plus
+    //! petit. Il est maintenant à gauche, dans la même police que l'autonomie,
+    //! et **de la couleur de la charge** : vert, orange, rouge. La jauge, elle,
+    //! garde son rôle — donner l'ordre de grandeur d'un coup d'œil — et prend
+    //! simplement ce que les deux textes lui laissent.
     private function _drawBattery(dc as Graphics.Dc, x as Lang.Number,
                                   y as Lang.Number, w as Lang.Number) as Lang.Number {
         var pct = _lamp.status.batteryPct;
         var rowH = dc.getFontHeight(Graphics.FONT_MEDIUM);
-        var barH = rowH * 68 / 100;
+        var barH = rowH * 62 / 100;
         var barY = y + (rowH - barH) / 2;
         var cy = y + rowH / 2;
+        var gap = _gap(rowH);
 
         // Lampe éteinte : l'autonomie serait celle d'avant l'extinction.
         var mode = _lamp.status.mode;
@@ -361,51 +394,58 @@ class LampPanel {
         var left = _lamp.status.remainingMinutes;
         var showLeft = (lit && left != null && left > 0);
 
-        // La barre prend ce que l'autonomie ne prend pas, au lieu d'une part
-        // fixe de la largeur : sur un écran étroit, « 12 h 05 » ne chevauche
-        // plus la jauge.
-        var barW = w;
-        if (showLeft) {
-            var text = _duration(left);
-            var font = _fitFont(dc, text, w * 45 / 100,
-                [Graphics.FONT_MEDIUM, Graphics.FONT_SMALL, Graphics.FONT_TINY]);
-            dc.setColor(LC.UI_TEXT, Graphics.COLOR_TRANSPARENT);
-            dc.drawText(x + w, cy, font, text,
-                        Graphics.TEXT_JUSTIFY_RIGHT | Graphics.TEXT_JUSTIFY_VCENTER);
-            barW = w - dc.getTextWidthInPixels(text, font) - _gap(rowH) * 2;
+        var fonts = [Graphics.FONT_MEDIUM, Graphics.FONT_SMALL,
+                     Graphics.FONT_TINY, Graphics.FONT_XTINY];
+
+        // Le pourcentage, à gauche.
+        var used = 0;
+        var barX = x;
+        if (pct != null) {
+            var text = pct.format("%d") + " %";
+            var font = _fitFontIn(dc, text, w * 40 / 100, fonts, rowH);
+            dc.setColor(_batteryColor(pct), Graphics.COLOR_TRANSPARENT);
+            dc.drawText(x, cy, font, text,
+                        Graphics.TEXT_JUSTIFY_LEFT | Graphics.TEXT_JUSTIFY_VCENTER);
+            used = dc.getTextWidthInPixels(text, font) + gap * 2;
+            barX = x + used;
         }
-        if (barW < 40) { return y + rowH; }
+
+        // L'autonomie, à droite. La jauge prend ce qui reste entre les deux :
+        // sur un écran étroit, « 12 h 05 » ne chevauche donc jamais la barre.
+        var barW = w - used;
+        if (showLeft) {
+            var lText = _duration(left);
+            var lFont = _fitFontIn(dc, lText, w * 40 / 100, fonts, rowH);
+            dc.setColor(LC.UI_TEXT, Graphics.COLOR_TRANSPARENT);
+            dc.drawText(x + w, cy, lFont, lText,
+                        Graphics.TEXT_JUSTIFY_RIGHT | Graphics.TEXT_JUSTIFY_VCENTER);
+            barW -= dc.getTextWidthInPixels(lText, lFont) + gap * 2;
+        }
+
+        // Sous cette largeur, la jauge ne dit plus rien de lisible : les deux
+        // nombres suffisent, et valent mieux qu'un moignon de barre.
+        if (barW < 30) { return y + rowH; }
 
         var radius = barH / 3;
         var nub = barH / 4;
         dc.setColor(LC.UI_TILE, Graphics.COLOR_TRANSPARENT);
-        dc.fillRoundedRectangle(x, barY, barW - nub, barH, radius);
+        dc.fillRoundedRectangle(barX, barY, barW - nub, barH, radius);
         dc.setColor(LC.UI_EDGE, Graphics.COLOR_TRANSPARENT);
-        dc.fillRoundedRectangle(x + barW - nub, barY + barH / 3, nub, barH / 3, 1);
+        dc.fillRoundedRectangle(barX + barW - nub, barY + barH / 3, nub, barH / 3, 1);
 
         if (pct != null) {
             var inner = barW - nub - 4;
             var fill = inner * pct / 100;
             if (fill < 3 && pct > 0) { fill = 3; }
-            var color = _batteryColor(pct);
             if (fill > 0) {
                 // Un rayon plus grand que la moitié de la largeur ne définit
                 // plus un rectangle : à 2 %, la jauge est plus étroite que son
                 // propre arrondi.
                 var fr = radius;
                 if (fr > fill / 2) { fr = fill / 2; }
-                dc.setColor(color, Graphics.COLOR_TRANSPARENT);
-                dc.fillRoundedRectangle(x + 2, barY + 2, fill, barH - 4, fr);
+                dc.setColor(_batteryColor(pct), Graphics.COLOR_TRANSPARENT);
+                dc.fillRoundedRectangle(barX + 2, barY + 2, fill, barH - 4, fr);
             }
-            // Le pourcentage est écrit dans la barre, donc parfois sur la
-            // couleur de remplissage et parfois sur le fond : la teinte du
-            // texte suit ce qu'il y a derrière lui, au lieu d'un blanc qui
-            // disparaît sur le vert.
-            var mid = (barW - nub) / 2;
-            dc.setColor((fill > mid) ? LC.contrastOn(color) : LC.UI_TEXT,
-                        Graphics.COLOR_TRANSPARENT);
-            dc.drawText(x + mid, cy, Graphics.FONT_XTINY, pct.format("%d") + " %",
-                        Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER);
         }
         return y + rowH;
     }
@@ -474,11 +514,18 @@ class LampPanel {
         var declared = _lamp.declaredModes();
         var key = (avail * 64 + h) * 128 + ((declared == null) ? 0 : declared.size());
         if (key != _heroKey) {
-            _heroFont = _fitFont(dc, _longestModeLabel(label), avail, [
+            // **La hauteur compte autant que la largeur.** La police etait
+            // choisie sur la seule largeur, puis rabattue sur la plus petite du
+            // jeu des qu'elle ne tenait pas en hauteur — sans essayer celles du
+            // milieu. Sur un Edge 1030, le bandeau fait 42 pixels et la grande
+            // police 48 : « Croisement 2 » s'ecrivait donc en corps minuscule
+            // au milieu d'un bandeau presque vide, alors que la police moyenne
+            // — 29 pixels — y tenait largement. Le defaut se voyait sur les
+            // 1030, 1030 Plus et Explore, jamais sur le 1050.
+            _heroFont = _fitFontIn(dc, _longestModeLabel(label), avail, [
                 Graphics.FONT_LARGE, Graphics.FONT_MEDIUM, Graphics.FONT_SMALL,
                 Graphics.FONT_TINY, Graphics.FONT_XTINY
-            ]);
-            if (dc.getFontHeight(_heroFont) > h) { _heroFont = Graphics.FONT_XTINY; }
+            ], h);
             _heroKey = key;
         }
         var font = _heroFont;
@@ -973,9 +1020,20 @@ class LampPanel {
     private function _fitFont(dc as Graphics.Dc, text as Lang.String,
                               maxWidth as Lang.Number,
                               fonts as Lang.Array) as Graphics.FontDefinition {
+        return _fitFontIn(dc, text, maxWidth, fonts, 0);
+    }
+
+    //! Même chose, avec une hauteur maximale. `maxHeight` à zéro ne contraint
+    //! que la largeur — c'est le cas des textes posés sur une ligne, qui ont
+    //! toute la hauteur qu'ils demandent.
+    private function _fitFontIn(dc as Graphics.Dc, text as Lang.String,
+                                maxWidth as Lang.Number, fonts as Lang.Array,
+                                maxHeight as Lang.Number) as Graphics.FontDefinition {
         for (var i = 0; i < fonts.size(); i++) {
             var f = fonts[i] as Graphics.FontDefinition;
-            if (dc.getTextWidthInPixels(text, f) <= maxWidth) { return f; }
+            if (dc.getTextWidthInPixels(text, f) > maxWidth) { continue; }
+            if (maxHeight > 0 && dc.getFontHeight(f) > maxHeight) { continue; }
+            return f;
         }
         return fonts[fonts.size() - 1] as Graphics.FontDefinition;
     }

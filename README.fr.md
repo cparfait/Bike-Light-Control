@@ -121,6 +121,25 @@ Deux contrôles croisent le code avec les profils du SDK plutôt qu'avec la docu
 python tools/check-icons.py
 ```
 
+### Voir l'interface sans lampe
+
+Le simulateur n'a pas de pile Bluetooth : l'application y restait sur
+« Recherche », et rien de la page de pilotage ne s'affichait. Un build de
+démonstration remplit l'état de la lampe avec ce qu'une VS1800S déclare
+réellement :
+
+```bash
+bash app/build.sh sim
+```
+
+```bash
+bash tools/sim-captures.sh
+```
+
+Un PNG par format d'écran, dans `captures/sim/`. Il a trouvé quatre défauts
+d'affichage dès le premier passage, qu'aucun Edge 1050 ne pouvait montrer —
+détail dans [docs/application.md](docs/application.md).
+
 ```bash
 python tools/i18n/langues-supportees.py --declarees
 ```

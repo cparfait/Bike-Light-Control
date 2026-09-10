@@ -8,6 +8,7 @@
 #   bash app/build.sh test edge530   # tests sur un autre profil d'appareil
 #   bash app/build.sh test-all   # tests sur quatre profils representatifs
 #   bash app/build.sh debug      # build de debogage pour l'Edge 1050
+#   bash app/build.sh sim        # page de pilotage dans le simulateur, lampe factice
 #   bash app/build.sh package    # paquets .iq pour le Connect IQ Store
 #
 # Deux binaires sont produits : le data field (app/bin/) tourne pendant
@@ -109,6 +110,39 @@ if [ "$MODE" = "test" ]; then
   sleep 22
   log "Execution…"
   exec monkeydo bin/test.prg "$DEV" -t
+fi
+
+# --- Simulateur, avec une lampe factice ---------------------------------------
+# Le simulateur n'a pas de pile Bluetooth : la machine a etats y reste sur
+# « Recherche », et rien de la page de pilotage ne s'affiche. Le mode `sim`
+# empile sim.jungle sur monkey.jungle, ce qui garde le code annote `demo` —
+# shared/LampDemo.mc, une VS1800S factice — et donne au panneau un etat a
+# dessiner. C'est le seul moyen de voir la mise en page sur les 13 formats
+# d'ecran sans autant de compteurs.
+#
+#   bash app/build.sh sim               # application compagnon, edge1050
+#   bash app/build.sh sim app edge530   # champ de donnees, sur un autre profil
+if [ "$MODE" = "sim" ]; then
+  DIR="${2:-widget}"
+  DEV="${3:-edge1050}"
+  case "$DIR" in
+    app|widget) ;;
+    *) die "cible inconnue : $DIR (app ou widget)" ;;
+  esac
+  log "Construction du mode demonstration ($DIR, $DEV)…"
+  ( cd "$ROOT/$DIR" && mkdir -p bin \
+    && monkeyc -f "monkey.jungle;sim.jungle" -o "bin/sim.prg" -y "$KEY" -d "$DEV" ) \
+    || die "compilation en echec"
+  if tasklist 2>/dev/null | grep -qi simulator; then
+    log "Arret du simulateur precedent…"
+    taskkill //IM simulator.exe //F >/dev/null 2>&1
+    sleep 3
+  fi
+  log "Demarrage du simulateur…"
+  "$SDK/bin/connectiq.bat" >/dev/null 2>&1 &
+  sleep 22
+  log "Chargement…"
+  exec monkeydo "$ROOT/$DIR/bin/sim.prg" "$DEV"
 fi
 
 # --- Build de debogage --------------------------------------------------------

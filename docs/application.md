@@ -591,6 +591,70 @@ lignes, lui — celui d'un champ étroit — respecte le thème comme n'importe 
 La roue dentée, elle, n'est dessinée que par l'application compagnon : un data field n'a pas
 le droit d'empiler une vue, la roue y était un bouton qui ne menait nulle part.
 
+## Voir la page dans le simulateur
+
+Le simulateur n'a **pas de pile Bluetooth**. `Ble.setScanState()` n'y trouve
+jamais rien, la machine à états reste sur « Recherche », et le seul écran qu'on
+puisse y regarder est celui de l'attente : toute la page — bandeau, jauge, mode
+courant, catégories, crans — n'était visible que sur un appareil avec une vraie
+lampe au bout. Autant dire sur un seul modèle, le 1050.
+
+Le **mode démonstration** remplit `LampManager.status` avec ce qu'une VS1800S
+déclare réellement, et pose l'état à « prête ». Le panneau ne sait pas d'où
+vient l'état qu'il affiche : le dessin est exactement celui d'une lampe
+connectée.
+
+```bash
+bash app/build.sh sim               # application compagnon, Edge 1050
+bash app/build.sh sim app edge530   # champ de données, sur un autre profil
+```
+
+Il vit dans `shared/LampDemo.mc`, sous l'annotation `demo`. Les deux jungles
+l'excluent (`base.excludeAnnotations = debug;demo`) ; `sim.jungle`, empilé
+par-dessus, l'inclut et exclut `nodemo` à sa place. **Aucun binaire de
+diffusion ne le contient** — vérifiable sur le paquet :
+
+```bash
+grep -ac "62%  Dipped 2" widget/bin/edge1050.prg    # 0
+```
+
+### Les captures
+
+```bash
+bash tools/sim-captures.sh                    # un modèle par format d'écran
+bash tools/sim-captures.sh app edge530        # le champ de données, sur un 530
+```
+
+Les images vont dans `captures/sim/`, exclu du dépôt. Elles servent à deux
+choses : vérifier la mise en page sur les six formats sans posséder treize
+compteurs, et produire les captures que le Connect IQ Store exige par fiche.
+
+`tools/sim-shot.ps1` capture la fenêtre par `PrintWindow` et non par une copie
+de l'écran : la fenêtre n'a pas besoin d'être au premier plan, et la capture ne
+vole pas le focus de celui qui travaille à côté. Le repli par copie d'écran
+n'existe que pour les fenêtres qui ignorent `PrintWindow`.
+
+### Ce que le simulateur a trouvé du premier coup
+
+Quatre défauts qu'aucun essai sur Edge 1050 ne pouvait montrer :
+
+| Défaut | Cause |
+|---|---|
+| Vignette de résumé **blanche sur blanc** | la zone de contenu des thèmes de vignette est blanche sur un MTB, sombre sur un 1050 |
+| Vignette **vide** avant la première ouverture | rien n'était écrit tant qu'aucun relevé n'existait |
+| Libellé du mode en **police minuscule** sur 1030, 1030 Plus, Explore | police choisie sur la largeur seule, puis rabattue sur la plus petite |
+| Roue dentée lue comme un **soleil** | dents fines et longues, anneau mince |
+
+C'est l'argument pour le garder : ces quatre-là étaient invisibles au
+compilateur, aux tests de géométrie — qui vérifient des rectangles, pas des
+couleurs — et à l'appareil dont on dispose.
+
+### Ce qu'il ne remplace pas
+
+Le Bluetooth, donc la connexion, la reconnexion et le protocole. Et le rendu
+réel d'une dalle : le simulateur dessine sur un écran d'ordinateur, pas sur un
+transflectif en plein soleil.
+
 ## Langues
 
 Connect IQ ne propose pas de sélecteur de langue par application : **une app parle celle du

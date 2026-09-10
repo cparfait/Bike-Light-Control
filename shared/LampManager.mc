@@ -413,6 +413,21 @@ class LampManager extends Ble.BleDelegate {
         return state == STATE_READY;
     }
 
+    //! Pose l'etat « prete » sans liaison, pour le mode demonstration.
+    //!
+    //! Reservee a `LampDemo`, et absente des binaires de diffusion —
+    //! l'annotation `demo` est exclue par les deux jungles. `_identifiedOnce`
+    //! evite l'ecran « Celle-ci ? » : il n'y a pas de lampe a faire clignoter.
+    //! Les ecritures, elles, partent dans le vide : `send()` sort aussitot,
+    //! faute de caracteristique.
+    (:demo)
+    function forceReady() as Void {
+        state = STATE_READY;
+        _identifiedOnce = true;
+        _identifyPending = false;
+        _identifyStep = -1;
+    }
+
     //! Vrai quand rien n'est en cours : ni recherche, ni liaison.
     //!
     //! C'est l'etat au repos, celui ou la page propose son bouton de mise en

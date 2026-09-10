@@ -197,6 +197,8 @@ bash app/build.sh package
       reglages depuis Garmin Connect, que le simulateur ne rend pas.
 - [ ] Au moins une capture d'ecran par fiche. Le panneau plein ecran sur un 1050 est le plus
       parlant ; une seconde capture du champ dans une page a six cases montre l'autre usage.
+      Les produire avec `bash tools/sim-captures.sh` — elles sortent dans `captures/sim/`,
+      lampe factice comprise, sans avoir a brancher quoi que ce soit.
 - [ ] Aucune permission reseau n'est demandee : pas de politique de confidentialite a fournir.
 - [ ] Verifier que le paquet contient bien la declaration des champs FIT :
       `7z l dist/bike-light-control.iq | grep fit_contributions`

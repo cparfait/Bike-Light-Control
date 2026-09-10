@@ -1,9 +1,14 @@
 project.manifest = manifest.xml
 
-# Surcouche de diagnostic de LampPanel, hors des binaires de diffusion. Pour
-# la lire sur l'appareil : remplacer `debug` par `nodebug` ici, et mettre
-# `panel.debug = true` dans la vue concernee.
-base.excludeAnnotations = debug
+# Deux jeux de code hors des binaires de diffusion :
+#
+#   debug   surcouche de diagnostic de LampPanel. Pour la lire sur l'appareil,
+#           remplacer `debug` par `nodebug` ici, et mettre `panel.debug = true`
+#           dans la vue concernee.
+#   demo    lampe factice de shared/LampDemo.mc, qui donne au simulateur une
+#           lampe a afficher. `bash app/build.sh sim` la garde en passant
+#           sim.jungle par-dessus celui-ci.
+base.excludeAnnotations = debug;demo
 
 # `shared` contient le protocole et la couche BLE, partagés avec le widget.
 # Un chemin de sources commun plutôt qu'un barrel : moins d'outillage, et les

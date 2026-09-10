@@ -1,0 +1,16 @@
+# Surcharge du mode demonstration, pour le simulateur — champ de donnees.
+#
+#   bash app/build.sh sim app edge1050
+#
+# S'empile sur monkey.jungle, qu'elle ne remplace pas :
+#
+#   monkeyc -f "monkey.jungle;sim.jungle" ...
+#
+# Le simulateur n'a pas de pile Bluetooth : sans cela, la page reste sur
+# « Recherche » et rien de la mise en page ne se voit. `demo` n'est donc plus
+# exclue, et `nodemo` l'est a sa place — les deux formes annotees de `_demo()`
+# s'echangent. La surcouche de diagnostic, elle, reste dehors.
+#
+# Ce jungle ne doit **jamais** servir a produire un paquet du store : le
+# binaire y afficherait une lampe qui n'existe pas.
+base.excludeAnnotations = debug;nodemo

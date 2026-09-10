@@ -120,6 +120,24 @@ Two checks cross-reference the code against the SDK profiles rather than the doc
 python tools/check-icons.py
 ```
 
+### Seeing the UI without a light
+
+The simulator has no Bluetooth stack, so the app used to sit on "Searching" and
+none of the control page could be seen. A demo build fills the lamp state with
+what a real VS1800S declares:
+
+```bash
+bash app/build.sh sim
+```
+
+```bash
+bash tools/sim-captures.sh
+```
+
+One PNG per screen format, in `captures/sim/`. It found four display defects on
+its first run that no Edge 1050 could have shown — details in
+[docs/application.md](docs/application.md).
+
 ```bash
 python tools/i18n/langues-supportees.py --declarees
 ```

@@ -113,12 +113,12 @@ class PanelLayout {
         // précédente, où les deux rangées se partageaient toute la hauteur.
         var inter = (rows - 1) * gap;
         gridH = rows * (tw * 115 / 100) + inter;
-        var room = span * ((rows == 2) ? 62 : 40) / 100;
+        var room = span * ((rows == 2) ? 70 : 46) / 100;
         if (room > gridH) {
             var gridMax = rows * (tw * 185 / 100) + inter;
             gridH = (room > gridMax) ? gridMax : room;
         }
-        var ceiling = span * ((rows == 2) ? 78 : 62) / 100;
+        var ceiling = span * ((rows == 2) ? 84 : 68) / 100;
         if (gridH > ceiling) { gridH = ceiling; }
         if (gridH < inter + rows) { gridH = inter + rows; }
         catH = (gridH - inter) / rows;
@@ -147,11 +147,20 @@ class PanelLayout {
         // Il n'apparaît que s'il reste vraiment de la place. Le sacrifier est le
         // bon arbitrage : l'information est déjà portée par la tuile allumée,
         // alors que rogner les tuiles casse la cible tactile.
+        //
+        // **Il en prenait trop.** Plafonné à 1,8 fois la grande police, il
+        // faisait 135 pixels sur un Edge 1050 : « Perso 1 » s'y étalait en
+        // caractères de titre pendant que les tuiles, elles, restaient à ce que
+        // la grille avait bien voulu leur laisser. Or le libellé n'est qu'un
+        // rappel — la tuile allumée dit déjà lequel — alors que les tuiles sont
+        // ce qu'on vise du doigt en roulant. Le plafond est donc calé sur la
+        // police moyenne, et la part de l'espace libre ramenée de 55 à 42 % ;
+        // le reste va à la grille, dont les bornes montent d'autant.
         heroY = top;
         heroH = 0;
         if (slack >= hSmall * 130 / 100) {
-            heroH = slack * 55 / 100;
-            var heroMax = hLarge * 180 / 100;
+            heroH = slack * 42 / 100;
+            var heroMax = hMedium * 150 / 100;
             if (heroH > heroMax) { heroH = heroMax; }
         }
 

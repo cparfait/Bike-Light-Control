@@ -51,10 +51,20 @@ class PanelApp extends Application.AppBase {
 
     //! C'est ici que la lampe est cherchée, et nulle part ailleurs : on n'y
     //! passe que si l'utilisateur ouvre vraiment la page.
+    //! Lampe factice du mode demonstration. Deux formes annotees plutot qu'un
+    //! `if` : le binaire de diffusion ne contient pas la seconde ligne, et pas
+    //! davantage `LampDemo`. Meme procede que la surcouche de diagnostic.
+    (:demo)
+    private function _demo(lamp as LampManager) as Void { LampDemo.apply(lamp); }
+
+    (:nodemo)
+    private function _demo(lamp as LampManager) as Void { }
+
     function getInitialView() {
         if (_lamp == null) {
             _lamp = new LampManager();
             _auto = new AutoController();
+            _demo(_lamp as LampManager);
             // Ici, « au demarrage » ne peut pas vouloir dire « au depart de
             // l'activite » : il n'y en a pas. On ouvre cette page pour allumer
             // sa lampe avant de partir, et le moment equivalent est celui ou on
@@ -78,6 +88,7 @@ class PanelApp extends Application.AppBase {
     function getGlanceView() {
         return [ new LampGlanceView() ];
     }
+
 }
 
 //! Résumé compact : le dernier état connu de la lampe.
@@ -116,42 +127,106 @@ class LampGlanceView extends WatchUi.GlanceView {
     static const KEY_TITLE   = "glanceTitle";
     static const KEY_SUMMARY = "glanceSummary";
 
+    //! Titre de repli, tant que la page n'a jamais été ouverte.
+    //!
+    //! **Écrit en dur, et c'est la seule façon.** La tuile n'a pas accès à la
+    //! table de ressources — deux plantages « Illegal Access » l'ont établi —
+    //! donc pas de traduction possible ici. Le nom du produit n'en demande pas.
+    //!
+    //! Sans lui, la tuile était **entièrement vide** avant la première
+    //! ouverture : le système dessine sa tuile et l'icône du lanceur, et nous
+    //! n'écrivions rien, au motif qu'on n'avait encore rien mesuré. Vu du
+    //! carrousel, au milieu de tuiles qui affichent toutes quelque chose, ça ne
+    //! se lit pas comme une application discrète mais comme une application
+    //! cassée. Le simulateur l'a montré du premier coup.
+    static const FALLBACK_TITLE = "Bike Light";
+
+    //! Fond de la vignette, et couleurs de son texte.
+    //!
+    //! **Le fond de tuile du système n'a pas la même clarté d'un Edge à
+    //! l'autre.** Ce n'est pas une supposition, c'est dans les profils du SDK :
+    //! chaque appareil embarque les sept images de thème de vignette
+    //! (`dglance_*.png`, choisies par l'utilisateur), et leur zone de contenu
+    //! est **blanche** sur un Edge MTB alors qu'elle est **sombre** sur un Edge
+    //! 1050 — du bleu nuit `#0E3450` au gris `#212121` selon le thème. Le texte
+    //! était écrit en blanc : lisible sur le 1050, **invisible sur le MTB**, où
+    //! la vignette paraissait vide et l'application cassée.
+    //!
+    //! Aucune couleur de texte fixe ne convient aux deux, et rien à l'exécution
+    //! ne dit laquelle on a sous les yeux : `AppBase.getGlanceTheme()` sert à
+    //! *déclarer* un thème, pas à lire la couleur qui en découle. On pose donc
+    //! notre propre fond — une pastille sombre à coins arrondis — et on écrit
+    //! dessus. Sur un 1050 elle se fond dans le fond sombre du système, sur un
+    //! MTB elle se détache du blanc : dans les deux cas le texte se lit.
+    //!
+    //! Ce n'est pas le retour du fond noir plein d'une version précédente, qui
+    //! recouvrait toute la vignette et tranchait au milieu des autres : la
+    //! pastille est en retrait, arrondie, et se lit comme un élément voulu.
+    static const GLANCE_BG    = 0x1C1C1C;
+    static const GLANCE_TEXT  = 0xFFFFFF;
+    static const GLANCE_VALUE = 0xFFAA00;
+
     function initialize() {
         GlanceView.initialize();
     }
 
     function onUpdate(dc as Graphics.Dc) as Void {
-        // Pas de `clear()` : le système peint lui-même le dégradé de la tuile.
-        // La version précédente le recouvrait de noir, et la nôtre tranchait au
-        // milieu des autres.
-        dc.setColor(Graphics.COLOR_WHITE, Graphics.COLOR_TRANSPARENT);
-
+        var w = dc.getWidth();
         var h = dc.getHeight();
-        var pad = 4;
+
+        // Pas de `clear()`, qui déborderait de la vignette : une pastille
+        // posée dans la zone de contenu, voir GLANCE_BG.
+        if (dc has :setAntiAlias) { dc.setAntiAlias(true); }
+        var inset = h / 12;
+        if (inset < 1) { inset = 1; }
+        dc.setColor(GLANCE_BG, Graphics.COLOR_TRANSPARENT);
+        dc.fillRoundedRectangle(0, inset, w, h - 2 * inset, h / 5);
+
+        var pad = h / 6;
+        if (pad < 4) { pad = 4; }
 
         var title = _stored(KEY_TITLE);
-        if (title != null) {
-            dc.drawText(pad, h / 2, Graphics.FONT_TINY, title,
-                        Graphics.TEXT_JUSTIFY_LEFT | Graphics.TEXT_JUSTIFY_VCENTER);
-        }
+        if (title == null) { title = FALLBACK_TITLE; }
+        dc.setColor(GLANCE_TEXT, Graphics.COLOR_TRANSPARENT);
+        dc.drawText(pad, h / 2, Graphics.FONT_TINY, title,
+                    Graphics.TEXT_JUSTIFY_LEFT | Graphics.TEXT_JUSTIFY_VCENTER);
 
+        // La valeur en ambre, la couleur d'accent de la page : la vignette et
+        // la page de pilotage parlent ainsi le même langage de couleurs.
         var summary = _stored(KEY_SUMMARY);
         if (summary != null) {
-            dc.drawText(dc.getWidth() - pad, h / 2, Graphics.FONT_TINY, summary,
+            dc.setColor(GLANCE_VALUE, Graphics.COLOR_TRANSPARENT);
+            dc.drawText(w - pad, h / 2, Graphics.FONT_TINY, summary,
                         Graphics.TEXT_JUSTIFY_RIGHT | Graphics.TEXT_JUSTIFY_VCENTER);
         }
     }
 
     //! Chaîne rangée par la page, ou `null` si elle n'a jamais été ouverte.
-    //! On n'écrit alors rien : « -- » ferait croire à une panne alors qu'on n'a
-    //! jamais demandé quoi que ce soit à la lampe.
+    //! Le titre retombe alors sur `FALLBACK_TITLE` ; le résumé, lui, reste
+    //! vide : « -- » ferait croire à une panne alors qu'on n'a jamais demandé
+    //! quoi que ce soit à la lampe.
     private function _stored(key as Lang.String) as Lang.String or Null {
         var v = null;
         try {
             v = Application.Storage.getValue(key);
         } catch (e) {
         }
-        return (v instanceof Lang.String) ? v : null;
+        if (v instanceof Lang.String) { return v; }
+        return _demoText(key);
+    }
+
+    //! Valeurs de demonstration, pour voir la vignette garnie dans le
+    //! simulateur — sinon elle s'y montre toujours dans son etat d'avant la
+    //! premiere ouverture. Ecrites ici, et non tirees de `LampDemo` : le
+    //! contexte de resume ne voit ni `LightConstants` ni les libelles.
+    (:demo)
+    private function _demoText(key as Lang.String) as Lang.String or Null {
+        return key.equals(KEY_TITLE) ? "Light Front" : "62%  Dipped 2";
+    }
+
+    (:nodemo)
+    private function _demoText(key as Lang.String) as Lang.String or Null {
+        return null;
     }
 }
 
