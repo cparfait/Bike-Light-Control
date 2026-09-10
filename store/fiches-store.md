@@ -40,8 +40,9 @@ Produire les paquets :
 bash app/build.sh package
 ```
 
-**Version à saisir dans le formulaire : 1.0.0**, en bêta. Le manifeste n'en
-porte pas ; `CHANGELOG.md` en garde la trace.
+**Version à saisir dans le formulaire : 0.1**, en bêta. Le manifeste n'en porte
+pas ; `CHANGELOG.md` en garde la trace. Le 1.0.0 est gardé pour la sortie
+publique — un numéro ne peut que monter.
 
 ---
 

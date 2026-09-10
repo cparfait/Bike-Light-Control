@@ -1,6 +1,6 @@
 # Dépôt en bêta sur le Connect IQ Store
 
-Marche à suivre pour l'envoi du **10/09/2026**, version **1.0.0**, en bêta. Le
+Marche à suivre pour l'envoi du **10/09/2026**, version **0.1**, en bêta. Le
 contenu de la version est dans [CHANGELOG.md](../CHANGELOG.md), les textes des
 fiches dans [store/fiches-store.md](../store/fiches-store.md).
 
@@ -109,7 +109,7 @@ fiche** — la bêta ne se transforme pas en version publique.
 |---|---|
 | Fichier | `dist/bike-light-control-beta.iq` |
 | Type | Data field |
-| Version | 1.0.0 |
+| Version | 0.1 |
 | Icône de la fiche | `store/app-icon-500.png` |
 | Captures | `store/screenshots/control-*.png` |
 | Titres et descriptions | [store/fiches-store.md](../store/fiches-store.md) |
@@ -120,7 +120,7 @@ fiche** — la bêta ne se transforme pas en version publique.
 |---|---|
 | Fichier | `dist/bike-light-panel-beta.iq` |
 | Type | Device app |
-| Version | 1.0.0 |
+| Version | 0.1 |
 | Icône de la fiche | `store/widget-icon-500.png` |
 | Captures | `store/screenshots/panel-*.png` |
 | Titres et descriptions | [store/fiches-store.md](../store/fiches-store.md) |

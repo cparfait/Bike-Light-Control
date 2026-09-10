@@ -13,13 +13,21 @@ partagent `shared/`, et deux numéros divergents seraient ingérables.
 
 ---
 
-## [1.0.0-beta] — 10/09/2026
+## [0.1] — 10/09/2026
 
 Première version déposée sur le Connect IQ Store, en bêta.
 
-Numéro à saisir dans le formulaire de dépôt : **1.0.0**. Le manifeste ne porte
-pas de version — le store la demande à chaque envoi, et c'est ici qu'on garde la
-trace de ce qu'elle contenait.
+**Numéro saisi dans le formulaire : 0.1.** Le manifeste ne porte pas de version
+— le store la demande à chaque envoi, et c'est ici qu'on garde la trace de ce
+qu'elle contenait.
+
+Zéro plutôt qu'un, et à dessein : douze des treize modèles n'ont jamais fait
+tourner ce code sur du matériel, et trois correctifs de ce jour n'ont été
+éprouvés qu'en test unitaire. Le 1.0.0 est réservé à la sortie publique, quand
+la reconnexion et l'extinction auront été vues sur un compteur.
+
+Une seule contrainte pour la suite : un numéro ne peut que monter. 0.1 → 0.2 →
+1.0.0 convient ; revenir en arrière serait refusé.
 
 ### Ajouté
 
