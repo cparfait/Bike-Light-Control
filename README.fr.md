@@ -233,7 +233,12 @@ Tout ce qu'il faut pour le premier dépôt en bêta est réuni dans
 [docs/depot-beta.md](docs/depot-beta.md) : ce qui doit être vrai avant d'ouvrir
 le formulaire, ce qui va dans chacune des deux fiches, et ce que seule une bêta
 permet de vérifier — les réglages dans Garmin Connect, les champs FIT et les
-deux noms distincts.
+deux noms distincts. Une bêta exige son propre identifiant d'application, dont
+`bash app/build.sh package-beta` se charge.
+
+Sur la question de la faire payer plus tard : [docs/monetisation.md](docs/monetisation.md).
+Rien à préparer dans le code, mais cinq des treize modèles ne pourraient pas
+l'acheter.
 
 ## Où en est le projet
 

@@ -229,7 +229,11 @@ captures/                           analysis reports (raw logs and APKs stay out
 Everything for the first beta submission is laid out in
 [docs/depot-beta.md](docs/depot-beta.md): what must be true before opening the
 form, what goes in each of the two listings, and what only a beta can verify —
-the settings in Garmin Connect, the FIT fields, and the two distinct names.
+the settings in Garmin Connect, the FIT fields, and the two distinct names. A
+beta needs its own app id, which `bash app/build.sh package-beta` takes care of.
+
+On charging for it later: [docs/monetisation.md](docs/monetisation.md). Nothing
+to prepare in the code, but five of the thirteen models could not buy it.
 
 ## Status
 

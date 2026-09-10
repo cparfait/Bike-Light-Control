@@ -10,6 +10,7 @@
 #   bash app/build.sh debug      # build de debogage pour l'Edge 1050
 #   bash app/build.sh sim        # page de pilotage dans le simulateur, lampe factice
 #   bash app/build.sh package    # paquets .iq pour le Connect IQ Store
+#   bash app/build.sh package-beta   # les memes, sous un identifiant de beta
 #
 # Deux binaires sont produits : le data field (app/bin/) tourne pendant
 # l'activite, le widget (widget/bin/) pilote la lampe a l'arret et sur les Edge
@@ -171,6 +172,55 @@ if [ "$MODE" = "package" ]; then
 ' "$name.iq" "$(stat -c %s "$ROOT/dist/$name.iq")"
   done
   log "Paquets prets dans dist/."
+  exit 0
+fi
+
+# --- Paquet de beta -----------------------------------------------------------
+# Une beta du Connect IQ Store doit porter un **identifiant d'application
+# different** de la version publique. C'est la documentation de Garmin qui le
+# demande : « you will need to create an alternate app id in your manifest using
+# a UUID creator », et la fiche de beta recoit de toute facon son propre
+# identifiant de boutique, invisible hors du compte de l'auteur.
+#
+# La raison est simple : sans cela, la beta et la version publique seraient la
+# meme application aux yeux du store, et l'une ecraserait l'autre.
+#
+# Le manifeste n'est pas duplique dans le depot — deux fichiers a garder en
+# phase, c'est la liste des treize produits qui finit par diverger. Il est
+# derive du vrai, l'identifiant remplace au passage, et **mis a sa place le
+# temps de la construction** : un second jungle ne peut pas rediriger
+# `project.manifest`, le compilateur refuse net (« Attempting to reset project
+# property 'manifest' »). Une trappe le remet en place quoi qu'il arrive, echec
+# et interruption compris — sans quoi le depot resterait avec un identifiant de
+# beta dans son manifeste, ce qui ne se verrait qu'a la publication suivante.
+#
+# Le jour de la sortie publique : `bash app/build.sh package`, sans beta, et
+# l'identifiant de production reprend sa place.
+BETA_ID_APP="f24f796a59ef480ea175c7fceb25b8b9"
+BETA_ID_WIDGET="91538709a6a04e028279a591ce98a374"
+
+if [ "$MODE" = "package-beta" ]; then
+  mkdir -p "$ROOT/dist"
+  for dir in app widget; do
+    case "$dir" in
+      app)    name="bike-light-control"; beta="$BETA_ID_APP" ;;
+      widget) name="bike-light-panel";   beta="$BETA_ID_WIDGET" ;;
+    esac
+    log "Paquet beta $dir ($name-beta.iq)…"
+    (
+      cd "$ROOT/$dir" && mkdir -p bin
+      cp manifest.xml bin/manifest-prod.xml
+      trap 'cp bin/manifest-prod.xml manifest.xml' EXIT INT TERM
+      # `id="..."` n'apparait qu'une fois dans le manifeste : sur l'application.
+      sed -E "s/(<iq:application[^>]* id=\")[0-9a-f]{32}/\\1$beta/" \
+        bin/manifest-prod.xml > manifest.xml
+      grep -q "$beta" manifest.xml || exit 1
+      monkeyc -e -f monkey.jungle -y "$KEY" \
+        -o "$ROOT/dist/$name-beta.iq" -r -O 2
+    ) || die "paquet beta $dir en echec"
+    printf '  %-29s %8d octets\n' "$name-beta.iq" "$(stat -c %s "$ROOT/dist/$name-beta.iq")"
+  done
+  log "Paquets de beta prets dans dist/. Cocher « Beta App » a l'envoi."
   exit 0
 fi
 
