@@ -64,7 +64,7 @@ même. Le constat détaillé est dans le CHANGELOG ; l'essentiel :
 
 | Point | Gravité | Ce qui a été fait |
 |---|---|---|
-| Le champ ne cherchait la lampe que sur une tape : jamais sur 530, 540, 550, MTB | bloquant | recherche au départ et à chaque reprise du chrono, réglage `searchOnStart` dans Garmin Connect |
+| Le champ ne cherchait la lampe que sur une tape : jamais sur 530, 540, 550, MTB | bloquant | le bouton Lap lance la recherche sur les modèles sans tactile (`onTimerLap`) ; réglage `searchOnStart` dans Garmin Connect, décoché par défaut, pour la lancer au départ du chrono |
 | L'extinction à l'arrêt était ignorée après un geste manuel | bloquant | `onRideState()` traite l'arrêt avant le test sur `enabled` ; 2 tests |
 | Le filet `shutdown()` avait une branche impossible (trame de 28 octets) | bloquant | branche retirée, limite documentée : la garantie est l'arrêt du chrono |
 | Recherche BLE jamais bornée | énergie | plafond `SCAN_MAX_S`, retour au repos |

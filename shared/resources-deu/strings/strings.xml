@@ -71,6 +71,7 @@
     <string id="MsgIdle">Suchen</string>
     <string id="MsgIdleHint">tippen, um die Suche zu starten</string>
     <string id="MsgIdleHintTimer">startet mit dem Timer</string>
+    <string id="MsgIdleHintLap">Lap drücken zum Suchen</string>
     <string id="MsgSearching">Suche</string>
     <string id="MsgSearchingHint">nach deinem Licht</string>
     <string id="MsgConnecting">Verbinde</string>

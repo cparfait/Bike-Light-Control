@@ -103,6 +103,9 @@
     <!-- Sur un Edge a boutons, la case ne recoit aucune tape : c'est le
          chrono qui lance la recherche, et c'est ce qu'il faut ecrire. -->
     <string id="MsgIdleHintTimer">starts with the timer</string>
+    <!-- Meme situation, reglage decoche : le bouton Lap est le seul geste
+         qu'un champ recoive sur un Edge sans tactile. -->
+    <string id="MsgIdleHintLap">press Lap to search</string>
     <string id="MsgSearching">Searching</string>
     <string id="MsgSearchingHint">for your light</string>
     <string id="MsgConnecting">Connecting</string>

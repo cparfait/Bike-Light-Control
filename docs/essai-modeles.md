@@ -39,9 +39,10 @@ autres.
 
 > Edge 530, Edge 540, Edge 550, Edge MTB
 
-Aucune tape possible : un champ de donnees ne recoit pas d'evenement de touche. Le panneau
-compagnon est **le seul** moyen de changer de mode a la main. Le curseur du panneau, lui, se
-pilote aux boutons.
+Aucune tape possible : un champ de donnees ne recoit pas d'evenement de touche. Le bouton
+**Lap** y tient lieu de tape pour lancer ou arreter la recherche (`onTimerLap`, seul appui
+transmis a un champ). Pour changer de mode a la main, le panneau compagnon reste **le seul**
+moyen ; son curseur se pilote aux boutons.
 
 ---
 

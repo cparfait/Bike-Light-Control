@@ -75,6 +75,7 @@
   "MsgIdentifySoon": "車燈即將閃爍",
   "MsgIdle": "偵測",
   "MsgIdleHint": "點按開始搜尋",
+  "MsgIdleHintLap": "按 Lap 鍵搜尋",
   "MsgIdleHintTimer": "隨計時器啟動",
   "MsgNearby": " 個車燈在附近",
   "MsgNoBle": "藍牙",

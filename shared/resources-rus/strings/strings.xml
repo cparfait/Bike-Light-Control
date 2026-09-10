@@ -71,6 +71,7 @@
     <string id="MsgIdle">Найти</string>
     <string id="MsgIdleHint">нажмите, чтобы начать поиск</string>
     <string id="MsgIdleHintTimer">запуск с таймером</string>
+    <string id="MsgIdleHintLap">нажмите Lap для поиска</string>
     <string id="MsgSearching">Поиск</string>
     <string id="MsgSearchingHint">вашей фары</string>
     <string id="MsgConnecting">Соединение</string>

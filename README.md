@@ -52,7 +52,7 @@ the 19 distinct commands the vendor app emits are reproduced exactly. The full w
 | 🔋 **Low-battery fallback** | Brightness is capped so the light survives to the end of the ride rather than dying at kilometre 40. |
 | ⏱ **Off on stop, not on pause** | The light goes out when you stop the timer. A red light at the traffic light stays on. |
 | 👆 **Manual override** | Tap the field to cycle modes, or open the full page to pick one. The next tap hands control back to the automation. |
-| ▶️ **Search starts with the timer** | The field looks for the light when you start the timer, on every model, buttons included. The search is time-boxed: no light, no scan burning the battery for the whole ride. |
+| ▶️ **Search on demand** | The field looks for the light when you tap it, never on its own. On button-only models, the Lap button does the same, and an off-by-default setting can start the search with the timer. Either way the search is time-boxed: no light, no scan burning the battery for the whole ride. |
 | 📈 **FIT recording** | Light level and light battery are written into the FIT file and show up in Garmin Connect. |
 | 🎯 **Light identification** | With several lights around, the closest one is picked — and **blinks twice** to say so. An escape hatch moves to the next one. |
 | 📱 **Companion app** | A control panel for use off-ride: turn the light on before you leave, set the light's own automations, check the summary tile. |

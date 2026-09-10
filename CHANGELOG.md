@@ -41,9 +41,13 @@ Première version déposée sur le Connect IQ Store, en bêta.
 ### Corrigé — audit du 10/09/2026
 
 - Le champ de données ne cherchait la lampe que sur une tape, donc jamais sur
-  les Edge à boutons (530, 540, 550, MTB). La recherche part désormais au
-  départ du chrono et à chaque reprise, sur les 13 modèles, avec un réglage
-  « chercher la lampe au départ du chrono » dans Garmin Connect.
+  les Edge à boutons (530, 540, 550, MTB). Un réglage « chercher la lampe au
+  départ du chrono », **décoché par défaut**, lance la recherche au départ et
+  à chaque reprise du chrono. La tape reste le geste normal : chercher sans
+  qu'on l'ait demandé, c'est allumer une lampe qu'on ne voulait pas utiliser.
+- Sur les Edge sans tactile, le bouton Lap lance la recherche depuis le champ
+  de données, et l'arrête pendant qu'elle tourne. C'est le seul appui qu'un
+  champ reçoive ; il marque aussi un tour.
 - L'extinction à l'arrêt du chrono était ignorée après un changement de mode
   manuel : la lampe restait allumée. Elle s'applique quel que soit le mode, et
   le mode manuel ne survit plus à l'arrêt.

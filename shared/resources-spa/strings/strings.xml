@@ -71,6 +71,7 @@
     <string id="MsgIdle">Detectar</string>
     <string id="MsgIdleHint">toca para iniciar la búsqueda</string>
     <string id="MsgIdleHintTimer">arranca con el cronómetro</string>
+    <string id="MsgIdleHintLap">pulsa Lap para buscar</string>
     <string id="MsgSearching">Buscando</string>
     <string id="MsgSearchingHint">tu luz</string>
     <string id="MsgConnecting">Conectando</string>

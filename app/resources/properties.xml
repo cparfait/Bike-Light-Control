@@ -17,9 +17,11 @@
     <property id="lightOnStart" type="boolean">true</property>
 
     <!-- Recherche de la lampe au depart du chrono, et a chaque reprise si elle
-         s'est perdue. C'est le seul geste commun aux 13 modeles : sur un Edge
-         a boutons, aucune tape n'atteint un champ de donnees. Bornee dans le
-         temps par LampManager.SCAN_MAX_S. Decoche pour les sorties de jour sans
-         lampe : la tape reste possible sur les tactiles. -->
-    <property id="searchOnStart" type="boolean">true</property>
+         s'est perdue. **Decoche par defaut** : chercher sans qu'on l'ait
+         demande, c'est trouver — et allumer — une lampe qu'on ne voulait pas
+         utiliser. La tape sur la case reste le geste normal. Ce reglage existe
+         pour les Edge a boutons, ou aucune tape n'atteint un champ de donnees :
+         c'est le seul moyen d'y lancer la recherche. Bornee dans le temps par
+         LampManager.SCAN_MAX_S. -->
+    <property id="searchOnStart" type="boolean">false</property>
 </properties>

@@ -23,12 +23,14 @@ class LampApp extends Application.AppBase {
     //! boutons, ou aucune tape n'atteint jamais un champ de donnees : 530, 540,
     //! 550, MTB, plus les modeles ou la barre de controle intercepte le geste.
     //!
-    //! Le depart du chrono est le geste delibere qui existe sur les 13 modeles.
-    //! La recherche part la, bornee dans le temps par `LampManager`, et repart
-    //! a chaque reprise du chrono si la lampe s'est perdue entre-temps. La tape
-    //! reste possible sur les modeles tactiles, et le reglage « chercher au
-    //! depart » permet de couper la recherche automatique pour les sorties de
-    //! jour — voir `LampView.compute()`.
+    //! La tape reste le geste normal. Sur un Edge a boutons, c'est le bouton
+    //! Lap qui en tient lieu — voir `LampView.onTimerLap()`. Le reglage
+    //! « chercher la lampe au depart du chrono », **decoche par defaut**, est
+    //! un complement pour qui roule toujours avec sa lampe : la recherche est
+    //! alors bornee dans le temps par `LampManager` et relancee a chaque
+    //! reprise du chrono. Il est decoche parce que chercher sans qu'on l'ait
+    //! demande, c'est trouver — et allumer — une lampe qu'on ne voulait pas
+    //! utiliser. Voir `LampView.compute()`.
     function onStart(state as Lang.Dictionary or Null) as Void {
         _lamp = new LampManager();
         _auto = new AutoController();

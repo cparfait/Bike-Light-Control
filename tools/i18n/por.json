@@ -75,6 +75,7 @@
   "MsgIdentifySoon": "a sua luz vai piscar",
   "MsgIdle": "Detetar",
   "MsgIdleHint": "toque para iniciar a procura",
+  "MsgIdleHintLap": "prima Lap para procurar",
   "MsgIdleHintTimer": "arranca com o cronómetro",
   "MsgNearby": " luzes por perto",
   "MsgNoBle": "Bluetooth",

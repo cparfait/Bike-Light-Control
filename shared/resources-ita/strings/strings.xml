@@ -71,6 +71,7 @@
     <string id="MsgIdle">Rileva</string>
     <string id="MsgIdleHint">tocca per avviare la ricerca</string>
     <string id="MsgIdleHintTimer">parte con il timer</string>
+    <string id="MsgIdleHintLap">premi Lap per cercare</string>
     <string id="MsgSearching">Ricerca</string>
     <string id="MsgSearchingHint">della tua luce</string>
     <string id="MsgConnecting">Connetto</string>

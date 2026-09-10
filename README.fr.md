@@ -52,7 +52,7 @@ constructeur. Le relevé complet est dans [docs/protocole-vs1800s.md](docs/proto
 | 🔋 **Repli sur batterie faible** | L'intensité est plafonnée pour que la lampe tienne jusqu'au bout de la sortie, au lieu de mourir au 40e kilomètre. |
 | ⏱ **Extinction à l'arrêt, pas à la pause** | La lampe s'éteint quand on arrête le chronomètre. Au feu rouge, elle reste allumée. |
 | 👆 **Reprise en main** | Une tape sur le champ fait défiler les modes, la page complète permet d'en choisir un. La tape suivante rend la main à l'automatisme. |
-| ▶️ **La recherche part avec le chrono** | Le champ cherche la lampe au démarrage du chrono, sur tous les modèles, boutons compris. La recherche est bornée : sans lampe, pas de scan qui vide la batterie sur toute la sortie. |
+| ▶️ **Recherche à la demande** | Le champ cherche la lampe quand on tape dessus, jamais tout seul. Sur les modèles à boutons, le bouton Lap fait la même chose, et un réglage décoché par défaut peut lancer la recherche avec le chrono. Dans les deux cas elle est bornée : sans lampe, pas de scan qui vide la batterie sur toute la sortie. |
 | 📈 **Enregistrement FIT** | Le mode et la batterie de la lampe partent dans le fichier FIT et apparaissent dans Garmin Connect. |
 | 🎯 **Identification de la lampe** | Avec plusieurs lampes autour, la plus proche est retenue — et **clignote deux fois** pour se désigner. Une sortie de secours passe à la suivante. |
 | 📱 **Application compagnon** | Un panneau de pilotage hors activité : allumer avant de partir, régler les automatismes de la lampe, consulter la tuile de résumé. |

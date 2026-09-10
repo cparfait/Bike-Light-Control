@@ -75,6 +75,7 @@
   "MsgIdentifySoon": "ваша фара сейчас мигнёт",
   "MsgIdle": "Найти",
   "MsgIdleHint": "нажмите, чтобы начать поиск",
+  "MsgIdleHintLap": "нажмите Lap для поиска",
   "MsgIdleHintTimer": "запуск с таймером",
   "MsgNearby": " фар рядом",
   "MsgNoBle": "Bluetooth",

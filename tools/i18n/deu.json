@@ -75,6 +75,7 @@
   "MsgIdentifySoon": "dein Licht blinkt gleich",
   "MsgIdle": "Suchen",
   "MsgIdleHint": "tippen, um die Suche zu starten",
+  "MsgIdleHintLap": "Lap drücken zum Suchen",
   "MsgIdleHintTimer": "startet mit dem Timer",
   "MsgNearby": " Lichter in der Nähe",
   "MsgNoBle": "Bluetooth",

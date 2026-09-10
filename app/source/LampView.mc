@@ -59,12 +59,9 @@ class LampView extends WatchUi.DataField {
         // n'affichait donc rien. Voir docs/protocole-vs1800s.md.
         _panel.debug = false;
         // Le tactile n'est pas exposé dans les profils du SDK : c'est une
-        // propriété d'exécution. Un seul binaire pour les 13 modèles. Sur un
-        // modele a boutons, l'ecran de repos ne peut pas inviter a taper : la
-        // precision dit alors que la recherche part avec le chrono.
+        // propriété d'exécution. Un seul binaire pour les 13 modèles.
         var settings = System.getDeviceSettings();
         _touch = (settings has :isTouchScreen) && settings.isTouchScreen;
-        if (!_touch) { _panel.idleHint = Labels.of(Rez.Strings.MsgIdleHintTimer); }
 
         // Le niveau d'intensite, pas le numero de mode. L'enumeration brute
         // donnait 12, 11, 10, 9, 8, 7 pour les six crans croissants d'une
@@ -95,13 +92,14 @@ class LampView extends WatchUi.DataField {
         var ride = AutoController.rideStateOf(info.timerState);
         var running = (ride == AutoController.RIDE_RUNNING);
 
-        // Le chrono qui part — ou repart apres une pause, un arret — lance la
-        // recherche si rien n'est en cours. C'est le seul geste commun aux 13
-        // modeles ; la tape n'existe que sur les tactiles. Et c'est ce qui
-        // retrouve une lampe perdue pendant un arret au cafe : la recherche est
-        // bornee (LampManager.SCAN_MAX_S), la reprise la relance.
+        // Si le reglage le demande — il est decoche par defaut — le chrono qui
+        // part, ou repart apres une pause ou un arret, lance la recherche
+        // quand rien n'est en cours. C'est le seul geste qui existe sur un Edge
+        // a boutons, et c'est ce qui y retrouve une lampe perdue pendant un
+        // arret au cafe : la recherche est bornee (LampManager.SCAN_MAX_S), la
+        // reprise la relance.
         if (running && !_timerRunning && _lamp.isIdle()
-                && AutoController.searchOnStart(true)) {
+                && AutoController.searchOnStart(false)) {
             _lamp.start();
         }
 
@@ -293,6 +291,7 @@ class LampView extends WatchUi.DataField {
         // Plein écran : on affiche le panneau complet, avec ses catégories et
         // ses niveaux. C'est la même mise en page que l'application compagnon.
         if (LampPanel.fits(dc.getWidth(), dc.getHeight())) {
+            if (!_touch && _lamp.isIdle()) { _panel.idleHint = _idleHintNoTouch(); }
             _panel.draw(dc);
             return;
         }
@@ -426,11 +425,7 @@ class LampView extends WatchUi.DataField {
         var reference = LampManager.longestStateMessage();
         var font = _fitFont(dc, reference, w, h * 60 / 100);
 
-        // Sur un modele a boutons, « toucher pour lancer la recherche » serait
-        // un mensonge : la case ne recoit aucune tape, c'est le chrono qui
-        // lance la recherche.
-        var hint = (_lamp.isIdle() && !_touch)
-            ? Labels.of(Rez.Strings.MsgIdleHintTimer) : _lamp.stateHint();
+        var hint = (_lamp.isIdle() && !_touch) ? _idleHintNoTouch() : _lamp.stateHint();
 
         var fh = dc.getFontHeight(font);
         var hintFont = Graphics.FONT_XTINY;
@@ -462,6 +457,32 @@ class LampView extends WatchUi.DataField {
             dc.setColor(Graphics.COLOR_DK_GRAY, Graphics.COLOR_TRANSPARENT);
             dc.drawText(w / 2, y + fh, hintFont, hint, Graphics.TEXT_JUSTIFY_CENTER);
         }
+    }
+
+    //! Precision de repos sur un modele a boutons, ou « toucher pour lancer la
+    //! recherche » serait un mensonge : la case ne recoit aucune tape. Si le
+    //! reglage est coche, la recherche part avec le chrono ; sinon c'est le
+    //! bouton Lap, voir `onTimerLap()`.
+    private function _idleHintNoTouch() as Lang.String {
+        return Labels.of(AutoController.searchOnStart(false)
+            ? Rez.Strings.MsgIdleHintTimer : Rez.Strings.MsgIdleHintLap);
+    }
+
+    //! Le bouton Lap, seul geste qu'un champ de donnees recoive sur un Edge
+    //! sans tactile.
+    //!
+    //! Un champ ne recoit aucun appui de bouton, sauf celui-ci, que le systeme
+    //! transmet a tous les champs quand un tour est marque. Sur un 530, un 540,
+    //! un 550 ou un MTB, c'est donc la seule facon de lancer la recherche d'un
+    //! geste — l'equivalent de la tape sur un tactile. Au repos il cherche,
+    //! pendant la recherche il l'arrete. Sur un tactile on ne fait rien : la
+    //! tape existe, et un tour marque en roulant ne doit pas reveiller le scan.
+    //!
+    //! Effet de bord assume : l'appui marque aussi un tour dans l'activite.
+    function onTimerLap() as Void {
+        if (_touch) { return; }
+        if (_lamp.isIdle()) { _lamp.start(); return; }
+        if (_lamp.state == LampManager.STATE_SCANNING) { _lamp.stop(); }
     }
 
     //! Modes parcourus par la tape sur une case : l'echelle d'intensite, les
