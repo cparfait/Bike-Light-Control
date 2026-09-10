@@ -26,8 +26,15 @@ DIR="${1:-widget}"
 shift 2>/dev/null || true
 DEVICES=("$@")
 if [ ${#DEVICES[@]} -eq 0 ]; then
-  # Un par format : 240x320, 240x400, 246x322, 282x470, 420x600, 480x800.
-  DEVICES=(edgemtb edgeexplore edge530 edge1030 edge550 edge1050)
+  # Les trois series commerciales, tactiles et a boutons. Un modele de plus
+  # qu'un par format d'ecran : les fiches du store se lisent par nom de
+  # modele, pas par resolution, et « Edge 840 » parle a qui en a un.
+  #
+  #   500 : 530, 540, 550    — aucun tactile
+  #   800 : 830, 840, 850    — tous tactiles
+  #  1000 : 1030, 1040, 1050 — tous tactiles
+  DEVICES=(edge530 edge540 edge550 edge830 edge840 edge850
+           edge1030 edge1040 edge1050)
 fi
 
 log() { printf '\033[1;34m==>\033[0m %s\n' "$*"; }
@@ -73,7 +80,12 @@ for dev in "${DEVICES[@]}"; do
   sleep 12
   powershell -NoProfile -File "$WROOT\\tools\\sim-shot.ps1" \
       -Out "$WROOT\\captures\\sim\\$DIR-$dev.png" \
-    || { printf '  %-14s ECHEC capture\n' "$dev"; fail=$((fail + 1)); }
+    || { printf '  %-14s ECHEC capture\n' "$dev"; fail=$((fail + 1)); continue; }
+
+  # L'ecran seul, aux pixels de l'appareil : c'est ce que demande le store,
+  # et ce qui se relit sans le gabarit du simulateur autour.
+  python "$ROOT/tools/sim-crop.py" "$ROOT/captures/sim/$DIR-$dev.png" "$dev" \
+    || { printf '  %-14s ECHEC decoupe\n' "$dev"; fail=$((fail + 1)); }
 done
 
 echo
