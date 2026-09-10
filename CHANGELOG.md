@@ -67,11 +67,17 @@ trace de ce qu'elle contenait.
 Quatre défauts d'affichage qu'aucun essai sur Edge 1050 ne pouvait montrer, et
 que le mode démonstration (`bash app/build.sh sim`) a rendus visibles :
 
-- **La vignette de résumé écrivait en blanc sur blanc.** Les sept thèmes de
-  vignette ont une zone de contenu blanche sur un Edge MTB et sombre sur un
-  1050 : le texte blanc y était donc invisible sur la moitié des modèles, et la
-  tuile paraissait vide. Elle porte maintenant son propre fond, une pastille
-  sombre, lisible quel que soit le thème choisi.
+- **La vignette de résumé écrivait en blanc sur blanc.** Le fond de tuile du
+  système n'a pas la même clarté d'un Edge à l'autre — mesuré sur les huit
+  modèles qui ont une vignette, seul l'Edge MTB est clair — et aucune couleur
+  de texte ne convient au blanc comme au noir. L'encre est donc choisie **à la
+  compilation**, un fichier par variante associé aux appareils par le jungle,
+  exactement comme la taille de l'icône de lanceur.
+
+  Une première correction peignait un fond opaque sous le texte. Elle réglait
+  le cas du MTB et en créait un autre : sur un Edge 1050, une boîte grise posée
+  au milieu de la tuile bleu nuit du système, dont elle effaçait le thème. La
+  vignette ne peint plus rien : le système a déjà dessiné sa tuile.
 - **La vignette était vide avant la première ouverture de la page.** Elle
   affiche désormais le nom de l'application à défaut de relevé.
 - **Le libellé du mode tombait en police minuscule** sur les Edge 1030, 1030

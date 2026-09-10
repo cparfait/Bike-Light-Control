@@ -141,30 +141,18 @@ class LampGlanceView extends WatchUi.GlanceView {
     //! cassée. Le simulateur l'a montré du premier coup.
     static const FALLBACK_TITLE = "Bike Light";
 
-    //! Fond de la vignette, et couleurs de son texte.
+    //! **La vignette ne peint pas son fond.** Le système dessine la tuile, avec
+    //! le thème que l'utilisateur a choisi ; la recouvrir revient à effacer ce
+    //! choix. Une version l'a fait — une pastille sombre sous le texte, pour
+    //! régler le cas de l'Edge MTB — et sur un Edge 1050 ça donnait une boîte
+    //! grise posée au milieu d'une tuile bleu nuit.
     //!
-    //! **Le fond de tuile du système n'a pas la même clarté d'un Edge à
-    //! l'autre.** Ce n'est pas une supposition, c'est dans les profils du SDK :
-    //! chaque appareil embarque les sept images de thème de vignette
-    //! (`dglance_*.png`, choisies par l'utilisateur), et leur zone de contenu
-    //! est **blanche** sur un Edge MTB alors qu'elle est **sombre** sur un Edge
-    //! 1050 — du bleu nuit `#0E3450` au gris `#212121` selon le thème. Le texte
-    //! était écrit en blanc : lisible sur le 1050, **invisible sur le MTB**, où
-    //! la vignette paraissait vide et l'application cassée.
-    //!
-    //! Aucune couleur de texte fixe ne convient aux deux, et rien à l'exécution
-    //! ne dit laquelle on a sous les yeux : `AppBase.getGlanceTheme()` sert à
-    //! *déclarer* un thème, pas à lire la couleur qui en découle. On pose donc
-    //! notre propre fond — une pastille sombre à coins arrondis — et on écrit
-    //! dessus. Sur un 1050 elle se fond dans le fond sombre du système, sur un
-    //! MTB elle se détache du blanc : dans les deux cas le texte se lit.
-    //!
-    //! Ce n'est pas le retour du fond noir plein d'une version précédente, qui
-    //! recouvrait toute la vignette et tranchait au milieu des autres : la
-    //! pastille est en retrait, arrondie, et se lit comme un élément voulu.
-    static const GLANCE_BG    = 0x1C1C1C;
-    static const GLANCE_TEXT  = 0xFFFFFF;
-    static const GLANCE_VALUE = 0xFFAA00;
+    //! Reste le problème que la pastille réglait : **le fond de tuile n'a pas
+    //! la même clarté d'un Edge à l'autre**, et aucune couleur de texte ne
+    //! convient au blanc comme au noir. Il est réglé à la compilation, l'encre
+    //! venant de `GlanceInk` — un fichier par variante, associé aux appareils
+    //! par le jungle, exactement comme la taille de l'icône de lanceur. Mesuré
+    //! sur les huit modèles qui ont une vignette : seul le MTB est clair.
 
     function initialize() {
         GlanceView.initialize();
@@ -174,20 +162,14 @@ class LampGlanceView extends WatchUi.GlanceView {
         var w = dc.getWidth();
         var h = dc.getHeight();
 
-        // Pas de `clear()`, qui déborderait de la vignette : une pastille
-        // posée dans la zone de contenu, voir GLANCE_BG.
-        if (dc has :setAntiAlias) { dc.setAntiAlias(true); }
-        var inset = h / 12;
-        if (inset < 1) { inset = 1; }
-        dc.setColor(GLANCE_BG, Graphics.COLOR_TRANSPARENT);
-        dc.fillRoundedRectangle(0, inset, w, h - 2 * inset, h / 5);
-
+        // Ni `clear()` ni fond : le système a déjà peint sa tuile, et c'est la
+        // sienne qu'on doit laisser voir.
         var pad = h / 6;
         if (pad < 4) { pad = 4; }
 
         var title = _stored(KEY_TITLE);
         if (title == null) { title = FALLBACK_TITLE; }
-        dc.setColor(GLANCE_TEXT, Graphics.COLOR_TRANSPARENT);
+        dc.setColor(GlanceInk.TEXT, Graphics.COLOR_TRANSPARENT);
         dc.drawText(pad, h / 2, Graphics.FONT_TINY, title,
                     Graphics.TEXT_JUSTIFY_LEFT | Graphics.TEXT_JUSTIFY_VCENTER);
 
@@ -195,7 +177,7 @@ class LampGlanceView extends WatchUi.GlanceView {
         // la page de pilotage parlent ainsi le même langage de couleurs.
         var summary = _stored(KEY_SUMMARY);
         if (summary != null) {
-            dc.setColor(GLANCE_VALUE, Graphics.COLOR_TRANSPARENT);
+            dc.setColor(GlanceInk.VALUE, Graphics.COLOR_TRANSPARENT);
             dc.drawText(w - pad, h / 2, Graphics.FONT_TINY, summary,
                         Graphics.TEXT_JUSTIFY_RIGHT | Graphics.TEXT_JUSTIFY_VCENTER);
         }

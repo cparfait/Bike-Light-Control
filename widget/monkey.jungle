@@ -40,6 +40,40 @@ base.lang.kor = $(base.lang.kor);../shared/resources-kor
 base.lang.zhs = $(base.lang.zhs);../shared/resources-zhs
 base.lang.zht = $(base.lang.zht);../shared/resources-zht
 
+# Encre de la vignette de resume, une variante par appareil.
+#
+# Le fond de tuile du systeme n'a pas la meme clarte d'un Edge a l'autre, et
+# **rien a l'execution ne dit laquelle on a sous les yeux** : `getGlanceTheme()`
+# sert a declarer un theme, pas a lire la couleur qui en decoule. La reponse est
+# en revanche dans les profils du SDK, et verifiable a l'ecran — c'est fait, sur
+# les huit modeles qui ont une vignette :
+#
+#   fond sombre : 540, 550, 840, 850, 1040, 1050 (bleu nuit), Explore 2
+#   fond clair  : Edge MTB, et lui seul
+#
+# On choisit donc a la compilation, comme pour la taille de l'icone de lanceur.
+# Les modeles sans vignette (530, 830, 1030, 1030 Plus, Explore) prennent la
+# variante sombre : le module doit exister pour que le binaire compile, son
+# contenu ne sera jamais dessine.
+#
+# L'alternative essayee, et abandonnee : peindre notre propre fond opaque sous
+# le texte. Elle reglait le cas du MTB, mais **recouvrait le theme** sur tous
+# les autres — sur un Edge 1050, une boite grise posee au milieu de la tuile
+# bleu nuit du systeme.
+edge530.sourcePath = $(edge530.sourcePath);source-glance-dark
+edge540.sourcePath = $(edge540.sourcePath);source-glance-dark
+edge550.sourcePath = $(edge550.sourcePath);source-glance-dark
+edge830.sourcePath = $(edge830.sourcePath);source-glance-dark
+edge840.sourcePath = $(edge840.sourcePath);source-glance-dark
+edge850.sourcePath = $(edge850.sourcePath);source-glance-dark
+edge1030.sourcePath = $(edge1030.sourcePath);source-glance-dark
+edge1030plus.sourcePath = $(edge1030plus.sourcePath);source-glance-dark
+edge1040.sourcePath = $(edge1040.sourcePath);source-glance-dark
+edge1050.sourcePath = $(edge1050.sourcePath);source-glance-dark
+edgeexplore.sourcePath = $(edgeexplore.sourcePath);source-glance-dark
+edgeexplore2.sourcePath = $(edgeexplore2.sourcePath);source-glance-dark
+edgemtb.sourcePath = $(edgemtb.sourcePath);source-glance-light
+
 # Icone de lanceur : une taille par appareil.
 #
 # Le compilateur redimensionne en silence une icone unique, sans le moindre
