@@ -183,11 +183,16 @@ DRAWABLES_XML = """<!--
 
 
 def main():
-    # Deux dessins, un par binaire : la lampe de poche et son eventail pour le
-    # champ de donnees, le pictogramme de phare pour l'application. Ils etaient
-    # identiques a un cadre pres, et le cadre seul ne suffisait pas a les
-    # distinguer dans une liste ou ils se suivent.
-    for binary, frame, draw in (("app", None, draw_icon),
+    # **Le meme dessin pour les deux binaires**, le cadre pour seule difference.
+    #
+    # Ils ont porte deux dessins distincts — la lampe de poche et son eventail
+    # pour le champ de donnees, le phare pour l'application — au motif qu'un
+    # cadre seul ne suffisait pas a les distinguer. Vus cote a cote dans le
+    # tableau de bord du store, ils ne faisaient plus une famille : deux
+    # applications d'un meme projet doivent se reconnaitre comme telles avant de
+    # se distinguer l'une de l'autre. Le phare est celui des tuiles de la page
+    # de pilotage ; c'est le symbole du projet.
+    for binary, frame, draw in (("app", None, draw_headlight),
                                 ("widget", PANEL_FRAME, draw_headlight)):
         print("%s :" % binary)
         for size in sorted(SIZES):
