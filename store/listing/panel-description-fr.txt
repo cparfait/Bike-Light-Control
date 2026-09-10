@@ -1,0 +1,13 @@
+Panneau de pilotage d'une lampe velo iGPSPORT VS1800S, hors activite.
+
+A lire avant d'installer. Ce n'est pas un pilote de lampe Bluetooth generique. L'application parle le protocole iGPSPORT, et ne trouvera aucune lampe d'une autre marque.
+
+Developpee et essayee sur une VS1800S, et sur ce seul modele. Les autres lampes iGPSPORT — VS1200, VS800, VS500, TL30, TL50 — ont de bonnes chances de fonctionner, l'application interrogeant la lampe sur son type et ses modes au lieu de supposer, mais aucune n'a ete essayee sur du materiel reel.
+
+Choix du mode par categorie — faisceau, flash, extinction — avec le niveau de batterie et l'autonomie restante. Les automatismes de la lampe (capteur de luminosite, veille automatique, luminosite reduite a l'arret) se lisent et se reglent depuis le compteur, sans sortir le telephone.
+
+Fonctionne sur les modeles tactiles comme sur ceux a boutons : sur ces derniers, haut et bas deplacent un curseur, et la touche Menu ouvre les reglages.
+
+Complement du champ de donnees « Commande eclairage velo », qui prend le relais pendant la sortie.
+
+Sans lien avec iGPSPORT, ni aval de sa part. Le protocole a ete etabli de facon independante ; le nom ne sert qu'a dire quelles lampes sont pilotees.

@@ -1,0 +1,14 @@
+# langue	champ de donnees	application
+en	Bike Light Control	Bike Light Panel
+fr	Commande éclairage vélo	Panneau éclairage vélo
+de	Fahrradlicht Steuerung	Fahrradlicht Panel
+es	Control de Luz de Bici	Panel de Luz de Bici
+it	Controllo Luce Bici	Pannello Luce Bici
+pt	Controlo de Luz de Bici	Painel de Luz de Bici
+nl	Fietslicht Bediening	Fietslicht Paneel
+pl	Sterowanie Lampką Roweru	Panel Lampki Roweru
+ru	Управление велофарой	Панель велофары
+ja	バイクライト コントロール	バイクライト パネル
+ko	자전거 라이트 제어	자전거 라이트 패널
+zh-CN	自行车灯控制	自行车灯面板
+zh-TW	自行車燈控制	自行車燈面板

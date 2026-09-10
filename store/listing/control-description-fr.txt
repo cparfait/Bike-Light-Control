@@ -1,0 +1,25 @@
+Pilote une lampe velo iGPSPORT VS1800S depuis le compteur, pendant la sortie.
+
+A lire avant d'installer. Ce n'est pas un pilote de lampe Bluetooth generique. L'application parle le protocole iGPSPORT, et elle ne trouvera ni ne pilotera aucune lampe d'une autre marque — Garmin Varia, Bontrager, Lezyne, Knog et les autres sont hors de portee, quel que soit leur Bluetooth.
+
+Developpee et essayee sur une VS1800S, et sur ce seul modele. Les autres lampes iGPSPORT — VS1200, VS800, VS500, et les feux arriere TL30 et TL50 — ont de bonnes chances de fonctionner : l'application demande a la lampe son type et sa liste de modes au lieu de supposer, et s'adapte a la reponse. Mais aucune n'a ete essayee sur du materiel reel. A considerer comme non verifiees, pas comme prises en charge.
+
+La lampe suit la vitesse : faible a l'arret et en cote, plein faisceau en descente. Les seuils se reglent. Batterie basse ? Le champ plafonne l'intensite pour que la lampe tienne jusqu'au bout, et l'eteint a l'arret du chrono — pas a la pause d'un feu rouge.
+
+Vous roulez de jour ? Decochez « allumer la lampe au depart » et la lampe reste comme vous l'avez laissee jusqu'a ce que vous la demandiez.
+
+Le niveau et la batterie de la lampe sont enregistres dans le fichier d'activite : ils apparaissent ensuite sur le graphique dans Garmin Connect.
+
+Les seuils de vitesse se reglent en km/h. Le protocole Bluetooth de la lampe n'a aucune authentification : tout appareil a portee peut la piloter, quelle que soit l'application — c'est une propriete de la lampe.
+
+Plusieurs lampes autour de vous ? L'application retient la plus proche, et celle-ci clignote deux fois a la connexion pour que vous la reconnaissiez. Si ce n'est pas la bonne, on passe a la suivante depuis les reglages.
+
+Le champ ne cherche jamais la lampe tout seul. Un scan Bluetooth est ce qui coute le plus cher a la batterie du compteur, et la lampe reste au tiroir la plupart des sorties. Le champ attend donc un geste : une tape sur un ecran tactile, le bouton Lap sur un modele a boutons. La recherche est bornee dans le temps — pas de lampe a portee, pas de scan qui vide la sortie. Un reglage permet de la lancer au depart du chrono, decoche par defaut.
+
+Sur ecran tactile, une tape sur le champ change de mode a la main. Une tape de plus, lampe eteinte, rend la main a l'ajustement automatique.
+
+Les seuils et les reglages se modifient depuis Garmin Connect, et depuis le compteur lui-meme. Les vitesses sont en km/h.
+
+Sans lien avec iGPSPORT, ni aval de sa part. Le protocole a ete etabli de facon independante ; le nom ne sert qu'a dire quelles lampes sont pilotees.
+
+Application compagnon « Panneau eclairage velo » disponible separement, pour piloter la lampe avant de partir et sur les modeles sans ecran tactile.

@@ -1,0 +1,13 @@
+Control panel for an iGPSPORT VS1800S bike light, outside the ride.
+
+Read this first. This is not a generic Bluetooth light controller. It speaks the iGPSPORT protocol, and it will not find or drive lights from any other brand.
+
+Developed and tested on a VS1800S, and on that model only. Other iGPSPORT lights — VS1200, VS800, VS500, TL30, TL50 — stand a fair chance of working, since the app asks the light for its type and its modes rather than assuming, but none has been tried on real hardware.
+
+Pick a mode by category — steady beam, flash, off — and see the battery level and the remaining runtime. The light's own automations (light sensor, auto sleep, dim when stopped) are readable and adjustable from here, without reaching for your phone.
+
+Works on models with a touch screen and on models with buttons: on the latter, the up and down keys move a cursor and the Menu key opens the settings.
+
+Companion to the "Bike Light Control" data field, which handles the ride itself.
+
+Not affiliated with, or endorsed by, iGPSPORT. The protocol was worked out independently; the name is used only to say which lights this drives.

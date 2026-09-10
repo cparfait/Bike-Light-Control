@@ -1,0 +1,25 @@
+Controls an iGPSPORT VS1800S bike light from your bike computer, during the ride.
+
+Read this first. This is not a generic Bluetooth light controller. It speaks the iGPSPORT protocol, and it will not find or drive lights from any other brand — Garmin Varia, Bontrager, Lezyne, Knog and the rest are out of reach, whatever their Bluetooth support.
+
+Developed and tested on a VS1800S, and on that model only. Other iGPSPORT lights — VS1200, VS800, VS500, and the TL30 and TL50 rear lights — stand a fair chance of working: the app asks the light for its type and its list of modes instead of assuming, and adapts to the answer. But none of them has been tried on real hardware. Treat them as untested, not as supported.
+
+The light follows your speed: dim when stopped or climbing, full beam on a fast descent. Thresholds are yours to set. Battery running low? The field caps the brightness so the light lasts to the end of the ride, and turns it off when you stop the timer — not when you pause at a red light.
+
+Riding in daylight? Turn off "switch light on when ride starts" and the light stays as you left it until you ask for it.
+
+Light level and light battery are recorded in the activity file, so you can see them on the chart in Garmin Connect afterwards.
+
+Speed thresholds are set in km/h. The light's Bluetooth protocol has no authentication: any device in range could drive it, whichever app is used — that is a property of the light.
+
+Several lights around? The app picks the closest one, and that light blinks twice at connection so you can see it is yours. If it is not, switch to the next one from the settings.
+
+The field never searches on its own. A Bluetooth scan is the most expensive thing an app can do to your bike computer's battery, and the light stays in the drawer on most rides. So the field waits for you: tap it on a touch screen, press Lap on a model with buttons. The search is time-boxed — no light nearby, no scan draining the ride. A setting can start it with the timer instead, off by default.
+
+On a touch screen, tap the field to pick a mode by hand. Tap once more when the light is off to hand control back to the automatic adjustment.
+
+Thresholds and settings are adjustable from Garmin Connect, and from the bike computer itself. Speeds are in km/h.
+
+Not affiliated with, or endorsed by, iGPSPORT. The protocol was worked out independently; the name is used only to say which lights this drives.
+
+Companion app "Bike Light Panel" available separately, for controlling the light before you set off and on models without a touch screen.
