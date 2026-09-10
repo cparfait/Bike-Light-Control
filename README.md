@@ -1,162 +1,119 @@
-# Commande d'éclairage vélo — lampe iGPSPORT ↔ compteur Garmin Edge
+<div align="center">
 
-Data field Connect IQ pilotant une lampe **iGPSPORT** depuis un compteur **Garmin Edge**.
-Développé et **éprouvé sur une VS1800S, et sur ce seul modèle**. Rien n'y est codé en dur pour
-autant : l'app demande à la lampe son type et sa liste de modes, et s'adapte à la réponse — les
-VS500, VS800, VS1200 et les feux arrière TL30/TL50 ont donc de bonnes chances de fonctionner,
-mais aucun n'a été essayé. Ce sont des modèles **non vérifiés**, pas des modèles pris en charge.
+<img src="store/app-icon-500.png" width="120" alt="Bike Light Control">
 
-Ce n'est pas non plus un pilote de lampe Bluetooth générique : le protocole est celui
-d'iGPSPORT, et aucune lampe d'une autre marque ne sera même détectée. Cahier des charges de référence : `cahier-des-charges-igpsport-garmin.md`.
+# Bike Light Control
 
-**Phase 1 close, Phase 2 engagée.** Le protocole a été établi par analyse statique de
-l'app Android puis **confirmé par capture HCI sur la lampe réelle** : le code reproduit à
-l'octet près les 19 commandes distinctes émises par l'app iGPSPORT.
-L'application compile pour les 13 modèles Edge cibles et ses 55 tests unitaires passent.
-Reste à confronter le tout à la vraie lampe.
+**Drive an iGPSPORT bike light from your Garmin Edge — while you ride.**
+
+[![Connect IQ](https://img.shields.io/badge/Connect%20IQ-9.2.0-007cc3)](https://developer.garmin.com/connect-iq/)
+[![Monkey C](https://img.shields.io/badge/Monkey%20C-Toybox%203.1%2B-5c4b8a)](https://developer.garmin.com/connect-iq/monkey-c/)
+[![Edge models](https://img.shields.io/badge/Edge%20models-13-005f8c)](docs/compatibilite-edge.md)
+[![Languages](https://img.shields.io/badge/languages-13-2e7d32)](#thirteen-languages-not-thirty-six)
+[![Tests](https://img.shields.io/badge/unit%20tests-55-2e7d32)](app/source-test)
+[![License](https://img.shields.io/badge/license-MIT-black)](LICENSE)
+
+**English** · [Français](README.fr.md)
+
+</div>
 
 ---
 
-## Où en est le projet
+Your bike light and your bike computer sit ten centimetres apart on the same handlebar and
+ignore each other. iGPSPORT ships a phone app to control the light; the phone is in your back
+pocket. This project closes that gap: the Edge talks to the light directly over Bluetooth LE,
+raises the beam when you pick up speed, drops it when you slow down, and turns everything off
+when you stop the timer.
 
-| Élément | Statut |
+The Bluetooth protocol was not published by anyone. It was recovered by static analysis of the
+iGPSPORT Android app, then **confirmed byte-for-byte against an HCI capture of the real light** —
+the 19 distinct commands the vendor app emits are reproduced exactly. The full write-up lives in
+[docs/protocole-vs1800s.md](docs/protocole-vs1800s.md).
+
+## Scope, stated honestly
+
+- **Developed and proven on a VS1800S, and on that model alone.** Nothing is hardcoded to it:
+  the app asks the light for its type and its mode list, and adapts to the answer. The VS500,
+  VS800, VS1200 and the TL30/TL50 tail lights therefore have a fair chance of working — but none
+  has been tried. They are **unverified**, not supported.
+- **Not a generic Bluetooth light driver.** The protocol is iGPSPORT's. A Varia, a Lezyne or any
+  other brand will not even be detected — the scan filter looks for a Nordic UART service and a
+  name starting with `VS…` or `TL…`.
+- **One Edge has been ridden with it: the Edge 1050.** The other twelve compile, pass the test
+  suite in the simulator and have their layout checked against the SDK profiles, but no one has
+  put them on a handlebar yet. The Edge 830 is next — see
+  [docs/essai-edge830.md](docs/essai-edge830.md).
+
+## What it does
+
+| | |
 |---|---|
-| Compatibilité BLE des Edge (risque « bloquant » §7) | ✅ **levé** — voir ci-dessous |
-| Outillage de capture et d'analyse | ✅ prêt (`tools/`) |
-| Analyse statique de l'APK iGPSPORT | ✅ **faite** — v8.06.42 |
-| Protocole BLE de la lampe | ✅ **schéma complet** → [docs/protocole-vs1800s.md](docs/protocole-vs1800s.md) |
-| Risque « protocole chiffré » (§7) | ✅ **levé** — protobuf en clair, app non obfusquée |
-| Capture HCI | ✅ **faite** le 08/09/2026 — transport et CRC établis |
-| App Connect IQ | 🟡 **socle fonctionnel** → [docs/application.md](docs/application.md) |
-| Protocole implémenté en Monkey C | ✅ 55 tests, dont 12 sur les octets réels de la capture |
-| Compilation 13 cibles | ✅ 70 à 79 Ko en release, 13 langues comprises (budget 128 Ko) |
-| Essai de l'app sur l'Edge 1050 | ✅ **connexion et pilotage fonctionnels**, data field, application et tuile de résumé validés sur l'appareil le 09/09/2026 |
-| Interface | ✅ **refondue** — mise en page vérifiée sur les 6 formats d'écran des cibles |
-| Langues | ✅ **13 langues**, suivant la langue du compteur — voir ci-dessous |
-| Champs FIT dans Garmin Connect | ✅ ressource `fitContributions` présente dans le paquet |
-| Plusieurs lampes à proximité | ✅ la plus proche est retenue, et **clignote** pour se désigner |
-| Icônes | ✅ une par taille d'écran (35 à 68 px), opaques bord à bord comme celles du SDK, plus les 500×500 du store |
-| Réglages modifiés depuis Garmin Connect | ✅ relus en cours d'activité, sans écraser un choix manuel |
-| Allumage au départ | ✅ décochable — le compteur ne sait pas s'il fait nuit |
-| Licence et journal des versions | ✅ `LICENSE` (MIT) et `CHANGELOG.md` |
-| Publiabilité sur le Connect IQ Store | 🟡 bloquants levés → [docs/audit-publication.md](docs/audit-publication.md) |
+| 🔆 **Speed-based beam** | Brightness follows your speed, with adjustable thresholds and hysteresis so it does not flicker between modes at a steady pace. |
+| 🔋 **Low-battery fallback** | Brightness is capped so the light survives to the end of the ride rather than dying at kilometre 40. |
+| ⏱ **Off on stop, not on pause** | The light goes out when you stop the timer. A red light at the traffic light stays on. |
+| 👆 **Manual override** | Tap the field to cycle modes, or open the full page to pick one. The next tap hands control back to the automation. |
+| 📈 **FIT recording** | Light mode and light battery are written into the FIT file and show up in Garmin Connect. |
+| 🎯 **Light identification** | With several lights around, the closest one is picked — and **blinks twice** to say so. An escape hatch moves to the next one. |
+| 📱 **Companion app** | A control panel for use off-ride: turn the light on before you leave, set the light's own automations, check the summary tile. |
+| 🌍 **13 languages** | Follows the language of the computer, no setting to find. |
 
-Compteur cible confirmé : **Edge 1050**. Un essai sur **Edge 830** est prévu — c'est le second
-modèle physique, et il couvre ce que le 1050 ne montre pas : écran 246×322, polices bitmap,
-icône 35 px, aucune barre de contrôle système, et le binaire le plus lourd des treize.
-Fiche à emporter : [docs/essai-edge830.md](docs/essai-edge830.md).
+## Two packages, one codebase
 
-Pour les douze autres, [docs/essai-modeles.md](docs/essai-modeles.md) dit ce que chacun apporte
-et dans quel ordre les essayer. Elle est **générée** depuis les profils du SDK :
-
-```bash
-python tools/fiche-modeles.py
-```
-
-### Les 13 langues, et pourquoi pas les 36
-
-Anglais, français, allemand, espagnol, italien, portugais, néerlandais, polonais, russe,
-japonais, coréen, chinois simplifié et traditionnel.
-
-Le SDK associe à chaque **référence matérielle** un jeu de polices, et les 13 modèles
-totalisent 18 références : celles dites « ww » portent les langues européennes, les références
-APAC portent le japonais, le coréen et le chinois. Aucune langue hors l'anglais n'est donc
-portée par les 18 — ce n'est pas un problème, une langue absente retombe sur l'anglais.
-
-Ce qui décide, c'est la taille. Chaque langue déclarée grossit le binaire, qu'elle serve ou non
-sur la référence compilée, et un champ de données dispose de 128 Ko :
-
-| Langues déclarées | Champ de données | Application |
+| | Data field | Device app |
 |---|---|---|
-| 2 | 56 620 o | 61 372 o |
-| **13** | **82 668 o** | **94 956 o** |
-| 36 (toutes celles du SDK) | 113 180 o | 134 284 o |
-Mesures sur Edge 1050, **avec le jeu d'icônes précédent** : ce qui compte ici est l'écart entre
-les lignes, qui ne tient qu'aux langues. Depuis la refonte des icônes en PNG opaques, le même
-binaire à 13 langues pèse 78 044 o. Sur les 13 cibles, le champ de données va de 71 308 à
-80 636 octets, l'application de 81 772 à 93 548.
+| Name | **Bike Light Control** | **Bike Light Panel** |
+| Runs | during the activity | off-ride, and on button-only Edges |
+| Package | `dist/bike-light-control.iq` | `dist/bike-light-panel.iq` |
+| Memory budget | 128 KB | 1 MB |
+| Release size | 71–81 KB across the 13 targets | 82–94 KB |
 
-Les 36 langues ne laissent rien pour le tas. Les 13 retenues sont celles portées par au moins
-12 références sur 18 ; les huit dernières — arabe, bulgare, estonien, letton, lituanien,
-roumain, turc, ukrainien — ne le sont que par **une seule**.
+Both share `shared/` — protocol, BLE layer, automation, control page — and move in lockstep
+through a single [CHANGELOG.md](CHANGELOG.md).
 
-```bash
-python tools/i18n/langues-supportees.py --declarees
-```
+## Compatible Edge models
 
-### Ce que l'analyse statique a donné
-
-Le protocole de la lampe est du **protobuf** (variante *lite*) sur une liaison BLE de type
-Nordic UART. L'app n'est pas obfusquée sur ces classes. Sont désormais documentés : les
-43 modes d'éclairage avec leurs valeurs, les 10 services, les 4 opérations, les 22
-automatismes, le schéma complet des messages avec numéros de champ, et les trames binaires
-correspondantes.
-
-Autrement dit, la capture HCI n'a plus à *découvrir* le protocole — elle a à le **confirmer**
-sur sept points listés au §10 du document de protocole.
-
-### Compatibilité matérielle — vérifiée contre le SDK
-
-**13 modèles Edge** exposent le rôle central BLE aux apps tierces. Liste établie en
-interrogeant les définitions d'API des profils du SDK 9.2.0 installés localement, pas la
-documentation en ligne — détail et méthode dans
-[docs/compatibilite-edge.md](docs/compatibilite-edge.md) :
+**13 Edge models** expose the BLE central role to third-party apps. The list was established by
+querying the API definitions in the locally installed SDK 9.2.0 profiles, not the online
+documentation — method and details in [docs/compatibilite-edge.md](docs/compatibilite-edge.md):
 
 > Edge 530 · 540 · 550 · 830 · 840 · 850 · 1030 · 1030 Plus · 1040 · **1050** ·
 > Explore · Explore 2 · MTB
 
-Exclus faute d'API : Edge 130 / 130 Plus, 520, 520 Plus, 820, 1000, et — c'est le piège —
-l'**Edge 1030 Bontrager**, alors que l'Edge 1030 standard est compatible.
+Excluded for lack of the API: Edge 130 / 130 Plus, 520, 520 Plus, 820, 1000 — and, the trap, the
+**Edge 1030 Bontrager**, even though the plain Edge 1030 is compatible.
 
-Deux pièges à retenir pour la Phase 2 :
+Two platform facts worth carrying around:
 
-- **Le compilateur ne valide pas la permission BLE.** Un data field la déclarant compile sans
-  erreur pour un Edge 820 ou un Edge 130. La liste des `<iq:product>` du manifeste doit être
-  écrite à la main d'après le tableau vérifié.
-- **Le tactile n'est pas exposé dans les profils du SDK** : c'est une propriété d'exécution
-  (`System.getDeviceSettings().isTouchScreen`). Le pilotage manuel par `onTap()` se branche
-  donc au runtime, pas à la compilation — un seul binaire pour les 13 modèles.
+- **The compiler does not validate the BLE permission.** A data field declaring it compiles
+  cleanly for an Edge 820 or an Edge 130. The `<iq:product>` list in the manifest has to be
+  written by hand from the verified table.
+- **Touch is not exposed in the SDK profiles.** It is a runtime property
+  (`System.getDeviceSettings().isTouchScreen`), so `onTap()` handling is wired at runtime — one
+  binary for all 13 models.
 
-Mémoire uniforme sur les 13 cibles : 128 Ko en data field, 1 Mo en application. Un code qui
-tient sur un 1050 tient sur un 530.
+Memory is uniform across the 13 targets: 128 KB for a data field, 1 MB for an app. Code that
+fits on a 1050 fits on a 530.
 
-Autres contraintes de plateforme :
-
-- **3 profils GATT enregistrables au maximum** (`registerProfile`) — un seul nous suffit.
-- **L'appairage ne persiste pas d'une instance d'application à l'autre.**
-
-### Environnement de développement
-
-| | |
-|---|---|
-| SDK Connect IQ | 9.2.0 ✅ installé |
-| JDK | Temurin 21 LTS ✅ installé |
-| Profils Edge | ✅ 20 profils téléchargés |
-| Clé développeur | ✅ `developer_key.der` (hors dépôt, voir `.gitignore`) |
-| Chaîne vérifiée | ✅ compilation réussie d'un data field BLE pour les 13 cibles |
-
----
-
-## Construire l'application
+## Build
 
 ```bash
 bash app/build.sh
 ```
 
-```bash
-bash app/build.sh test
-```
+Builds both binaries in release for the 13 targets. The script locates the JDK and the Connect
+IQ SDK on its own. Other entry points: `edge1050` (one device), `debug`, `package` (store `.iq`
+files).
 
 ```bash
 bash app/build.sh test-all
 ```
 
-Le second lance la suite sur **quatre profils** — 530, MTB, 1040, 1050 — et non sur le seul
-1050. Les tests de mise en page parcourent les six formats d'écran quel que soit le profil, mais
-le reste du binaire s'exécute sur celui du simulateur : une suite qui ne tourne que sur un 1050
-ne prouve rien des douze autres.
+Runs the 55 unit tests on **four profiles** — 530, MTB, 1040, 1050 — not just the 1050. Layout
+tests walk all six screen formats whatever the profile, but the rest of the binary executes on
+the simulator's: a suite that only ever runs on a 1050 proves nothing about the other twelve.
+Use `bash app/build.sh test` for the 1050 alone.
 
-Deux contrôles croisent le code avec les profils du SDK plutôt qu'avec la documentation :
+Two checks cross-reference the code against the SDK profiles rather than the documentation:
 
 ```bash
 python tools/check-icons.py
@@ -166,129 +123,113 @@ python tools/check-icons.py
 python tools/i18n/langues-supportees.py --declarees
 ```
 
-Le script localise seul le JDK et le SDK. Détail de l'architecture et des décisions de
-conception dans [docs/application.md](docs/application.md).
+### Requirements
 
----
+| | |
+|---|---|
+| Connect IQ SDK | 9.2.0, with the Edge device profiles |
+| JDK | Temurin 21 LTS (11+ works) |
+| Python | 3.x, for the tooling in `tools/` |
+| Developer key | `developer_key.der` — personal, **never committed**, see `.gitignore` |
 
-## Ce qui attend la lampe
+## Testing without a light
 
-Sept points du protocole restent à **confirmer** — plus à découvrir — listés au §10 de
-[docs/protocole-vs1800s.md](docs/protocole-vs1800s.md). Les deux qui touchent le code :
-
-1. **La reconnexion après veille.** La lampe qui s'endort puis se réveille en cours de sortie
-   est le cas courant, et il n'a pas encore été observé sur le matériel. Le code enregistre
-   désormais ses profils GATT une seule fois et désappaire avant de relancer le scan.
-2. **L'encodage de l'extinction.** `BLM_LIGHT_OFF` valant 0, protobuf omet le champ et le
-   sous-message part vide. Si la capture montre le contraire, basculer
-   `LightProtocol.FORCE_EXPLICIT_OFF` à `true`.
-
-Il est possible de tester **sans la lampe**, dès maintenant : nRF Connect sur Android sait
-jouer un serveur GATT. L'Edge se connecte alors à une VS1800S factice et toute la chaîne se
-valide — scan, appairage, abonnement, écritures, notifications. Recette pas à pas dans
+You do not need the lamp to exercise the whole chain. nRF Connect on Android can play a GATT
+server: the Edge then connects to a fake VS1800S and scan, pairing, subscription, writes and
+notifications all get validated. Step-by-step recipe in
 [docs/essai-sans-lampe.md](docs/essai-sans-lampe.md).
 
----
+## Thirteen languages, not thirty-six
 
-## Démarrer
+English, French, German, Spanish, Italian, Portuguese, Dutch, Polish, Russian, Japanese, Korean,
+Simplified and Traditional Chinese.
 
-1. Lire [docs/phase1-procedure-capture-ble.md](docs/phase1-procedure-capture-ble.md) **en
-   entier** avant de brancher quoi que ce soit — l'étape la plus souvent ratée (cycle
-   Bluetooth off/on) est au §2.
-2. Ouvrir [docs/phase1-journal-capture.md](docs/phase1-journal-capture.md) et le remplir
-   pendant la manip. C'est ce qui rend le log exploitable.
-3. Récupérer le journal :
+The SDK ties a font set to each **hardware part number**, and the 13 models add up to 18 of them:
+the "ww" ones carry the European languages, the APAC ones carry Japanese, Korean and Chinese. No
+language other than English is carried by all 18 — which is fine, a missing language falls back
+to English.
 
-```bash
-bash tools/pull-btsnoop.sh
+What decides is size. Every declared language grows the binary whether or not it is usable on the
+part number being compiled, and a data field gets 128 KB:
+
+| Languages declared | Data field | App |
+|---|---|---|
+| 2 | 56,620 B | 61,372 B |
+| **13** | **82,668 B** | **94,956 B** |
+| 36 (all the SDK has) | 113,180 B | 134,284 B |
+
+Measured on an Edge 1050 with the previous icon set — what matters here is the gap between rows,
+which is down to languages alone. Thirty-six leaves nothing for the heap. The 13 kept are those
+carried by at least 12 part numbers out of 18; the eight dropped — Arabic, Bulgarian, Estonian,
+Latvian, Lithuanian, Romanian, Turkish, Ukrainian — are carried by exactly **one**.
+
+## How the protocol works, in one paragraph
+
+The light speaks **protobuf** (lite variant) over a Nordic UART BLE link, framed with a CRC-8.
+The vendor app is not obfuscated on those classes, so the 43 lighting modes and their values, the
+10 services, the 4 operations, the 22 automations and the complete message schema with field
+numbers are all documented. There is no protobuf library for Connect IQ, so varint encoding is
+written by hand in [shared/Protobuf.mc](shared/Protobuf.mc) — a few dozen lines. Full schema and
+the seven points still to confirm on hardware: [docs/protocole-vs1800s.md](docs/protocole-vs1800s.md).
+
+## Repository layout
+
 ```
-
-   puis, pour la seconde session (mode automatique / vitesse) :
-
-```bash
-bash tools/pull-btsnoop.sh vitesse
-```
-
-4. Dépouiller dans Wireshark en suivant le §6 de la procédure, et reporter les résultats
-   dans [docs/protocole-vs1800s.md](docs/protocole-vs1800s.md).
-
----
-
-## Arborescence
-
-```
-LICENSE                             MIT, avec réserve sur les marques et sur captures/
-CHANGELOG.md                        journal des versions déposées sur le store
+shared/                             protocol, BLE layer, automation, control page
+app/                                data field — "Bike Light Control"
+  build.sh                          builds both binaries, runs tests, makes packages
+  source/                           entry point, view, FIT recording
+  source-test/                      55 unit tests
+  resources/fit/                    FIT field declarations for Garmin Connect
+  resources-icon-*/                 launcher icon, one per screen size (35–68 px)
+widget/                             device app — "Bike Light Panel"
+store/                              500×500 store icons and the store listing copy
 docs/
-  phase1-procedure-capture-ble.md   procédure de capture + méthode de dépouillement Wireshark
-  phase1-journal-capture.md         feuille de relevé à remplir pendant la manip
-  protocole-vs1800s.md              livrable de la Phase 1 — schéma du protocole
-  compatibilite-edge.md             modèles Edge compatibles, vérifiés contre le SDK
-  application.md                    architecture de l'app et décisions de conception
-  essai-sans-lampe.md               tester l'app avec une fausse lampe (nRF Connect)
-  essai-edge830.md                  fiche d'essai sur Edge 830, second modèle physique
-  essai-modeles.md                  fiche des 13 modèles — générée depuis les profils SDK
-  audit-publication.md              audit du 09/09/2026 : publiabilité, compatibilité Edge
-shared/                             protocole, couche BLE, automatismes, page de pilotage
-app/                                data field « Bike Light Control »
-  build.sh                          construction des deux binaires, tests et paquets
-  source/                           point d'entrée, vue, écriture FIT
-  source-test/                      55 tests unitaires
-  resources/fit/                    déclaration des champs FIT pour Garmin Connect
-  resources-icon-*/                 icône de lanceur, une par taille d'écran
-widget/                             application « Bike Light Panel », pilotage manuel
-store/                              icônes 500×500 des fiches du Connect IQ Store
+  protocole-vs1800s.md              the protocol — Phase 1 deliverable
+  compatibilite-edge.md             compatible Edge models, verified against the SDK
+  application.md                    app architecture and design decisions
+  essai-sans-lampe.md               testing with a fake light (nRF Connect)
+  essai-edge830.md                  field-test sheet for the Edge 830
+  essai-modeles.md                  the 13 models — generated from the SDK profiles
+  audit-publication.md              store-publishability audit
+  phase1-procedure-capture-ble.md   BLE capture procedure + Wireshark method
+  phase1-journal-capture.md         log sheet to fill in during the capture
 tools/
-  check-icons.py                    icônes croisées avec les profils SDK des 13 cibles
-  fiche-modeles.py                  écrit docs/essai-modeles.md depuis les profils SDK
-  i18n/                             traductions : une table JSON par langue
-    generate.py                     écrit les resources-<langue>/ à partir des tables
-    langues-supportees.py           langues portées par chaque référence, d'après le SDK
-    accents-fre.py                  rétablissement des accents français
-  pull-btsnoop.sh                   récupération du journal HCI depuis le téléphone
-  pull-apk.sh                       extraction de l'APK iGPSPORT depuis le téléphone
-  scan-apk.py                       repérage des UUID et mots-clés dans l'APK — sans Java
-  dump-proto-enums.py               énumérations protobuf (modes, services, opérations)
-  dump-proto-schema.py              schéma des messages : numéros et types de champ
-  check-ble-devices.sh              appareils Garmin exposant le rôle central BLE
-  deploy-edge.sh                    installe les deux binaires sur un Edge branché en USB
-  make-icons.py                     dessine les icônes de lanceur et celles du store
-  pull-ciq-log.sh                   récupère le journal de plantage et traduit les adresses
-  _adb.sh                           sélection d'appareil, commune aux scripts adb
-captures/                           logs, exports CSV, captures d'écran nRF Connect, APK
+  check-icons.py                    icons cross-checked against the SDK profiles
+  fiche-modeles.py                  writes docs/essai-modeles.md from the SDK profiles
+  i18n/                             translations: one JSON table per language
+  make-icons.py                     draws the launcher and store icons
+  deploy-edge.sh                    installs both binaries on a USB-connected Edge
+  pull-btsnoop.sh                   pulls the HCI log off the phone
+  scan-apk.py, dump-proto-*.py      APK analysis, without Java
+captures/                           analysis reports (raw logs and APKs stay out — .gitignore)
 ```
 
----
+## Status
 
-## Écarts assumés par rapport au cahier des charges
+| | |
+|---|---|
+| BLE protocol | ✅ complete schema, confirmed by HCI capture |
+| Monkey C implementation | ✅ 55 tests, 12 of them on real captured bytes |
+| Build for 13 targets | ✅ within budget, 13 languages included |
+| Edge 1050, on the device | ✅ connection and control working — data field, app and glance validated |
+| UI | ✅ layout verified on all 6 screen formats |
+| Edge 830 and the other 11 | 🟡 not yet tried on hardware |
+| Reconnection after the light sleeps | 🟡 fixed in code, not yet observed on hardware |
+| Connect IQ Store | 🟡 blockers cleared → [docs/audit-publication.md](docs/audit-publication.md) |
 
-- **Phase 3, test n°4** — « vérifier que l'app mobile iGPSPORT continue de fonctionner en
-  parallèle » : très probablement irréalisable, une lampe BLE de ce type n'acceptant qu'une
-  seule connexion centrale à la fois. Edge connecté ⇒ téléphone déconnecté. Le critère est à
-  reformuler en « bascule propre entre les deux ». À confirmer en §7 du document de
-  protocole.
-- **F5 / O6 (ajustement selon la vitesse)** — classé « Could have », mérite d'être remonté à
-  « Should have ». L'Edge dispose de sa propre vitesse via `Toybox.Activity`, plus fiable que
-  le GPS d'un smartphone en poche ; et si l'app iGPSPORT calcule elle-même les changements de
-  mode côté téléphone (hypothèse la plus probable, à trancher en §5 bis de la procédure), la
-  fonction ne demande **aucune** connaissance protocolaire au-delà des commandes de mode.
-  C'est l'argument principal de l'app face à un pilotage purement manuel.
-- **Risque « protocole chiffré » (§7)** — **levé.** Le protocole est du protobuf en clair et
-  l'app n'est pas obfusquée sur les classes concernées. Accessoirement, le journal HCI étant
-  capturé au-dessus de la couche liaison, un chiffrement BLE standard n'aurait de toute façon
-  pas empêché de lire les trames ATT.
-- **Phase 2 — encodage protobuf en Monkey C.** Il n'existe pas de bibliothèque protobuf pour
-  Connect IQ ; il faudra écrire l'encodage *varint* à la main. Quelques dizaines de lignes,
-  mais ce n'était pas prévu au planning.
+## References
 
----
-
-## Références
-
-- [Module `Toybox.BluetoothLowEnergy`](https://developer.garmin.com/connect-iq/api-docs/Toybox/BluetoothLowEnergy.html)
-- [`BleDelegate`](https://developer.garmin.com/connect-iq/api-docs/Toybox/BluetoothLowEnergy/BleDelegate.html)
+- [`Toybox.BluetoothLowEnergy`](https://developer.garmin.com/connect-iq/api-docs/Toybox/BluetoothLowEnergy.html) ·
+  [`BleDelegate`](https://developer.garmin.com/connect-iq/api-docs/Toybox/BluetoothLowEnergy/BleDelegate.html)
 - [Connect IQ — Device Reference](https://developer.garmin.com/connect-iq/device-reference/)
-- [VS1800S — page produit iGPSPORT](https://www.igpsport.com/product/vs1800s)
-- [Reverse Engineering BLE Devices (méthodologie)](https://reverse-engineering-ble-devices.readthedocs.io/en/latest/protocol_reveng/00_protocol_reveng.html)
-- [Domyos EL500 — exemple complet de rétro-ingénierie GATT](https://jcjc-dev.com/2023/03/19/reversing-domyos-el500-elliptical/)
-- [Reverse Engineering Cheap BLE Devices (heuristiques)](https://www.alexwhittemore.com/reverse-engineering-cheap-ble-devices/)
+- [VS1800S — iGPSPORT product page](https://www.igpsport.com/product/vs1800s)
+- [Reverse Engineering BLE Devices](https://reverse-engineering-ble-devices.readthedocs.io/en/latest/protocol_reveng/00_protocol_reveng.html) ·
+  [Domyos EL500 GATT teardown](https://jcjc-dev.com/2023/03/19/reversing-domyos-el500-elliptical/) ·
+  [Reverse Engineering Cheap BLE Devices](https://www.alexwhittemore.com/reverse-engineering-cheap-ble-devices/)
+
+## License
+
+[MIT](LICENSE), with a reservation on trademarks and on `captures/`. Not affiliated with, nor
+endorsed by, Garmin or iGPSPORT. "Garmin", "Edge", "Connect IQ" and "iGPSPORT" belong to their
+respective owners.
