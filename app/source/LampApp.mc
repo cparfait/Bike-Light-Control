@@ -80,6 +80,17 @@ class LampApp extends Application.AppBase {
         }
     }
 
+    //! Vue de réglages **sur le compteur**, demandée par le système.
+    //!
+    //! Sans elle, l'application tombe : la méthode de `AppBase` n'a rien à
+    //! rendre, et l'écran de Connect IQ apparaît sans explication. Voir
+    //! `FieldSettings`.
+    function getSettingsView() {
+        if (_lamp == null || _auto == null) { return null; }
+        return [ FieldSettings.build(),
+                 new FieldSettingsDelegate(_lamp as LampManager, _auto as AutoController) ];
+    }
+
     function getInitialView() {
         // On rend aussi un delegue d'entree : sur Edge, les evenements tactiles
         // d'un data field passent par la, et pas seulement par la vue. Ca ne

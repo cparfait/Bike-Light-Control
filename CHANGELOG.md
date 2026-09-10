@@ -65,8 +65,22 @@ que le mode démonstration (`bash app/build.sh sim`) a rendus visibles :
   Plus et Explore : la police était choisie sur la seule largeur, puis rabattue
   sur la plus petite du jeu dès qu'elle ne tenait pas en hauteur.
 - **La roue dentée des réglages se lisait comme un soleil**, c'est-à-dire comme
-  une commande de luminosité, sur une page qui pilote une lampe. Dents plus
-  courtes et plus larges, anneau plus épais.
+  une commande de luminosité, sur une page qui pilote une lampe. Épaissie, elle
+  passait sur un Edge 1050 mais redevenait un soleil sur un 530, où son rayon
+  tombe à dix pixels : c'est maintenant trois barres, le symbole que le compteur
+  emploie lui-même pour ouvrir un menu.
+- **Le champ de données n'avait pas de vue de réglages, et le système la
+  demande.** `AppBase.getSettingsView()` ne concerne que les cadrans et les
+  champs de données, et n'était pas implémenté : quand le compteur — ou le
+  simulateur — réclamait les réglages du champ, l'application tombait sur
+  l'écran Connect IQ, sans un mot. Le champ a maintenant son menu embarqué, avec
+  les réglages, les libellés et les valeurs par défaut de la fiche Garmin
+  Connect. Voir `app/source/FieldSettings.mc`.
+- **Les libellés des interrupteurs passaient sous le commutateur** sur un Edge
+  530 : `Menu2` ne rogne pas le texte, il dessine le commutateur par-dessus.
+  « Brightness by speed » se lisait « Brightness by sp ». Huit libellés
+  raccourcis, dans les treize langues ; l'explication reste entière sur la ligne
+  du dessous, qui occupe toute la largeur.
 
 ### Modifié — lisibilité de la page
 

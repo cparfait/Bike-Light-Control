@@ -22,33 +22,41 @@
     <!-- Menu des reglages, sur le compteur -->
     <string id="MenuTitle">Settings</string>
 
-    <!-- Automatismes de la lampe : ils vivent dans son firmware -->
+    <!--
+      Automatismes de la lampe : ils vivent dans son firmware.
+
+      **Libelles courts, une quinzaine de caracteres au plus.** Ce sont des
+      entrees a interrupteur, et `Menu2` ne rogne pas le libelle : il dessine le
+      commutateur par-dessus. Sur un Edge 530, « Brightness by speed » se lisait
+      donc « Brightness by sp ». L'explication va sur la ligne du dessous, qui
+      occupe toute la largeur et n'a pas cette contrainte.
+    -->
     <string id="LampAutomations">Light automations</string>
     <string id="HintNotConnected">Light not connected</string>
-    <string id="LampLumenVary">Brightness by speed</string>
+    <string id="LampLumenVary">Auto brightness</string>
     <string id="HintByLamp">Handled by the light</string>
     <string id="LampAutoLight">Light sensor</string>
     <string id="HintAutoOn">Switches on by itself</string>
-    <string id="LampSyncOff">Synced switch-off</string>
+    <string id="LampSyncOff">Sync switch-off</string>
     <string id="HintFollowsTimer">Follows the timer</string>
-    <string id="LampAutoStart">Switch on at start</string>
+    <string id="LampAutoStart">On at start</string>
     <string id="HintOnStart">When the ride starts</string>
     <string id="LampAutoSleep">Auto sleep</string>
     <string id="HintAfterIdle">After standing still</string>
     <string id="SleepDelay">Sleep delay</string>
-    <string id="LampAutoLow">Dim when stopped</string>
-    <string id="LowDelay">Delay before dimming</string>
+    <string id="LampAutoLow">Dim at stop</string>
+    <string id="LowDelay">Dim delay</string>
     <string id="AvailableModes">Available modes</string>
 
     <!-- Reglages propres a l'application -->
     <string id="AppSettings">App settings</string>
     <string id="HintSeparate">Separate from the field</string>
-    <string id="SearchAuto">Search on startup</string>
+    <string id="SearchAuto">Auto search</string>
     <!-- Le libelle differe de celui du champ de donnees, et ce n'est pas une
          negligence : cette page n'a pas d'activite, donc pas de depart. Le
          moment equivalent est celui ou la lampe est trouvee. Meme propriete
          `lightOnStart`, mais Connect IQ isole l'etat des deux binaires. -->
-    <string id="OnAtStart">Switch on when light is found</string>
+    <string id="OnAtStart">On when found</string>
     <string id="LowBattery">Low battery</string>
 
     <!-- Etats d'interrupteur et mots isoles -->

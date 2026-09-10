@@ -25,30 +25,30 @@
     <!-- Automatismes de la lampe : ils vivent dans son firmware -->
     <string id="LampAutomations">Automatismes de la lampe</string>
     <string id="HintNotConnected">Lampe non connectée</string>
-    <string id="LampLumenVary">Luminosité selon vitesse</string>
+    <string id="LampLumenVary">Luminosité auto</string>
     <string id="HintByLamp">Géré par la lampe</string>
-    <string id="LampAutoLight">Capteur de luminosité</string>
+    <string id="LampAutoLight">Capteur lumière</string>
     <string id="HintAutoOn">Allumage automatique</string>
-    <string id="LampSyncOff">Extinction synchronisée</string>
+    <string id="LampSyncOff">Arrêt synchro</string>
     <string id="HintFollowsTimer">Suit l'arrêt du compteur</string>
-    <string id="LampAutoStart">Allumage au départ</string>
+    <string id="LampAutoStart">Au départ</string>
     <string id="HintOnStart">À la mise en route</string>
     <string id="LampAutoSleep">Veille automatique</string>
     <string id="HintAfterIdle">Après immobilité</string>
     <string id="SleepDelay">Délai de veille</string>
-    <string id="LampAutoLow">Luminosité réduite à l'arrêt</string>
-    <string id="LowDelay">Délai avant réduction</string>
+    <string id="LampAutoLow">Réduire à l'arrêt</string>
+    <string id="LowDelay">Délai réduction</string>
     <string id="AvailableModes">Modes disponibles</string>
 
     <!-- Reglages propres a l'application -->
     <string id="AppSettings">Réglages de l'application</string>
     <string id="HintSeparate">Distincts du champ de données</string>
-    <string id="SearchAuto">Chercher au démarrage</string>
+    <string id="SearchAuto">Recherche auto</string>
     <!-- Le libelle differe de celui du champ de donnees, et ce n'est pas une
          negligence : cette page n'a pas d'activite, donc pas de depart. Le
          moment equivalent est celui ou la lampe est trouvee. Meme propriete
          `lightOnStart`, mais Connect IQ isole l'etat des deux binaires. -->
-    <string id="OnAtStart">Allumer à la détection</string>
+    <string id="OnAtStart">Si trouvée, allumer</string>
     <string id="LowBattery">Batterie faible</string>
 
     <!-- Etats d'interrupteur et mots isoles -->

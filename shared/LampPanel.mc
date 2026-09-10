@@ -330,42 +330,36 @@ class LampPanel {
         return (g < 3) ? 3 : g;
     }
 
-    //! Roue dentée : un anneau épais, et huit dents courtes et larges.
+    //! Accès aux réglages : trois barres, le symbole de menu de l'Edge lui-même.
     //!
-    //! Elle était dessinée avec des rayons **fins et longs**, partant de 55 %
-    //! du rayon jusqu'au bord : à l'écran, ça ne se lit pas comme un
-    //! engrenage mais comme un **soleil**, c'est-à-dire comme une commande de
-    //! luminosité — sur une page qui pilote une lampe, la confusion est
-    //! particulièrement mal choisie. Une dent d'engrenage est courte et aussi
-    //! large que le vide qui la sépare de la suivante ; c'est ce rapport-là,
-    //! pas le nombre de dents, qui fait reconnaître le symbole.
+    //! **Ce n'est plus une roue dentée, et l'écran a tranché.** Elle était
+    //! dessinée avec des rayons fins et longs : à l'écran, ça ne se lit pas
+    //! comme un engrenage mais comme un **soleil**, c'est-à-dire comme une
+    //! commande de luminosité — sur une page qui pilote une lampe, la confusion
+    //! est particulièrement mal choisie. Redessinée avec un anneau épais et des
+    //! dents courtes, elle passait sur un Edge 1050 ; sur un 530, où le rayon
+    //! tombe à dix pixels, elle redevenait un soleil. Une dent d'engrenage
+    //! demande trois ou quatre pixels pour se distinguer du vide qui la suit,
+    //! et il n'y en a pas.
+    //!
+    //! Trois barres tiennent, elles, de huit pixels à quarante, et c'est le
+    //! symbole que le compteur emploie lui-même en bas de ses propres pages
+    //! pour ouvrir un menu. Ce que la tuile ouvre **est** un menu.
     private function _drawGear(dc as Graphics.Dc, cx as Lang.Number,
                                cy as Lang.Number, r as Lang.Number) as Void {
-        if (r < 5) { return; }
+        if (r < 4) { return; }
         dc.setColor(LC.UI_DIM, Graphics.COLOR_TRANSPARENT);
 
-        // L'anneau, épais : c'est lui qui porte le dessin. Le trait vaut le
-        // quart du rayon, tracé à mi-chemin du centre et du bord.
-        var ring = r * 52 / 100;
-        var pen = r * 26 / 100;
-        if (pen < 2) { pen = 2; }
-        dc.setPenWidth(pen);
-        dc.drawCircle(cx, cy, ring);
+        var bw = r * 170 / 100;          // largeur des barres
+        var bh = r * 30 / 100;           // épaisseur
+        if (bh < 2) { bh = 2; }
+        var step = r * 60 / 100;         // écart entre deux barres
+        if (step < bh + 2) { step = bh + 2; }
 
-        // Huit dents, aux quatre axes et aux quatre diagonales, de l'anneau au
-        // bord. Les diagonales sont posées à 70 % de leur composante — la
-        // valeur de cos(45°) — pour que toutes tombent sur le même cercle.
-        var dxs = [10, 7, 0, -7, -10, -7,  0,  7];
-        var dys = [ 0, 7, 10, 7,   0, -7, -10, -7];
-        var from = ring + pen / 4;
-        dc.setPenWidth(pen * 105 / 100);
-        for (var i = 0; i < 8; i++) {
-            var dx = dxs[i] as Lang.Number;
-            var dy = dys[i] as Lang.Number;
-            dc.drawLine(cx + dx * from / 10, cy + dy * from / 10,
-                        cx + dx * r / 10, cy + dy * r / 10);
+        var bx = cx - bw / 2;
+        for (var i = -1; i <= 1; i++) {
+            dc.fillRectangle(bx, cy + i * step - bh / 2, bw, bh);
         }
-        dc.setPenWidth(1);
     }
 
     //! Charge de la lampe : le pourcentage en clair, une jauge, l'autonomie.
