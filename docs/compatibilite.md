@@ -45,10 +45,10 @@ un build **raté** l'amende : c'est `bash app/build.sh` qui a le dernier mot.
 
 | Famille | Modèles | Remarque |
 |---|---|---|
-| Edge | 13 | les cibles historiques du projet, seules éprouvées sur matériel |
+| Edge | 13 | les cibles historiques du projet ; seul le 1050 est éprouvé sur matériel |
 | fenix / epix / tactix / quatix / MARQ | 40 environ | du fenix 5 Plus au fenix 9 Pro |
 | Forerunner | 20 environ | à partir du 245 Music |
-| Venu / vívoactive | 12 | dont les deux Venu 4 |
+| Venu / vívoactive | 12 | dont les deux Venu 4 ; le 41 mm est éprouvé sur matériel |
 | Descent / D2 / Approach / Instinct AMOLED | 15 environ | mêmes plateformes, autres boîtiers |
 | GPSMAP, Montana | 2 | des portables, pas des montres, mais ils remplissent les quatre critères |
 
@@ -116,18 +116,21 @@ Rappel : `onTap()` ne fonctionne qu'avec la classe `DataField` complète, jamais
 | Appareil | Date | Ce que cela établit |
 |---|---|---|
 | Edge 1050 | depuis le début | la cible de développement ; écran rectangulaire, tactile |
-| Venu 4 41 mm | 20/09/2026 | déclaré fonctionnel après installation manuelle |
+| Venu 4 41 mm | 20-21/09/2026 | les trois points bloquants exercés sur une sortie |
 
 **Ce que le Venu 4 prouve** est important et limité. Important : le rôle central BLE marche
 sur une plateforme montre, le protocole VS1800S ne dépend pas du matériel, et la mise en page
 inscrite dans le disque tient sur un vrai cadran — ce que ni le simulateur ni un test unitaire
 ne pouvaient trancher.
 
-**Limité** : « fonctionnel » n'est pas la grille d'essai. Les trois points qui bloquent une
-sortie publique — reconnexion après une mise en veille de la lampe en cours de sortie,
-extinction à l'arrêt du chronomètre après un mode choisi à la main, sortie d'activité sans
-arrêter le chronomètre — demandent chacun un geste précis pendant une sortie, et rien ne dit
-qu'ils aient été faits. Voir `docs/depot-beta.md`, chapitre 4.
+**Les trois points bloquants sont levés**, le 21/09/2026, sur ce Venu 4 : reconnexion après
+une mise en veille de la lampe en cours de sortie, extinction à l'arrêt du chronomètre après
+un mode choisi à la main, et sortie d'activité sans arrêter le chronomètre. Ils étaient
+corrigés dans le code et jamais observés ; c'est ce qui tenait le projet en bêta.
+
+**Sur une montre, et non sur un compteur.** Les chemins éprouvés sont ceux du protocole et des
+automatismes, communs à toute la gamme ; ce qu'un Edge à boutons apporterait encore, c'est la
+tape sur le champ plein écran et le pilotage au curseur. Voir `docs/essai-edge830.md`.
 
 Les 101 autres appareils sont compatibles au sens des quatre critères et compilent, ce qui
 n'est pas la même chose qu'avoir été essayés. La fiche `docs/essai-modeles.md` dit ce que

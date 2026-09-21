@@ -170,9 +170,13 @@ sideload ne montrent :
 
 ## 4. Ce qui reste à éprouver sur le matériel
 
-Ces trois points sont corrigés dans le code et **jamais observés sur un
-compteur**. Ils ne bloquent pas une bêta — c'est même à cela qu'elle sert — mais
-ils bloquent une sortie publique.
+**Ces trois points sont levés depuis le 21/09/2026**, exercés sur un Venu 4
+41 mm. Ils étaient corrigés dans le code et jamais observés sur du matériel ;
+c'est ce qui tenait le projet en bêta, et ce qui a permis de passer au 1.0.0.
+
+Ils restent listés ici parce qu'ils ont été vus sur une **montre**, pas sur un
+compteur : la tape sur le champ plein écran et le pilotage au curseur d'un Edge
+à boutons attendent encore leur essai.
 
 | À faire | Pourquoi ça compte |
 |---|---|

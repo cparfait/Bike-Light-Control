@@ -13,6 +13,61 @@ partagent `shared/`, et deux numéros divergents seraient ingérables.
 
 ---
 
+## [1.0.0] — 21/09/2026
+
+**Première version publique**, déposée le 21/09/2026. Deux fiches **nouvelles**
+sur le Connect IQ Store, sous les identifiants de production — une bêta ne se
+transforme pas, c'est la documentation de Garmin qui l'impose. Les deux fiches
+de bêta restent à côté, et servent désormais à éprouver la suite.
+
+| Fiche | Identifiant de boutique | Catégorie |
+|---|---|---|
+| Commande éclairage vélo | `a93139d1-9678-4f03-aa00-f9812586f53d` | Cyclisme |
+| Panneau éclairage vélo | `df24ed0a-4d09-477a-95e1-eb2c2494617c` | Outils |
+
+Les catégories diffèrent parce que le store n'offre pas les mêmes à un champ de
+données et à une application : « Cyclisme » n'existe pas pour une Device App.
+
+Revue Garmin annoncée sous trois jours. Treize langues avec leurs titres
+traduits sur chaque fiche, descriptions anglaise et française, gratuite, aucune
+collecte de données, aucun profil ANT+.
+
+Aucun changement de code depuis la 0.3 : même binaire, autre identifiant. Ce qui
+change, c'est ce qu'on sait de lui.
+
+### Un point non résolu
+
+**Garmin annonce « La vérification de la signature a échoué »** sur les deux
+envois de production, alors que les envois de bêta affichaient « Signature :
+vérifiée ». La clé est pourtant la même, intacte et lisible.
+
+L'explication la plus vraisemblable est qu'un identifiant jamais publié n'a
+aucune clé enregistrée à laquelle se comparer — les bêtas, elles, étaient
+connues depuis le 10/09. Ce n'est qu'une hypothèse. Si la revue échoue, c'est la
+première piste ; et **la clé `developer_key.der` doit être sauvegardée hors du
+dépôt**, faute de quoi aucune mise à jour ne sera possible.
+
+### Les trois points bloquants sont levés
+
+Ils étaient corrigés dans le code et **jamais observés sur du matériel**. C'est
+ce qui a tenu le projet en bêta, et c'est fait — sur un Venu 4 41 mm, le
+21/09/2026 :
+
+| Point | Pourquoi il comptait |
+|---|---|
+| Lampe mise en veille en cours de sortie, puis rallumée | la reconnexion est le cas le plus courant, et le chemin n'avait jamais tourné en vrai |
+| Un mode choisi à la main, puis arrêt du chronomètre | la lampe doit s'éteindre : correctif du 10/09, éprouvé en test unitaire seulement |
+| Quitter l'activité sans arrêter le chronomètre | le filet d'extinction n'y était pas garanti, faute de pouvoir écrire 28 octets d'un coup |
+
+### Ce que la sortie publique ne dit pas
+
+**Deux appareils sur cent trois ont fait tourner ce code** : l'Edge 1050 et un
+Venu 4 41 mm. Les 101 autres remplissent les quatre critères et compilent, ce
+qui n'est pas la même chose. Les descriptions du store le disent, et doivent
+continuer à le dire.
+
+---
+
 ## [0.3] — 21/09/2026
 
 **Déposée en bêta le 21/09/2026**, les deux fiches, validées par Garmin :
