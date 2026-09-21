@@ -37,10 +37,20 @@ change, c'est ce qu'on sait de lui.
 
 ### Approbation
 
-**« Panneau éclairage vélo » est approuvée**, le 21/09/2026, quelques heures
-après le dépôt — statut « Approuvée » et ruban NEW sur le tableau de bord.
-Garmin annonce jusqu'à 24 h avant que la fiche n'apparaisse dans la boutique.
-« Commande éclairage vélo » reste en attente à la même heure.
+**Les deux fiches sont approuvées**, le 21/09/2026, quelques heures après le
+dépôt — statut « Approuvée » et ruban NEW sur le tableau de bord. Le panneau
+d'abord, le champ de données dans la foulée. Garmin annonce jusqu'à 24 h avant
+qu'elles n'apparaissent dans la boutique.
+
+**Le nom d'éditeur est passé de `Bike-Light-Control` à `Christophe-Parfait`.**
+C'est un réglage de compte, pas de fiche : il s'applique aux quatre d'un coup,
+bêtas comprises, et n'a pas remis les fiches publiques en revue.
+
+Le tiret n'est pas une coquetterie : **Garmin interdit l'espace** dans ce nom,
+avec une liste de caractères proscrits que l'interface ne montre qu'après une
+tentative refusée — `> ' " < ; # % ^ & = | ~ < > / [ ] { } , * ( ) @` et
+l'espace. Le bouton « Enregistrer » reste simplement désactivé, sans rien dire,
+tant que le nom n'est pas conforme.
 
 **Une fiche publique donne un courriel, même en cas d'approbation.** C'est une
 différence avec les bêtas, qui n'en déclenchent aucun — et une correction de ce

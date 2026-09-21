@@ -15,6 +15,17 @@ et un nom en « VS… » ou « TL… » — et seule la VS1800S a été essayée
 utilisateur venu avec une Varia ou une Lezyne n'aurait rien trouvé du tout, et l'aurait écrit
 dans son avis. Un titre générique impose une description précise.
 
+**Le nom d'editeur se regle une fois pour toutes**, dans « Parametres » du tableau de bord et
+non par fiche : il vaut pour les quatre d'un coup. C'est `Christophe-Parfait` depuis le
+21/09/2026. Garmin y **interdit l'espace**, avec une liste de caracteres proscrits que
+l'interface ne montre qu'apres une tentative refusee ; le bouton « Enregistrer » reste
+desactive sans rien dire tant que le nom n'est pas conforme.
+
+**Les titres s'affichent dans la langue de l'utilisateur.** Les treize sont a saisir sur chaque
+fiche : un Allemand verra le titre allemand, un visiteur en anglais le titre anglais. Ils
+viennent des tables de `tools/i18n/`, pour qu'une fiche ne nomme jamais l'application
+autrement que l'appareil.
+
 **Coller les descriptions SANS les retours a la ligne de ce fichier.** Les blocs ci-dessous
 sont retailles a 95 colonnes pour se lire dans un editeur ; le formulaire du store, lui, rend
 **chaque saut de ligne simple comme un changement de paragraphe**. Colle tel quel, un
