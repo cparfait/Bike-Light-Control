@@ -939,6 +939,30 @@ module ProtocolTest {
         [200, 260]    // borne exacte de PanelLayout.fits()
     ];
 
+    //! Les deux cadrans ronds, eux, se vérifient à part : la page y est
+    //! contrainte par un disque et non par un rectangle, et c'est une propriété
+    //! différente qu'il faut prouver — non pas « rien ne dépasse en bas », mais
+    //! « aucun coin ne tombe hors du cadran ».
+    //!
+    //! Seule la page pleine est concernée. Un champ de données sur un Venu 4
+    //! reçoit un rectangle découpé par le système, qui repasse donc par
+    //! `PANEL_SIZES` : c'est ce que dit `LampPanel.isRound()`.
+    //! Les neuf diamètres de la gamme, du plus petit au plus grand — relevés
+    //! par `python tools/gen-targets.py`, pas supposés. Le 218 est la vraie
+    //! borne basse : s'il tient, tout tient.
+    (:test)
+    const PANEL_ROUND_SIZES = [
+        [218, 218],   // fenix 5S, 6S Pro — le plus petit cadran de la gamme
+        [240, 240],   // 19 modèles : fenix 5/6/7S, Instinct 2, Forerunner…
+        [260, 260],   // fenix 7/8 43 mm, Forerunner 165
+        [280, 280],   // fenix 7X/8 47 mm, Enduro 3
+        [360, 360],   // Forerunner 265S, 570 42 mm
+        [390, 390],   // Venu 4 41 mm, vívoactive 5 et 6, epix Pro 42 mm
+        [416, 416],   // epix (Gen 2), fenix 8 AMOLED 47 mm
+        [454, 454],   // Venu 4 45 mm, D2 Air X15, epix Pro 51 mm
+        [466, 466]    // le plus grand cadran
+    ];
+
     //! Hauteurs de police (small, medium, large) couvrant les mêmes appareils.
     //!
     //! Les trois premiers jeux sont relevés dans le SDK, qui les donne en
@@ -974,11 +998,65 @@ module ProtocolTest {
                         if (!_checkLayout(logger, w, h, nc, nl,
                                           fonts[0] as Lang.Number,
                                           fonts[1] as Lang.Number,
-                                          fonts[2] as Lang.Number)) {
+                                          fonts[2] as Lang.Number, false)) {
                             return false;
                         }
                     }
                 }
+            }
+        }
+        return true;
+    }
+
+    //! Sur un cadran, la page doit en plus **tenir dans le disque**.
+    //!
+    //! C'est la vérification qui n'avait pas lieu d'être tant que les cibles
+    //! étaient rectangulaires, et la seule que l'œil ne rattrape pas : un coin
+    //! de tuile qui sort du cadran n'est pas rogné proprement, il disparaît
+    //! avec le bord de la dalle — et la tuile reste tactile là où on ne la voit
+    //! plus. Les mêmes invariants qu'ailleurs s'y appliquent par-dessus, via
+    //! `_checkLayout`.
+    (:test)
+    function panelLayoutStaysInsideRoundScreens(logger as Test.Logger) as Lang.Boolean {
+        for (var s = 0; s < PANEL_ROUND_SIZES.size(); s++) {
+            var size = PANEL_ROUND_SIZES[s] as Lang.Array;
+            var w = size[0] as Lang.Number;
+            var h = size[1] as Lang.Number;
+
+            for (var f = 0; f < PANEL_FONTS.size(); f++) {
+                var fonts = PANEL_FONTS[f] as Lang.Array;
+
+                for (var nc = 2; nc <= 6; nc++) {
+                    for (var nl = 0; nl <= 6; nl++) {
+                        if (!_checkLayout(logger, w, h, nc, nl,
+                                          fonts[0] as Lang.Number,
+                                          fonts[1] as Lang.Number,
+                                          fonts[2] as Lang.Number, true)) {
+                            return false;
+                        }
+                    }
+                }
+            }
+        }
+        return true;
+    }
+
+    //! Vrai si les quatre coins de la bande tiennent dans le cadran.
+    //! Une bande de hauteur ou de largeur nulle n'est pas dessinée : elle passe.
+    function _inDisc(w as Lang.Number, h as Lang.Number, bx as Lang.Number,
+                     by as Lang.Number, bw as Lang.Number,
+                     bh as Lang.Number) as Lang.Boolean {
+        if (bw <= 0 || bh <= 0) { return true; }
+        var cx = w / 2;
+        var cy = h / 2;
+        var r = ((w < h) ? w : h) / 2;
+        var xs = [bx, bx + bw];
+        var ys = [by, by + bh];
+        for (var i = 0; i < 2; i++) {
+            for (var j = 0; j < 2; j++) {
+                var dx = (xs[i] as Lang.Number) - cx;
+                var dy = (ys[j] as Lang.Number) - cy;
+                if (dx * dx + dy * dy > r * r) { return false; }
             }
         }
         return true;
@@ -990,12 +1068,12 @@ module ProtocolTest {
     function _checkLayout(logger as Test.Logger, w as Lang.Number, h as Lang.Number,
                           nc as Lang.Number, nl as Lang.Number,
                           hs as Lang.Number, hm as Lang.Number,
-                          hl as Lang.Number) as Lang.Boolean {
+                          hl as Lang.Number, round as Lang.Boolean) as Lang.Boolean {
         // On verifie les deux etats de la rangee de niveaux : affichee, et
         // reservee mais vide — c'est le second qui garantit que toucher
         // « Eteint » ne deplace rien.
-        var m = new PanelLayout(w, h, nc, nl, nl > 0, hs, hm, hl);
-        var reserved = new PanelLayout(w, h, nc, 0, true, hs, hm, hl);
+        var m = new PanelLayout(w, h, nc, nl, nl > 0, hs, hm, hl, round);
+        var reserved = new PanelLayout(w, h, nc, 0, true, hs, hm, hl, round);
         if (nl > 0 && (reserved.rowsY != m.rowsY || reserved.catH != m.catH
                        || reserved.heroH != m.heroH || reserved.levY != m.levY)) {
             logger.error("la page bouge quand la rangee de niveaux se vide en "
@@ -1013,7 +1091,7 @@ module ProtocolTest {
             logger.error("grille trop petite pour " + nc + " categories en " + where);
             return false;
         }
-        if (m.cols * m.tw + (m.cols - 1) * m.gap > m.cw) {
+        if (m.cols * m.tw + (m.cols - 1) * m.gap > m.gridW) {
             logger.error("grille plus large que la colonne en " + where);
             return false;
         }
@@ -1039,8 +1117,37 @@ module ProtocolTest {
                 logger.error("les niveaux chevauchent les categories en " + where);
                 return false;
             }
-            if (nl * m.levW + (nl - 1) * m.gap > m.cw) {
+            if (nl * m.levW + (nl - 1) * m.gap > m.levRowW) {
                 logger.error("rangee de niveaux trop large en " + where);
+                return false;
+            }
+        }
+
+        // Le cadran : aucune bande ne doit mordre hors du disque. Sur un
+        // rectangle il n'y a rien a verifier, la contrainte est la meme que le
+        // depassement teste plus haut.
+        if (round) {
+            var bands = [
+                ["titre",     m.headerX,  m.headerY,  m.headerW,  m.headerH],
+                ["batterie",  m.batteryX, m.batteryY, m.batteryW, m.batteryH],
+                ["mode",      m.heroX,    m.heroY,    m.heroW,    m.heroH],
+                ["grille",    m.gridX,    m.rowsY,    m.gridW,    m.gridH],
+                ["niveaux",   m.levX,     m.levY,     m.levRowW,  m.levH]
+            ];
+            for (var i = 0; i < bands.size(); i++) {
+                var b = bands[i] as Lang.Array;
+                if (!_inDisc(w, h, b[1] as Lang.Number, b[2] as Lang.Number,
+                             b[3] as Lang.Number, b[4] as Lang.Number)) {
+                    logger.error("la bande " + (b[0] as Lang.String)
+                                 + " sort du cadran en " + where);
+                    return false;
+                }
+            }
+            // Une bande reduite a rien par la courbure, c'est une information
+            // qui disparait sans que personne le sache. La page doit se replier,
+            // pas s'amputer en silence.
+            if (m.headerW < 1 || m.batteryW < 1 || m.gridW < 1) {
+                logger.error("une bande est reduite a zero par le cadran en " + where);
                 return false;
             }
         }

@@ -26,15 +26,29 @@ DIR="${1:-widget}"
 shift 2>/dev/null || true
 DEVICES=("$@")
 if [ ${#DEVICES[@]} -eq 0 ]; then
-  # Les trois series commerciales, tactiles et a boutons. Un modele de plus
-  # qu'un par format d'ecran : les fiches du store se lisent par nom de
-  # modele, pas par resolution, et « Edge 840 » parle a qui en a un.
+  # Les trois series d'Edge, tactiles et a boutons, puis un cadran par
+  # diametre. Un modele de plus qu'un par format d'ecran cote Edge : les fiches
+  # du store se lisent par nom de modele, pas par resolution, et « Edge 840 »
+  # parle a qui en a un.
   #
   #   500 : 530, 540, 550    — aucun tactile
   #   800 : 830, 840, 850    — tous tactiles
   #  1000 : 1030, 1040, 1050 — tous tactiles
+  #
+  # Cote rond, les neuf diametres de la gamme. C'est la ou il faut regarder :
+  # la mise en page y est contrainte par une corde qui change a chaque hauteur,
+  # et le 218 px est la borne basse.
+  # Les neuf diametres ronds et les deux formats rectangulaires que les Edge
+  # ne couvrent pas, releves par `python tools/gen-targets.py` :
+  #
+  #   218 fr255s · 240 descentmk2s · 260 fenix6pro · 280 enduro3 · 360 fr265s
+  #   390 venu441mm · 416 epix2 · 454 venu445mm · 466 fenix9pro51mm
+  #   320x360 venusq2m · 448x486 venux1   (deux montres rectangulaires)
   DEVICES=(edge530 edge540 edge550 edge830 edge840 edge850
-           edge1030 edge1040 edge1050)
+           edge1030 edge1040 edge1050
+           fr255s descentmk2s fenix6pro enduro3 fr265s
+           venu441mm epix2 venu445mm fenix9pro51mm
+           venusq2m venux1)
 fi
 
 log() { printf '\033[1;34m==>\033[0m %s\n' "$*"; }
@@ -77,7 +91,13 @@ for dev in "${DEVICES[@]}"; do
   # en tache de fond, on capture, puis on passe au suivant — le chargement
   # suivant remplace celui-ci dans le meme simulateur.
   monkeydo "$ROOT/$DIR/bin/sim-$dev.prg" "$dev" >/dev/null 2>&1 &
-  sleep 12
+  # **Douze secondes ne suffisaient pas.** Connect IQ pose au lancement une
+  # banniere avec l'icone et le nom de l'application, qui defile ; la capture
+  # tombait dessus sur les profils les plus lents, et rendait une image ou le
+  # nom de l'application s'ecrit par-dessus le bandeau de la page. Deux
+  # captures rondes sur quatre y sont passees. La banniere disparait d'elle
+  # meme — il suffit de la laisser finir.
+  sleep 22
   powershell -NoProfile -File "$WROOT\\tools\\sim-shot.ps1" \
       -Out "$WROOT\\captures\\sim\\$DIR-$dev.png" \
     || { printf '  %-14s ECHEC capture\n' "$dev"; fail=$((fail + 1)); continue; }

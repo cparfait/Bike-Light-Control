@@ -11,8 +11,8 @@ using LightConstants as LC;
 //! Data field : affiche l'état de la lampe et applique les automatismes.
 //!
 //! On étend `DataField` et non `SimpleDataField` : c'est la seule classe qui
-//! reçoit `onTap()`, indispensable au changement de mode manuel sur les Edge à
-//! écran tactile (docs/compatibilite-edge.md).
+//! reçoit `onTap()`, indispensable au changement de mode manuel sur les
+//! appareils à écran tactile (docs/compatibilite.md).
 class LampView extends WatchUi.DataField {
 
     private var _lamp as LampManager;
@@ -59,7 +59,7 @@ class LampView extends WatchUi.DataField {
         // n'affichait donc rien. Voir docs/protocole-vs1800s.md.
         _panel.debug = false;
         // Le tactile n'est pas exposé dans les profils du SDK : c'est une
-        // propriété d'exécution. Un seul binaire pour les 13 modèles.
+        // propriété d'exécution. Un seul binaire pour toutes les cibles.
         var settings = System.getDeviceSettings();
         _touch = (settings has :isTouchScreen) && settings.isTouchScreen;
 
@@ -290,7 +290,7 @@ class LampView extends WatchUi.DataField {
     function onUpdate(dc as Graphics.Dc) as Void {
         // Plein écran : on affiche le panneau complet, avec ses catégories et
         // ses niveaux. C'est la même mise en page que l'application compagnon.
-        if (LampPanel.fits(dc.getWidth(), dc.getHeight())) {
+        if (LampPanel.fits(dc.getWidth(), dc.getHeight(), LampPanel.isRound(dc))) {
             // Au repos, la page complete se passe de consigne : son bouton
             // encadre dit deja « Detecter ». Sauf si la recherche part avec le
             // chrono — ca, le bouton ne le dit pas.

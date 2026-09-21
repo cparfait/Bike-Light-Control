@@ -7,11 +7,11 @@
 #
 # À relancer après chaque mise à jour du SDK ou ajout d'appareils : la
 # documentation en ligne et le compilateur ne sont pas fiables pour ça (voir
-# docs/compatibilite-edge.md), alors que la définition d'API l'est.
+# docs/compatibilite.md), alors que la définition d'API l'est.
 
 set -uo pipefail
 
-PATTERN="${1:-edge}"
+PATTERN="${1:-edge|venu4}"
 # $APPDATA est en forme Windows (C:\...) : on le convertit en chemin POSIX,
 # sinon ni ls ni grep ne le suivent depuis MSYS.
 DEVICES="${APPDATA:-}"
@@ -28,7 +28,7 @@ printf '%-22s %-8s %-11s %s\n' "PROFIL" "CIQ" "DATA FIELD" "CENTRAL BLE"
 printf '%-22s %-8s %-11s %s\n' "----------------------" "--------" "-----------" "-----------"
 
 ok=0; ko=0
-for dev in $(ls "$DEVICES" | grep -i "$PATTERN" | sort); do
+for dev in $(ls "$DEVICES" | grep -iE "$PATTERN" | sort); do
   api=$(ls "$DEVICES/$dev/"*.api.debug.xml 2>/dev/null | head -1)
   cfg="$DEVICES/$dev/compiler.json"
 

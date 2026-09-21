@@ -6,13 +6,13 @@ même code protocolaire.
 | | |
 |---|---|
 | Data field | `app/` — tourne pendant l'activité : affichage, automatismes, tape pour changer de mode |
-| Widget | `widget/` — pilotage manuel à l'arrêt, et sur les Edge à boutons |
+| Widget | `widget/` — pilotage manuel à l'arrêt, et sur les appareils à boutons |
 | Code partagé | `shared/` — protocole, couche BLE, automatismes, page de pilotage |
-| Langues | 13, suivant la langue du compteur — voir « Traductions » |
-| Cibles | 13 modèles Edge — voir [compatibilite-edge.md](compatibilite-edge.md) |
+| Langues | 13, suivant la langue de l'appareil — voir « Traductions » |
+| Cibles | 103 appareils : 13 Edge, 86 cadrans ronds, 2 portables — voir [compatibilite.md](compatibilite.md) |
 | Noms publiés | « Bike Light Control » (champ de données) et « Bike Light Panel » (application) |
-| Taille en release | 46 à 61 Ko par binaire, pour un budget de 128 Ko en data field |
-| Tests | 58 tests unitaires, `bash app/build.sh test` |
+| Taille en release | 76 à 95 Ko par binaire, pour un budget de 128 Ko en data field |
+| Tests | 59 tests unitaires, `bash app/build.sh test` |
 
 ## Pourquoi un data field
 
@@ -98,7 +98,7 @@ data field comme par le widget — aucune dépendance à un minuteur.
 récupère `Garmin/Apps/LOGS/CIQ_LOG.YML` et traduit chaque `pc` en fichier et ligne grâce à
 `<appareil>.prg.debug.xml`. Ce fichier de symboles est produit même en construction `-r`,
 mais il correspond à **cette** construction : le conserver avec le binaire déployé
-(`bash tools/deploy-edge.sh` installe les deux binaires sur l'Edge branché).
+(`bash tools/deploy-device.sh` installe les deux binaires sur l'appareil branché).
 
 ### Les écritures BLE sont limitées à 20 octets
 

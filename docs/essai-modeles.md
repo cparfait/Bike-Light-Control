@@ -130,7 +130,7 @@ deja ete.
 
 ```bash
 bash app/build.sh <appareil>
-bash tools/deploy-edge.sh <appareil>
+bash tools/deploy-device.sh <appareil>
 ```
 
 Puis **redemarrer l'Edge** : il consomme les fichiers de `GARMIN/Apps` au demarrage, il

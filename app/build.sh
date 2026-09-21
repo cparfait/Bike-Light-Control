@@ -2,29 +2,32 @@
 #
 # Construit les deux binaires pour les appareils cibles, ou lance les tests.
 #
-#   bash app/build.sh            # release, data field + widget, les 13 cibles
+#   bash app/build.sh            # release, data field + widget, toutes les cibles
 #   bash app/build.sh edge1050   # release, un seul appareil
 #   bash app/build.sh test       # tests unitaires dans le simulateur (edge1050)
 #   bash app/build.sh test edge530   # tests sur un autre profil d'appareil
-#   bash app/build.sh test-all   # tests sur quatre profils representatifs
+#   bash app/build.sh test-all   # tests sur cinq profils representatifs
 #   bash app/build.sh debug      # build de debogage pour l'Edge 1050
 #   bash app/build.sh sim        # page de pilotage dans le simulateur, lampe factice
 #   bash app/build.sh package    # paquets .iq pour le Connect IQ Store
 #   bash app/build.sh package-beta   # les memes, sous un identifiant de beta
 #
 # Deux binaires sont produits : le data field (app/bin/) tourne pendant
-# l'activite, le widget (widget/bin/) pilote la lampe a l'arret et sur les Edge
-# a boutons. Ils partagent le code de shared/.
+# l'activite, le widget (widget/bin/) pilote la lampe a l'arret et sur les
+# appareils a boutons. Ils partagent le code de shared/.
 #
-# La liste des cibles vient de docs/compatibilite-edge.md ; la regenerer avec
-# tools/check-ble-devices.sh apres une mise a jour du SDK.
+# La liste des cibles vient du manifeste, lui-meme genere par
+# tools/gen-targets.py depuis les profils du SDK. Voir docs/compatibilite.md.
 
 set -uo pipefail
 APP="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 ROOT="$(dirname "$APP")"
 
-TARGETS="edge530 edge540 edge550 edge830 edge840 edge850 edge1030 edge1030plus \
-edge1040 edge1050 edgeexplore edgeexplore2 edgemtb"
+# La liste des cibles est celle du manifeste, lue a l'execution : une centaine
+# d'identifiants recopies ici divergeraient des la premiere mise a jour du SDK.
+# Elle se regenere avec `python tools/gen-targets.py --manifest`.
+TARGETS="$(grep -o 'iq:product id="[^"]*"' "$(dirname "${BASH_SOURCE[0]}")/manifest.xml" \
+  | cut -d'"' -f2 | tr '\n' ' ')"
 
 log() { printf '\033[1;34m==>\033[0m %s\n' "$*"; }
 die() { printf '\033[1;31m!!!\033[0m %s\n' "$*" >&2; exit 1; }
@@ -64,15 +67,16 @@ MODE="${1:-all}"
 # --- Tests sur plusieurs profils ----------------------------------------------
 # Les tests de mise en page parcourent les six formats d'ecran quel que soit le
 # profil ; mais le reste du binaire, lui, s'execute sur celui du simulateur. Une
-# suite qui ne tourne que sur un Edge 1050 ne prouve rien des douze autres.
+# suite qui ne tourne que sur un Edge 1050 ne prouve rien des cent-deux autres.
 #
-# Quatre profils suffisent a couvrir les extremes : le 530 (police bitmap, petit
+# Cinq profils suffisent a couvrir les extremes : le 530 (police bitmap, petit
 # ecran, boutons), le MTB (le plus petit ecran, et le seul sans composition
-# alpha), le 1040 (polices vectorielles de taille intermediaire) et le 1050 (le
-# plus grand, tactile).
+# alpha), le 1040 (polices vectorielles de taille intermediaire), le 1050 (le
+# plus grand, tactile) et le Venu 4 45 mm — le seul cadran rond, donc le seul ou
+# les polices du systeme rencontrent la mise en page inscrite dans le disque.
 if [ "$MODE" = "test-all" ]; then
   fail=0
-  for dev in edge530 edgemtb edge1040 edge1050; do
+  for dev in edge530 edgemtb edge1040 edge1050 venu445mm; do
     log "Tests sur $dev…"
     # Le verdict se lit dans la sortie, pas dans le code de retour : monkeydo
     # rend un code non nul meme quand la suite passe. S'y fier declarait les
@@ -87,14 +91,14 @@ if [ "$MODE" = "test-all" ]; then
     esac
   done
   [ "$fail" -eq 0 ] || die "$fail profil(s) en echec."
-  log "Quatre profils au vert."
+  log "Cinq profils au vert."
   exit 0
 fi
 
 # --- Tests unitaires ----------------------------------------------------------
 if [ "$MODE" = "test" ]; then
   # Un appareil peut etre passe en second argument : les tests de mise en page
-  # valent pour les 13 cibles, mais le reste du binaire s'execute sur celui-la.
+  # valent pour toutes les cibles, mais le reste du binaire s'execute sur celui-la.
   #   bash app/build.sh test edge530
   DEV="${2:-edge1050}"
   log "Compilation des tests ($DEV)…"
@@ -118,8 +122,8 @@ fi
 # « Recherche », et rien de la page de pilotage ne s'affiche. Le mode `sim`
 # empile sim.jungle sur monkey.jungle, ce qui garde le code annote `demo` —
 # shared/LampDemo.mc, une VS1800S factice — et donne au panneau un etat a
-# dessiner. C'est le seul moyen de voir la mise en page sur les 13 formats
-# d'ecran sans autant de compteurs.
+# dessiner. C'est le seul moyen de voir la mise en page sur les quinze formats
+# d'ecran sans autant d'appareils.
 #
 #   bash app/build.sh sim               # application compagnon, edge1050
 #   bash app/build.sh sim app edge530   # champ de donnees, sur un autre profil

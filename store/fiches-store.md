@@ -15,6 +15,13 @@ et un nom en « VS… » ou « TL… » — et seule la VS1800S a été essayée
 utilisateur venu avec une Varia ou une Lezyne n'aurait rien trouvé du tout, et l'aurait écrit
 dans son avis. Un titre générique impose une description précise.
 
+**Coller les descriptions SANS les retours a la ligne de ce fichier.** Les blocs ci-dessous
+sont retailles a 95 colonnes pour se lire dans un editeur ; le formulaire du store, lui, rend
+**chaque saut de ligne simple comme un changement de paragraphe**. Colle tel quel, un
+paragraphe de six lignes devient six paragraphes, coupes en plein milieu des phrases — c'est
+ce qui est arrive le 20/09/2026, et il a fallu renvoyer les quatre descriptions. Reunir les
+lignes de chaque paragraphe en une seule, et ne garder que les lignes vides.
+
 | | Champ de données | Application |
 |---|---|---|
 | Paquet | `dist/bike-light-control.iq` | `dist/bike-light-panel.iq` |
@@ -40,9 +47,14 @@ Produire les paquets :
 bash app/build.sh package
 ```
 
-**Version à saisir dans le formulaire : 0.1**, en bêta. Le manifeste n'en porte
-pas ; `CHANGELOG.md` en garde la trace. Le 1.0.0 est gardé pour la sortie
-publique — un numéro ne peut que monter.
+**Version à saisir dans le formulaire : la dernière de `CHANGELOG.md`**, en
+bêta. Le manifeste n'en porte pas ; le journal en garde la trace. Le 1.0.0 est
+gardé pour la sortie publique.
+
+**Un numéro ne peut que monter**, et c'est ce qui coûte : la 0.2 du 20/09 a dû
+être suivie d'une 0.3 le lendemain pour un seul correctif de vignette, faute de
+pouvoir corriger un numéro déjà publié. Pendant une bêta, grouper les
+correctifs vaut mieux qu'un numéro par trouvaille.
 
 ---
 
@@ -50,7 +62,7 @@ publique — un numéro ne peut que monter.
 
 **Anglais**
 
-> Controls an **iGPSPORT VS1800S** bike light from your bike computer, during the ride.
+> Controls an **iGPSPORT VS1800S** bike light from your bike computer or watch, during the ride.
 >
 > **Read this first.** This is not a generic Bluetooth light controller. It speaks the iGPSPORT
 > protocol, and it will not find or drive lights from any other brand — Garmin Varia, Bontrager,
@@ -72,6 +84,9 @@ publique — un numéro ne peut que monter.
 > Light level and light battery are recorded in the activity file, so you can see them on the
 > chart in Garmin Connect afterwards.
 >
+> Works on Edge cycling computers and on watches — the page fits itself to a round face rather
+> than sitting in a square in the middle of it.
+>
 > Speed thresholds are set in km/h. The light's Bluetooth protocol has no authentication: any
 > device in range could drive it, whichever app is used — that is a property of the light.
 >
@@ -79,7 +94,7 @@ publique — un numéro ne peut que monter.
 > connection so you can see it is yours. If it is not, switch to the next one from the settings.
 >
 > **The field never searches on its own.** A Bluetooth scan is the most expensive thing an app
-> can do to your bike computer's battery, and the light stays in the drawer on most rides. So the
+> can do to your device's battery, and the light stays in the drawer on most rides. So the
 > field waits for you: tap it on a touch screen, press Lap on a model with buttons. The search is
 > time-boxed — no light nearby, no scan draining the ride. A setting can start it with the timer
 > instead, off by default.
@@ -87,7 +102,7 @@ publique — un numéro ne peut que monter.
 > On a touch screen, tap the field to pick a mode by hand. Tap once more when the light is off
 > to hand control back to the automatic adjustment.
 >
-> Thresholds and settings are adjustable from Garmin Connect, and from the bike computer itself.
+> Thresholds and settings are adjustable from Garmin Connect, and from the device itself.
 > Speeds are in km/h.
 >
 > Not affiliated with, or endorsed by, iGPSPORT. The protocol was worked out independently; the
@@ -98,7 +113,7 @@ publique — un numéro ne peut que monter.
 
 **Français**
 
-> Pilote une lampe velo **iGPSPORT VS1800S** depuis le compteur, pendant la sortie.
+> Pilote une lampe velo **iGPSPORT VS1800S** depuis le compteur ou la montre, pendant la sortie.
 >
 > **A lire avant d'installer.** Ce n'est pas un pilote de lampe Bluetooth generique. L'application
 > parle le protocole iGPSPORT, et elle ne trouvera ni ne pilotera aucune lampe d'une autre
@@ -121,6 +136,9 @@ publique — un numéro ne peut que monter.
 > Le niveau et la batterie de la lampe sont enregistres dans le fichier d'activite : ils
 > apparaissent ensuite sur le graphique dans Garmin Connect.
 >
+> Fonctionne sur les compteurs Edge comme sur les montres — la page epouse le cadran rond au
+> lieu de tenir dans un carre pose au milieu.
+>
 > Les seuils de vitesse se reglent en km/h. Le protocole Bluetooth de la lampe n'a aucune
 > authentification : tout appareil a portee peut la piloter, quelle que soit l'application —
 > c'est une propriete de la lampe.
@@ -130,7 +148,7 @@ publique — un numéro ne peut que monter.
 > la suivante depuis les reglages.
 >
 > **Le champ ne cherche jamais la lampe tout seul.** Un scan Bluetooth est ce qui coute le plus
-> cher a la batterie du compteur, et la lampe reste au tiroir la plupart des sorties. Le champ
+> cher a la batterie de l'appareil, et la lampe reste au tiroir la plupart des sorties. Le champ
 > attend donc un geste : une tape sur un ecran tactile, le bouton Lap sur un modele a boutons. La
 > recherche est bornee dans le temps — pas de lampe a portee, pas de scan qui vide la sortie. Un
 > reglage permet de la lancer au depart du chrono, decoche par defaut.
@@ -138,7 +156,7 @@ publique — un numéro ne peut que monter.
 > Sur ecran tactile, une tape sur le champ change de mode a la main. Une tape de plus, lampe
 > eteinte, rend la main a l'ajustement automatique.
 >
-> Les seuils et les reglages se modifient depuis Garmin Connect, et depuis le compteur lui-meme.
+> Les seuils et les reglages se modifient depuis Garmin Connect, et depuis l'appareil lui-meme.
 > Les vitesses sont en km/h.
 >
 > Sans lien avec iGPSPORT, ni aval de sa part. Le protocole a ete etabli de facon independante ;
@@ -167,6 +185,10 @@ publique — un numéro ne peut que monter.
 > Works on models with a touch screen and on models with buttons: on the latter, the up and down
 > keys move a cursor and the Menu key opens the settings.
 >
+> Works on Edge cycling computers and on watches. On a round face the page follows the curve —
+> each band of the panel takes the width actually available at its own height, so the tiles stay
+> big enough to hit with a glove.
+>
 > Companion to the "Bike Light Control" data field, which handles the ride itself.
 >
 > Not affiliated with, or endorsed by, iGPSPORT. The protocol was worked out independently; the
@@ -186,11 +208,15 @@ publique — un numéro ne peut que monter.
 >
 > Choix du mode par categorie — faisceau, flash, extinction — avec le niveau de batterie et
 > l'autonomie restante. Les automatismes de la lampe (capteur de luminosite, veille automatique,
-> luminosite reduite a l'arret) se lisent et se reglent depuis le compteur, sans sortir le
+> luminosite reduite a l'arret) se lisent et se reglent depuis l'appareil, sans sortir le
 > telephone.
 >
 > Fonctionne sur les modeles tactiles comme sur ceux a boutons : sur ces derniers, haut et bas
 > deplacent un curseur, et la touche Menu ouvre les reglages.
+>
+> Fonctionne sur les compteurs Edge comme sur les montres. Sur un cadran rond, la page suit la
+> courbure : chaque bande du panneau prend la largeur reellement disponible a sa hauteur, et les
+> tuiles restent assez grandes pour se viser avec un gant.
 >
 > Complement du champ de donnees « Commande eclairage velo », qui prend le relais pendant la
 > sortie.

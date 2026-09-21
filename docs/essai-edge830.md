@@ -67,7 +67,7 @@ réaccentuées, et l'830 est le premier appareil à polices bitmap où on pourra
 ## 3. Installation
 
 ```bash
-bash tools/deploy-edge.sh edge830
+bash tools/deploy-device.sh edge830
 ```
 
 Puis **redémarrer l'Edge** : il consomme les fichiers de `GARMIN/Apps` au démarrage, il est

@@ -219,24 +219,30 @@ class LampPanel {
         var m = new PanelLayout(w, h, cats.size(), levels.size(), _hasLevelRow(),
                                 dc.getFontHeight(Graphics.FONT_SMALL),
                                 dc.getFontHeight(Graphics.FONT_MEDIUM),
-                                dc.getFontHeight(Graphics.FONT_LARGE));
+                                dc.getFontHeight(Graphics.FONT_LARGE),
+                                isRound(dc));
 
-        _drawHeader(dc, m.x, m.headerY, m.cw);
-        _drawBattery(dc, m.x, m.batteryY, m.cw);
+        // Chaque bandeau a sa propre abscisse et sa propre largeur. Sur les 13
+        // Edge elles valent toutes `m.x` et `m.cw` — c'est ce que rend
+        // `PanelLayout` sur un rectangle — mais sur le cadran d'un Venu 4 la
+        // grille est nettement plus large que le titre, qui lui est plus haut
+        // et donc sur une corde plus courte.
+        _drawHeader(dc, m.headerX, m.headerY, m.headerW);
+        _drawBattery(dc, m.batteryX, m.batteryY, m.batteryW);
 
         if (m.heroH > 0) {
-            _drawHero(dc, m.x, m.heroY, m.cw, m.heroH);
+            _drawHero(dc, m.heroX, m.heroY, m.heroW, m.heroH);
         }
 
-        _drawCategories(dc, m.x, m.rowsY, m.cw, cats, m.tw, m.catH, m.cols, m.gap);
+        _drawCategories(dc, m.gridX, m.rowsY, m.gridW, cats, m.tw, m.catH, m.cols, m.gap);
         // La rangée peut être réservée mais vide — « Éteint » n'a pas de crans.
         // La place reste prise pour que rien ne se déplace ; c'est exactement là
         // que va le rappel d'extinction, dans un espace déjà réservé plutôt que
         // par-dessus quelque chose.
         if (m.levH > 0 && levels.size() > 0) {
-            _drawLevels(dc, m.x, m.levY, m.cw, m.levH, levels, m.gap);
+            _drawLevels(dc, m.levX, m.levY, m.levRowW, m.levH, levels, m.gap);
         } else if (m.levH > 0) {
-            _drawOffNotice(dc, m.x, m.levY, m.cw, m.levH);
+            _drawOffNotice(dc, m.levX, m.levY, m.levRowW, m.levH);
         }
 
         if (_settingsBox != null) {
@@ -939,8 +945,26 @@ class LampPanel {
             dc.setPenWidth(1);
         }
 
+        // **La largeur disponible n'est pas celle de l'ecran sur un cadran.**
+        // Les deux lignes sont posees a 62 % et 78 % de la hauteur : a 78 %, la
+        // corde ne fait plus que six dixiemes du diametre, et la precision
+        // sous le message debordait du disque. On la mesure donc au lieu de la
+        // supposer, avec la formule de la page de pilotage.
+        var round = isRound(dc);
         var margin = w / 10;
-        var font = _fitFont(dc, LampManager.longestStateMessage(), w - 2 * margin, [
+        var msgW = w - 2 * margin;
+        var hintW = w - margin;
+        if (round) {
+            var fh = dc.getFontHeight(Graphics.FONT_LARGE);
+            msgW = PanelLayout.chordWidth(w, h * 62 / 100 - fh / 2,
+                                          h * 62 / 100 + fh / 2, margin);
+            var hh = dc.getFontHeight(Graphics.FONT_SMALL);
+            hintW = PanelLayout.chordWidth(w, h * 78 / 100 - hh / 2,
+                                           h * 78 / 100 + hh / 2, margin);
+            if (msgW < 1) { msgW = 1; }
+            if (hintW < 1) { hintW = 1; }
+        }
+        var font = _fitFont(dc, LampManager.longestStateMessage(), msgW, [
             Graphics.FONT_LARGE, Graphics.FONT_MEDIUM, Graphics.FONT_SMALL,
             Graphics.FONT_TINY, Graphics.FONT_XTINY
         ]);
@@ -950,7 +974,7 @@ class LampPanel {
 
         // Même règle pour la ligne du dessous : mesurée sur la plus longue des
         // précisions, elle garde son corps quand le message change.
-        var hintFont = _fitFont(dc, LampManager.longestStateHint(), w - margin,
+        var hintFont = _fitFont(dc, LampManager.longestStateHint(), hintW,
             [Graphics.FONT_SMALL, Graphics.FONT_TINY, Graphics.FONT_XTINY]);
         var hint = idle ? idleHint : _lamp.stateHint();
         if (hint != null) {
@@ -965,8 +989,10 @@ class LampPanel {
         // Ni pendant l'identification, ou la lampe bat elle-meme la mesure, ni
         // au repos, ou rien ne travaille — trois points qui defilent devant un
         // bouton a presser seraient un mensonge.
+        // Sur un cadran, 90 % de la hauteur est deja sur le biseau de la
+        // dalle : les trois points y sont a moitie manges par le bord.
         if (!identifying && !idle) {
-            _drawProgress(dc, mid, h * 90 / 100, r / 5);
+            _drawProgress(dc, mid, h * (round ? 87 : 90) / 100, r / 5);
         }
     }
 
@@ -1193,7 +1219,27 @@ class LampPanel {
 
     //! Vrai si la place disponible permet d'afficher le panneau complet.
     //! En dessous, le champ de données se rabat sur son affichage à deux lignes.
-    static function fits(width as Lang.Number, height as Lang.Number) as Lang.Boolean {
-        return PanelLayout.fits(width, height);
+    static function fits(width as Lang.Number, height as Lang.Number,
+                         round as Lang.Boolean) as Lang.Boolean {
+        return PanelLayout.fits(width, height, round);
+    }
+
+    //! Vrai quand ce `Dc` couvre un cadran rond **entier**.
+    //!
+    //! Deux conditions, et non la seule forme de l'écran. Un Venu 4 est rond,
+    //! mais un champ de données n'y reçoit qu'un rectangle que le système
+    //! découpe et place lui-même : à l'intérieur, la géométrie est celle d'un
+    //! Edge, et c'est bien ce qu'il faut y dessiner. Seule la page pleine — la
+    //! page de l'application compagnon, ou le champ en plein écran — a le
+    //! disque entier pour elle et doit épouser sa courbure.
+    //!
+    //! `screenShape` est lu à l'exécution, comme `isTouchScreen` : un seul
+    //! binaire, pas de variante par modèle. Voir docs/compatibilite.md.
+    static function isRound(dc as Graphics.Dc) as Lang.Boolean {
+        var s = System.getDeviceSettings();
+        if (!(s has :screenShape) || s.screenShape != System.SCREEN_SHAPE_ROUND) {
+            return false;
+        }
+        return dc.getWidth() >= s.screenWidth && dc.getHeight() >= s.screenHeight;
     }
 }

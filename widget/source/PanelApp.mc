@@ -169,17 +169,68 @@ class LampGlanceView extends WatchUi.GlanceView {
 
         var title = _stored(KEY_TITLE);
         if (title == null) { title = FALLBACK_TITLE; }
-        dc.setColor(GlanceInk.TEXT, Graphics.COLOR_TRANSPARENT);
-        dc.drawText(pad, h / 2, Graphics.FONT_TINY, title,
-                    Graphics.TEXT_JUSTIFY_LEFT | Graphics.TEXT_JUSTIFY_VCENTER);
+        var summary = _stored(KEY_SUMMARY);
+
+        // **Les deux textes se rencontraient au milieu.** Le titre était écrit
+        // à gauche et la valeur à droite, en FONT_TINY, sans que rien ne
+        // vérifie qu'ils tiennent côte à côte. Sur la tuile large d'un Edge ils
+        // ne se touchaient jamais, et le défaut est resté invisible tant que
+        // les cibles étaient des compteurs ; sur le cadran d'une montre, où la
+        // tuile est deux fois plus étroite, « Light Front » et « 62 % Dipped
+        // 2 » s'écrivaient franchement l'un par-dessus l'autre — les deux
+        // illisibles, et la vignette donnée pour cassée.
+        //
+        // On mesure donc, au lieu de supposer. Deux recours, dans cet ordre :
+        // la police descend d'un cran, puis le titre est rogné. Jamais la
+        // valeur : le titre répète le nom déjà écrit sur la tuile par le
+        // système, alors que la charge et le mode ne sont écrits que là.
+        // Marge latérale plus large que la verticale, et calculée sur la
+        // hauteur comme sur la largeur. Sur un cadran, la tuile est un
+        // trapèze : ses coins hauts suivent la courbure du verre, et un texte
+        // calé à `w - pad` finit sur le biseau. Deux fois la marge verticale
+        // suffit à l'en écarter, et ne coûte que quelques pixels sur un Edge,
+        // où le texte était de toute façon collé au bord.
+        var side = pad * 2;
+        var gap = pad;
+        var avail = w - 2 * side;
+        var sumW = (summary == null) ? 0 : gap + dc.getTextWidthInPixels(summary, Graphics.FONT_TINY);
+
+        var font = Graphics.FONT_TINY;
+        if (dc.getTextWidthInPixels(title, font) + sumW > avail) {
+            font = Graphics.FONT_XTINY;
+            sumW = (summary == null) ? 0 : gap + dc.getTextWidthInPixels(summary, font);
+        }
+
+        // Le titre n'est gardé que s'il en reste assez pour un mot. Rogné à
+        // « Lig », il ne dit plus rien que le nom déjà écrit sur la tuile par
+        // le système ne dise mieux : mieux vaut alors ne rien écrire du tout
+        // que laisser un moignon de trois lettres.
+        var room = avail - sumW;
+        while (title.length() > 0 && dc.getTextWidthInPixels(title, font) > room) {
+            title = title.substring(0, title.length() - 1);
+        }
+        if (title.length() < 5) { title = ""; }
+
+        if (title.length() > 0) {
+            dc.setColor(GlanceInk.TEXT, Graphics.COLOR_TRANSPARENT);
+            dc.drawText(side, h / 2, font, title,
+                        Graphics.TEXT_JUSTIFY_LEFT | Graphics.TEXT_JUSTIFY_VCENTER);
+        }
 
         // La valeur en ambre, la couleur d'accent de la page : la vignette et
         // la page de pilotage parlent ainsi le même langage de couleurs.
-        var summary = _stored(KEY_SUMMARY);
+        //
+        // Centrée quand le titre a disparu — sur une tuile étroite, une valeur
+        // seule plaquée à droite se lit comme une valeur tronquée.
         if (summary != null) {
             dc.setColor(GlanceInk.VALUE, Graphics.COLOR_TRANSPARENT);
-            dc.drawText(w - pad, h / 2, Graphics.FONT_TINY, summary,
-                        Graphics.TEXT_JUSTIFY_RIGHT | Graphics.TEXT_JUSTIFY_VCENTER);
+            if (title.length() > 0) {
+                dc.drawText(w - side, h / 2, font, summary,
+                            Graphics.TEXT_JUSTIFY_RIGHT | Graphics.TEXT_JUSTIFY_VCENTER);
+            } else {
+                dc.drawText(w / 2, h / 2, font, summary,
+                            Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER);
+            }
         }
     }
 

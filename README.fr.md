@@ -4,13 +4,13 @@
 
 # Commande d'éclairage vélo
 
-**Piloter une lampe iGPSPORT depuis un compteur Garmin Edge — en roulant.**
+**Piloter une lampe iGPSPORT depuis un compteur ou une montre Garmin — en roulant.**
 
 [![Connect IQ](https://img.shields.io/badge/Connect%20IQ-9.2.0-007cc3)](https://developer.garmin.com/connect-iq/)
 [![Monkey C](https://img.shields.io/badge/Monkey%20C-Toybox%203.1%2B-5c4b8a)](https://developer.garmin.com/connect-iq/monkey-c/)
-[![Modèles Edge](https://img.shields.io/badge/mod%C3%A8les%20Edge-13-005f8c)](docs/compatibilite-edge.md)
+[![Appareils](https://img.shields.io/badge/appareils-103-005f8c)](docs/compatibilite.md)
 [![Langues](https://img.shields.io/badge/langues-13-2e7d32)](#les-13-langues-et-pourquoi-pas-les-36)
-[![Tests](https://img.shields.io/badge/tests%20unitaires-55-2e7d32)](app/source-test)
+[![Tests](https://img.shields.io/badge/tests%20unitaires-59-2e7d32)](app/source-test)
 [![Licence](https://img.shields.io/badge/licence-MIT-black)](LICENSE)
 
 [English](README.md) · **Français**
@@ -71,18 +71,34 @@ constructeur. Le relevé complet est dans [docs/protocole-vs1800s.md](docs/proto
 Les deux partagent `shared/` — protocole, couche BLE, automatismes, page de pilotage — et
 avancent d'un même pas dans un unique [CHANGELOG.md](CHANGELOG.md).
 
-## Modèles Edge compatibles
+## Appareils compatibles
 
-**13 modèles Edge** exposent le rôle central BLE aux apps tierces. La liste a été établie en
-interrogeant les définitions d'API des profils du SDK 9.2.0 installés localement, pas la
-documentation en ligne — détail et méthode dans
-[docs/compatibilite-edge.md](docs/compatibilite-edge.md) :
+**103 appareils Garmin** remplissent les quatre conditions nécessaires : le rôle central BLE
+présent dans la définition d'API, les types `datafield` et `watchApp`, 128 Ko de champ de
+données et Connect IQ 3.1.0. La liste est **générée** à partir des profils du SDK 9.2.0
+installés localement, jamais recopiée d'une page de documentation — méthode et tableau complet
+dans [docs/compatibilite.md](docs/compatibilite.md) :
 
-> Edge 530 · 540 · 550 · 830 · 840 · 850 · 1030 · 1030 Plus · 1040 · **1050** ·
-> Explore · Explore 2 · MTB
+```bash
+python tools/gen-targets.py
+```
 
-Exclus faute d'API : Edge 130 / 130 Plus, 520, 520 Plus, 820, 1000, et — c'est le piège —
-l'**Edge 1030 Bontrager**, alors que l'Edge 1030 standard est compatible.
+> **13 compteurs Edge** — 530 · 540 · 550 · 830 · 840 · 850 · 1030 · 1030 Plus · 1040 ·
+> **1050** · Explore · Explore 2 · MTB
+>
+> **86 cadrans ronds** — fenix 5 Plus à 9 Pro, epix, tactix, quatix, MARQ, Forerunner
+> à partir du 245 Music, Venu 2 à **Venu 4**, vívoactive 5 et 6, Descent, D2, Approach,
+> Instinct AMOLED
+>
+> **2 portables** — GPSMAP, Montana
+
+Exclus faute d'API : Edge 130 / 130 Plus, 520, 520 Plus, 820, 1000, fenix 6 non-Pro,
+vívoactive 3 et 4, Venu 1, et — c'est le piège — l'**Edge 1030 Bontrager**, alors que
+l'Edge 1030 standard est compatible.
+
+**Deux de ces 103 appareils ont fait tourner ce code sur du matériel** : l'Edge 1050, cible de
+développement, et un Venu 4 41 mm — déclaré fonctionnel le 20/09/2026, premier écran rond du
+projet. Compiler n'est pas avoir été essayé.
 
 Deux pièges de plateforme à retenir :
 
@@ -208,7 +224,7 @@ widget/                             application — « Bike Light Panel »
 store/                              icônes 500×500 et textes des fiches du Connect IQ Store
 docs/
   protocole-vs1800s.md              le protocole — livrable de la Phase 1
-  compatibilite-edge.md             modèles Edge compatibles, vérifiés contre le SDK
+  compatibilite.md                  appareils compatibles, vérifiés contre le SDK
   application.md                    architecture de l'app et décisions de conception
   essai-sans-lampe.md               tester avec une fausse lampe (nRF Connect)
   essai-edge830.md                  fiche d'essai sur Edge 830
@@ -217,11 +233,12 @@ docs/
   phase1-procedure-capture-ble.md   procédure de capture BLE + méthode Wireshark
   phase1-journal-capture.md         feuille de relevé à remplir pendant la manip
 tools/
-  check-icons.py                    icônes croisées avec les profils SDK des 13 cibles
+  check-icons.py                    icônes croisées avec les profils SDK des cibles
   fiche-modeles.py                  écrit docs/essai-modeles.md depuis les profils SDK
   i18n/                             traductions : une table JSON par langue
+  gen-targets.py                    établit la liste des cibles depuis les profils SDK
   make-icons.py                     dessine les icônes de lanceur et celles du store
-  deploy-edge.sh                    installe les deux binaires sur un Edge branché en USB
+  deploy-device.sh                  installe les deux binaires sur un appareil en USB
   pull-btsnoop.sh                   récupération du journal HCI depuis le téléphone
   scan-apk.py, dump-proto-*.py      analyse de l'APK, sans Java
 captures/                           rapports d'analyse (logs et APK bruts exclus — .gitignore)

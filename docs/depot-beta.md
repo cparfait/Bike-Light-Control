@@ -28,12 +28,12 @@ pas, c'est précisément le but.
 
 | Vérification | Commande | Attendu |
 |---|---|---|
-| Les 26 binaires compilent | `bash app/build.sh` | 13 lignes, aucun ECHEC |
-| Les tests passent sur quatre profils | `bash app/build.sh test-all` | 58 / 58 sur 530, MTB, 1040, 1050 |
+| Tous les binaires compilent | `bash app/build.sh` | 103 lignes, aucun ECHEC |
+| Les tests passent sur cinq profils | `bash app/build.sh test-all` | 59 / 59 sur 530, MTB, 1040, 1050, Venu 4 |
 | Types stricts | `monkeyc … -d edge530 -l 2` | BUILD SUCCESSFUL |
-| Icônes à la bonne taille | `python tools/check-icons.py` | les 13 cibles conformes |
+| Icônes à la bonne taille | `python tools/check-icons.py` | les 103 cibles conformes |
 | Langues portées | `python tools/i18n/langues-supportees.py --declarees` | 13 langues, toutes portées |
-| Modèles compatibles | `bash tools/check-ble-devices.sh` | 13 OUI, et le manifeste les déclare |
+| Modèles compatibles | `python tools/gen-targets.py` | 103 cibles, et le manifeste les déclare |
 | Aucun code de démonstration | `grep -ac "62%  Dipped 2" app/bin/*.prg` | 0 partout |
 | Aucune surcouche de diagnostic | `grep -rn "debug = true" app/ widget/ shared/` | rien |
 
@@ -50,8 +50,9 @@ Ils sortent dans `dist/`, suffixés `-beta`. Contrôle du contenu, sans matérie
 7z l dist/bike-light-control-beta.iq | grep -c fit_contributions
 ```
 
-Dix-neuf : un par référence matérielle, plus un global. Le paquet de
-l'application, lui, n'en a aucun et c'est normal — elle n'enregistre rien dans
+Un par référence matérielle, plus un global — le compte a changé avec la liste
+des cibles, ce qui importe est qu'il n'en manque aucun. Le paquet de
+l'application, lui, n'en a aucun et c'est normal : elle n'enregistre rien dans
 le fichier d'activité.
 
 ---
@@ -97,7 +98,8 @@ le jour. Concrètement : la fiche de bêta sert à *vous* — à vérifier les r
 dans Garmin Connect, les champs FIT et les deux noms, ce que ni le simulateur ni
 une installation à la main ne montrent. Pour faire essayer l'application à
 quelqu'un d'autre, il faut lui copier le `.prg` dans `GARMIN/Apps`, comme le
-fait `tools/deploy-edge.sh`.
+fait `tools/deploy-device.sh` — qui reconnaît aussi bien un compteur qu'une
+montre.
 
 Le jour de la sortie publique : `bash app/build.sh package`, sans rien cocher.
 Les identifiants de production reprennent leur place, et c'est une **nouvelle
@@ -178,8 +180,10 @@ ils bloquent une sortie publique.
 | Un mode choisi à la main, puis arrêt du chronomètre | la lampe doit s'éteindre : c'est le correctif du 10/09, testé unitairement seulement |
 | Quitter l'activité sans arrêter le chronomètre | le filet d'extinction n'est pas garanti là, faute de pouvoir écrire 28 octets d'un coup |
 
-Et un modèle autre que l'Edge 1050, idéalement à boutons : c'est le seul
-exemplaire physique du projet. La fiche d'essai de l'Edge 830 est prête dans
+Et un modèle autre que l'Edge 1050, idéalement à boutons. L'Edge 1050 était le
+seul exemplaire physique du projet ; un Venu 4 s'y ajoute, et il vaut surtout
+pour ce que le 1050 ne peut pas montrer — un cadran rond, et la reconnexion BLE
+sur une autre plateforme. La fiche d'essai de l'Edge 830 est prête dans
 [essai-edge830.md](essai-edge830.md), et [essai-modeles.md](essai-modeles.md)
 dit ce que chacun des treize apporterait.
 

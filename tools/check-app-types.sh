@@ -14,7 +14,7 @@
 
 set -uo pipefail
 
-PATTERN="${1:-edge}"
+PATTERN="${1:-edge|venu4}"
 DEVICES="${APPDATA:-}"
 if [ -n "$DEVICES" ] && command -v cygpath >/dev/null 2>&1; then
   DEVICES="$(cygpath -u "$DEVICES")"
@@ -27,7 +27,7 @@ DEVICES="$DEVICES/Garmin/ConnectIQ/Devices"
 
 printf '%-22s %s\n' "PROFIL" "TYPES SUPPORTES"
 printf '%-22s %s\n' "----------------------" "---------------"
-for dev in $(ls "$DEVICES" | grep -i "$PATTERN" | sort); do
+for dev in $(ls "$DEVICES" | grep -iE "$PATTERN" | sort); do
   cfg="$DEVICES/$dev/compiler.json"
   [ -f "$cfg" ] || continue
   types=$(python -c "

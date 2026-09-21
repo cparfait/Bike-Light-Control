@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
 """Genere les icones de lanceur, une par taille d'ecran, et l'icone du store.
 
-Pourquoi un script plutot qu'un fichier dessine une fois : chaque modele d'Edge
-attend une taille d'icone precise, et il y en a cinq differentes sur les 13
-cibles. Une icone unique laissee au compilateur est redimensionnee en silence,
-avec la perte de nettete correspondante sur les petits ecrans — 68 px ramenes a
-35, c'est un facteur deux sur une image deja minuscule.
+Pourquoi un script plutot qu'un fichier dessine une fois : chaque modele attend
+une taille d'icone precise, et il y en a douze differentes sur la gamme. Une
+icone unique laissee au compilateur est redimensionnee en silence, avec la perte
+de nettete correspondante sur les petits ecrans — 70 px ramenes a 32, c'est un
+facteur deux sur une image deja minuscule.
 
 Le dessin est donc vectoriel, rendu huit fois trop grand puis reduit en Lanczos :
 les traits restent nets a 35 px comme a 500.
@@ -15,11 +15,9 @@ les traits restent nets a 35 px comme a 500.
 Tailles attendues (source : forum developpeurs Garmin, verifie contre les
 profils du SDK) :
 
-    35  edge530 edge540 edge830 edge840
-    36  edge1030 edge1030plus edgeexplore edgeexplore2 edgemtb
-    40  edge1040
-    56  edge550 edge850
-    68  edge1050
+Les tailles ne sont plus ecrites ici : elles viennent de `tools/gen-targets.py`,
+qui les lit dans le `launcherIcon` de chaque `compiler.json`. Douze tailles, de
+32 a 70 px. `tools/check-icons.py` verifie ensuite la chaine complete.
 
 L'icone du store fait 500x500, en sRGB, sans transparence et sans fond noir —
 ce sont les regles de publication.
@@ -38,8 +36,10 @@ ressemblent, ce qui est le but, et un bleu se lit comme une couleur choisie la
 ou un gris a 30/255 se lit comme une erreur d'affichage.
 """
 
+import importlib
 import math
 import os
+import sys
 from PIL import Image, ImageDraw
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -49,14 +49,18 @@ BG = (27, 42, 58)            # bleu nuit, commun au lanceur et au store
 BEAM = (255, 160, 0)         # orange du faisceau
 PANEL_FRAME = (255, 160, 0)  # cadre orange, propre au panneau
 
-# Tailles de lanceur par appareil.
-SIZES = {
-    35: ["edge530", "edge540", "edge830", "edge840"],
-    36: ["edge1030", "edge1030plus", "edgeexplore", "edgeexplore2", "edgemtb"],
-    40: ["edge1040"],
-    56: ["edge550", "edge850"],
-    68: ["edge1050"],
-}
+# Tailles de lanceur, relues dans les profils du SDK et non recopiees ici.
+#
+# Elles etaient ecrites a la main tant qu'il y en avait cinq pour treize Edge.
+# Avec toute la gamme, c'est douze tailles pour une centaine d'appareils, et une
+# table figee serait fausse des la prochaine mise a jour du SDK : elle vient donc
+# du meme scanner que la liste des produits.
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+gen_targets = importlib.import_module("gen-targets")
+
+SIZES = {}
+for _t in gen_targets.targets():
+    SIZES.setdefault(_t["icon"], []).append(_t["id"])
 
 
 def draw_headlight(size, frame):

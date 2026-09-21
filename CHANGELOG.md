@@ -13,15 +13,169 @@ partagent `shared/`, et deux numéros divergents seraient ingérables.
 
 ---
 
-## [Non publié] — 0.2
+## [0.3] — 21/09/2026
 
-À faire au prochain envoi, en plus de ce que les essais auront révélé :
+**Déposée en bêta le 21/09/2026**, les deux fiches, validées par Garmin :
+`0.3 (interne 3)`, 89 Ko pour le champ de données et 93 pour l'application.
 
-- **Renvoyer la fiche du champ de données.** Son icône a changé après le dépôt
-  de la 0.1 : les deux applications portent désormais le même phare, le cadre
-  orange distinguant le panneau. Il faut donc remplacer la Cover Image par
-  `store/app-icon-500.png` et renvoyer `dist/bike-light-control-beta.iq`, dont
-  l'icône de lanceur a suivi. La fiche du panneau, elle, est déjà à jour.
+Une seule correction, et elle ne pouvait pas attendre : **elle ne se voit que
+sur une montre**, c'est-à-dire sur les 88 appareils que la 0.2 vient d'ouvrir.
+
+### Corrigé
+
+- **La vignette de résumé écrivait ses deux textes l'un sur l'autre.** Le titre
+  était posé à gauche et la valeur à droite, en FONT_TINY, **sans que rien ne
+  vérifie qu'ils tiennent côte à côte**. Sur la tuile large d'un Edge ils ne se
+  touchaient jamais, et le défaut est resté invisible tant que les cibles
+  étaient des compteurs ; sur le cadran d'une montre, deux fois plus étroit,
+  « Light Front » et « 62 % Dipped 2 » se chevauchaient franchement.
+
+  On mesure désormais. Deux recours, dans cet ordre : la police descend d'un
+  cran, puis le titre est rogné — jamais la valeur, car le titre répète le nom
+  que le système écrit déjà sur la tuile, alors que la charge et le mode ne sont
+  écrits que là. Rogné sous cinq caractères le titre disparaît : « Lig » ne vaut
+  pas mieux que rien, et la valeur passe alors au centre. La marge latérale
+  double aussi — sur un cadran, la tuile est un trapèze dont les coins hauts
+  suivent la courbure du verre, et un texte calé au bord finissait sur le
+  biseau.
+
+  Vérifié en capture sur un Venu 4 45 mm. Sur un Edge, la logique d'ajustement
+  ne se déclenche pas, la tuile y étant assez large ; **seule la marge change**,
+  de quelques pixels, et cela n'a pas été rephotographié.
+
+### Ce que la 0.2 avait déjà livré
+
+Tout le reste — les 103 appareils, la page inscrite dans le disque, le
+générateur de cibles — est arrivé avec la 0.2 de la veille, ci-dessous. La 0.3
+ne fait que réparer ce que la première série de captures sur cadran a révélé.
+
+Les captures de montre ont par ailleurs été ajoutées aux deux fiches du store
+le 21/09 : page de pilotage et vignette sur Venu 4, champ plein écran sur un
+cadran de 466 px, et le repli à deux lignes sur le plus petit cadran de la
+gamme.
+
+---
+
+## [0.2] — 20/09/2026
+
+**Déposée en bêta le 20/09/2026**, les deux fiches, sous les identifiants de
+bêta. Garmin a validé les deux paquets — signature et contenu vérifiés — et
+reconnaît les deux Venu 4 dans la liste des appareils compatibles.
+
+Les paquets passent de 1,4 à 12,4 Mo : 156 références matérielles au lieu de 19.
+Le binaire par appareil, lui, reste sous les 128 Ko du champ de données — 89 Ko
+pour le champ, 93 pour l'application.
+
+**Attention aux deux icônes de couverture, qui ne sont pas interchangeables :**
+`store/app-icon-500.png` pour le champ de données, sans cadre ;
+`store/widget-icon-500.png` pour le panneau, avec le cadre orange. Le cadre est
+la seule chose qui distingue les deux fiches — les poser à l'envers, ou poser la
+même sur les deux, rend les applications indiscernables.
+
+Les onze onglets de langue autres que l'anglais et le français n'ont pas été
+repris : ils ne portent qu'une copie du texte anglais, et les descriptions
+publiques seront recréées depuis `store/fiches-store.md` le jour de la sortie.
+
+### Ajouté
+
+- **De 13 à 103 appareils.** Le projet ne visait que les compteurs Edge. Il
+  couvre désormais toute la gamme Garmin qui remplit les quatre critères
+  nécessaires — rôle central BLE, types `datafield` et `watchApp`, 128 Ko de
+  champ de données, Connect IQ 3.1.0 : 13 Edge, 86 cadrans ronds, et deux
+  portables. Le détail et la méthode sont dans
+  [docs/compatibilite.md](docs/compatibilite.md).
+
+  Point de départ : un Venu 4, qu'on voulait simplement ajouter. Ses deux
+  profils remplissaient les critères sans rien changer au protocole — restait
+  l'écran.
+
+- **La page de pilotage épouse les cadrans ronds.** `shared/PanelLayout.mc`
+  calculait une colonne de contenu unique, ce qui vaut pour un rectangle et
+  seulement pour lui : sur un disque, les quatre coins tombent hors de la dalle.
+  Chaque bande de la page réclame maintenant **sa propre corde**, celle de sa
+  hauteur. Inscrire la page dans le carré central aurait été plus simple et
+  aurait coûté la moitié du cadran ; sur un Venu 4, la grille des catégories
+  gagne un cinquième de largeur par rapport à cette solution, et passe à deux
+  rangées de trois tuiles au lieu de cinq tuiles de 35 px.
+
+  **Le chemin rectangulaire est inchangé, au pixel près.** `_half()` rend
+  toujours la même demi-colonne quand l'écran n'est pas rond, et les 1 925
+  combinaisons du test d'origine passent sans avoir été retouchées.
+
+- **La forme de l'écran est lue à l'exécution**, comme le tactile l'était déjà —
+  `LampPanel.isRound()`, deux conditions et non une : un champ de données sur
+  une montre ronde reçoit un rectangle découpé par le système, et c'est bien la
+  géométrie rectangulaire qu'il faut y appliquer. Un seul binaire, pas de
+  variante par modèle.
+
+- **`tools/gen-targets.py`**, qui établit la liste des cibles depuis les profils
+  du SDK et écrit le bloc `<iq:product>` des manifestes, les groupes d'icônes
+  des jungles, les variantes de vignette et le tableau de la documentation. À
+  treize Edge, une liste à la main se relisait ; à cent trois appareils et douze
+  tailles d'icône, elle serait fausse dès la prochaine mise à jour du SDK.
+
+- **Un test de confinement dans le disque** : les neuf diamètres de la gamme, du
+  218 px au 466, sur les cinq jeux de polices et de deux à six catégories. Il
+  vérifie qu'aucun coin de bande ne sort du cadran — la seule erreur que l'œil ne
+  rattrape pas, puisqu'une tuile invisible au bord de la dalle reste tactile.
+  La suite passe à 59 tests, et `test-all` à cinq profils dont un cadran rond.
+
+### Modifié
+
+- `tools/deploy-edge.sh` devient `tools/deploy-device.sh` et **ne reconnaît plus
+  l'appareil à son nom**. Il cherchait `Edge*` en USB, et ne voyait donc pas une
+  montre branchée ; il retient maintenant le premier appareil MTP qui expose un
+  dossier `GARMIN/Apps`, en essayant tous ses volumes.
+- **`deploy-device.sh` vérifie désormais que la copie a abouti.** `CopyHere` est
+  asynchrone et ne rend aucune erreur sur un appareil MTP : le script dormait
+  dix secondes puis annonçait « redémarrer l'appareil » sans avoir rien
+  contrôlé. C'est arrivé le 20/09 sur le Venu 4 — les deux `.prg` n'étaient pas
+  dans `GARMIN/Apps`, et la première copie passait pour une réussite. Il attend
+  maintenant de **voir** les deux fichiers, jusqu'à une minute, et sort en
+  erreur sinon.
+- `tools/sim-captures.sh` couvre les neuf diamètres ronds, et attend 22 s au
+  lieu de 12 avant la capture.
+- `docs/compatibilite-edge.md` devient `docs/compatibilite.md`.
+- `tools/make-icons.py` ne porte plus sa table de tailles : il la prend du même
+  scanner. Douze tailles au lieu de cinq, de 32 à 70 px.
+
+### Fait sur le store le 20/09/2026
+
+- Les deux paquets bêta téléversés en 0.2, validés par Garmin.
+- Descriptions anglaise et française reprises sur les deux fiches : elles
+  annonçaient des compteurs de vélo dès la première ligne, ce qui n'était plus
+  vrai. Elles disent maintenant les montres, et ce que la page devient sur un
+  cadran rond.
+- Un texte « Nouveautés » dans les deux langues, qui dit aussi ce qui **n'a
+  pas** été éprouvé — c'est le genre de précision qu'une bêta doit porter.
+- **L'icône de couverture du champ de données**, enfin corrigée : elle portait
+  encore le cadre orange, celui qui distingue le panneau. Article hérité de
+  la 0.1, clos.
+- Les descriptions ont dû être renvoyées une fois. Le formulaire du store rend
+  **chaque saut de ligne simple comme un changement de paragraphe**, et les
+  textes de `store/fiches-store.md` sont retaillés à 95 colonnes pour se lire
+  dans un éditeur : collés tels quels, ils se sont affichés coupés en plein
+  milieu des phrases. L'avertissement est maintenant en tête de ce fichier.
+
+### Éprouvé sur matériel
+
+**Le 20/09/2026, un Venu 4 41 mm a fait tourner les deux binaires et a été
+déclaré fonctionnel.** Installation manuelle par `tools/deploy-device.sh`.
+C'est le deuxième appareil physique du projet, et le premier écran rond : le
+rôle central BLE marche donc sur une plateforme montre, le protocole VS1800S ne
+dépend pas du matériel, et la mise en page inscrite dans le disque tient sur un
+vrai cadran. Ni le simulateur ni un test unitaire ne pouvaient trancher ces
+trois points.
+
+### Ce qui n'a pas changé, et qu'il faut garder en tête
+
+**Cent un de ces cent trois appareils n'ont jamais fait tourner ce code.**
+Remplir les quatre critères et compiler n'est pas avoir été essayé.
+
+Et « fonctionnel » n'est pas la grille d'essai : les trois points qui bloquent
+une sortie publique demandent chacun un geste précis pendant une sortie, et
+restent à confirmer — voir [docs/depot-beta.md](docs/depot-beta.md),
+chapitre 4.
 
 ---
 

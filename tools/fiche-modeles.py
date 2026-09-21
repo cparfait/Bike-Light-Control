@@ -307,7 +307,7 @@ def main():
     w("## 5. Le protocole, le meme sur tous\n")
     w("```bash")
     w("bash app/build.sh <appareil>")
-    w("bash tools/deploy-edge.sh <appareil>")
+    w("bash tools/deploy-device.sh <appareil>")
     w("```\n")
     w("Puis **redemarrer l'Edge** : il consomme les fichiers de `GARMIN/Apps` au demarrage, il")
     w("est normal qu'ils y disparaissent. Garder le `.prg.debug.xml` du meme build, c'est lui")

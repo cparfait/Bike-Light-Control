@@ -4,13 +4,13 @@
 
 # Bike Light Control
 
-**Drive an iGPSPORT bike light from your Garmin Edge — while you ride.**
+**Drive an iGPSPORT bike light from your Garmin cycling computer or watch — while you ride.**
 
 [![Connect IQ](https://img.shields.io/badge/Connect%20IQ-9.2.0-007cc3)](https://developer.garmin.com/connect-iq/)
 [![Monkey C](https://img.shields.io/badge/Monkey%20C-Toybox%203.1%2B-5c4b8a)](https://developer.garmin.com/connect-iq/monkey-c/)
-[![Edge models](https://img.shields.io/badge/Edge%20models-13-005f8c)](docs/compatibilite-edge.md)
+[![Devices](https://img.shields.io/badge/devices-103-005f8c)](docs/compatibilite.md)
 [![Languages](https://img.shields.io/badge/languages-13-2e7d32)](#thirteen-languages-not-thirty-six)
-[![Tests](https://img.shields.io/badge/unit%20tests-58-2e7d32)](app/source-test)
+[![Tests](https://img.shields.io/badge/unit%20tests-59-2e7d32)](app/source-test)
 [![License](https://img.shields.io/badge/license-MIT-black)](LICENSE)
 
 **English** · [Français](README.fr.md)
@@ -71,17 +71,34 @@ the 19 distinct commands the vendor app emits are reproduced exactly. The full w
 Both share `shared/` — protocol, BLE layer, automation, control page — and move in lockstep
 through a single [CHANGELOG.md](CHANGELOG.md).
 
-## Compatible Edge models
+## Compatible devices
 
-**13 Edge models** expose the BLE central role to third-party apps. The list was established by
-querying the API definitions in the locally installed SDK 9.2.0 profiles, not the online
-documentation — method and details in [docs/compatibilite-edge.md](docs/compatibilite-edge.md):
+**103 Garmin devices** meet the four necessary conditions: the BLE central role actually
+present in the API definition, both the `datafield` and `watchApp` types, 128 KB of data-field
+memory, and Connect IQ 3.1.0. The list is **generated** from the locally installed SDK 9.2.0
+profiles, never copied from a documentation page — method and full table in
+[docs/compatibilite.md](docs/compatibilite.md):
 
-> Edge 530 · 540 · 550 · 830 · 840 · 850 · 1030 · 1030 Plus · 1040 · **1050** ·
-> Explore · Explore 2 · MTB
+```bash
+python tools/gen-targets.py
+```
 
-Excluded for lack of the API: Edge 130 / 130 Plus, 520, 520 Plus, 820, 1000 — and, the trap, the
-**Edge 1030 Bontrager**, even though the plain Edge 1030 is compatible.
+> **13 Edge cycling computers** — 530 · 540 · 550 · 830 · 840 · 850 · 1030 · 1030 Plus ·
+> 1040 · **1050** · Explore · Explore 2 · MTB
+>
+> **86 round watches** — fenix 5 Plus through 9 Pro, epix, tactix, quatix, MARQ, Forerunner
+> from the 245 Music on, Venu 2 through **Venu 4**, vívoactive 5 and 6, Descent, D2,
+> Approach, Instinct AMOLED
+>
+> **2 handhelds** — GPSMAP, Montana
+
+Excluded for lack of the API: Edge 130 / 130 Plus, 520, 520 Plus, 820, 1000, fenix 6 non-Pro,
+vívoactive 3 and 4, Venu 1 — and, the trap, the **Edge 1030 Bontrager**, even though the plain
+Edge 1030 is compatible.
+
+**Two of those 103 devices have run this code on hardware**: the Edge 1050, the development
+target, and a Venu 4 41mm — reported working on 2026-09-20, the project's first round screen.
+Compiling is not the same as having been tried.
 
 Two platform facts worth carrying around:
 
@@ -205,7 +222,7 @@ widget/                             device app — "Bike Light Panel"
 store/                              500×500 store icons and the store listing copy
 docs/
   protocole-vs1800s.md              the protocol — Phase 1 deliverable
-  compatibilite-edge.md             compatible Edge models, verified against the SDK
+  compatibilite.md                  compatible devices, verified against the SDK
   application.md                    app architecture and design decisions
   essai-sans-lampe.md               testing with a fake light (nRF Connect)
   essai-edge830.md                  field-test sheet for the Edge 830
@@ -217,8 +234,9 @@ tools/
   check-icons.py                    icons cross-checked against the SDK profiles
   fiche-modeles.py                  writes docs/essai-modeles.md from the SDK profiles
   i18n/                             translations: one JSON table per language
+  gen-targets.py                    derives the target list from the SDK profiles
   make-icons.py                     draws the launcher and store icons
-  deploy-edge.sh                    installs both binaries on a USB-connected Edge
+  deploy-device.sh                  installs both binaries on a USB-connected device
   pull-btsnoop.sh                   pulls the HCI log off the phone
   scan-apk.py, dump-proto-*.py      APK analysis, without Java
 captures/                           analysis reports (raw logs and APKs stay out — .gitignore)

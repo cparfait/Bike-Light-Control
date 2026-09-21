@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Verifie la chaine complete des icones de lanceur, sur les 13 cibles.
+"""Verifie la chaine complete des icones de lanceur, sur toutes les cibles.
 
     python tools/check-icons.py
 
@@ -124,8 +124,10 @@ def main():
         for line in problems:
             print("  %s" % line)
         return 1
-    print("\nLes 13 cibles ont une icone a la taille exacte annoncee par leur profil,"
-          "\nopaque et aux quatre coins identiques.")
+    # Le compte se lit dans le manifeste plutot que d'etre ecrit ici : il a
+    # fallu le corriger a la main en passant de 13 a 15 cibles.
+    print("\nLes %d cibles ont une icone a la taille exacte annoncee par leur profil,"
+          "\nopaque et aux quatre coins identiques." % len(products("app")))
     return 0
 
 
