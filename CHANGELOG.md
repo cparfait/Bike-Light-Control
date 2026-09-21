@@ -35,17 +35,32 @@ collecte de données, aucun profil ANT+.
 Aucun changement de code depuis la 0.3 : même binaire, autre identifiant. Ce qui
 change, c'est ce qu'on sait de lui.
 
-### Un point non résolu
+### Approbation
 
-**Garmin annonce « La vérification de la signature a échoué »** sur les deux
+**« Panneau éclairage vélo » est approuvée**, le 21/09/2026, quelques heures
+après le dépôt — statut « Approuvée » et ruban NEW sur le tableau de bord.
+Garmin annonce jusqu'à 24 h avant que la fiche n'apparaisse dans la boutique.
+« Commande éclairage vélo » reste en attente à la même heure.
+
+**Une fiche publique donne un courriel, même en cas d'approbation.** C'est une
+différence avec les bêtas, qui n'en déclenchent aucun — et une correction de ce
+que ce journal laissait entendre jusqu'ici.
+
+### La signature refusée, en pratique
+
+**Garmin annonçait « La vérification de la signature a échoué »** sur les deux
 envois de production, alors que les envois de bêta affichaient « Signature :
-vérifiée ». La clé est pourtant la même, intacte et lisible.
+vérifiée ». Même clé, intacte et lisible.
 
-L'explication la plus vraisemblable est qu'un identifiant jamais publié n'a
-aucune clé enregistrée à laquelle se comparer — les bêtas, elles, étaient
-connues depuis le 10/09. Ce n'est qu'une hypothèse. Si la revue échoue, c'est la
-première piste ; et **la clé `developer_key.der` doit être sauvegardée hors du
-dépôt**, faute de quoi aucune mise à jour ne sera possible.
+**Cela n'a pas bloqué la revue** : l'approbation du panneau est arrivée malgré
+ce message. L'explication vraisemblable tient donc : un identifiant jamais
+publié n'a aucune clé enregistrée à laquelle se comparer, et le contrôle le
+rapporte comme un échec faute de référence. Les bêtas, elles, étaient connues
+depuis le 10/09.
+
+Reste vrai quoi qu'il arrive : **la clé `developer_key.der` doit être sauvegardée
+hors du dépôt.** Garmin lie définitivement une application publiée à la clé qui
+l'a signée ; perdue, aucune mise à jour n'est possible sur ces deux fiches.
 
 ### Les trois points bloquants sont levés
 
