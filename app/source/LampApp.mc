@@ -87,7 +87,7 @@ class LampApp extends Application.AppBase {
     //! `FieldSettings`.
     function getSettingsView() {
         if (_lamp == null || _auto == null) { return null; }
-        return [ FieldSettings.build(),
+        return [ FieldSettings.build(_lamp as LampManager),
                  new FieldSettingsDelegate(_lamp as LampManager, _auto as AutoController) ];
     }
 

@@ -267,8 +267,9 @@ La lampe est remise dans l'état où on l'a trouvée. Le clignotement n'est lanc
 bilan initial écoulé, c'est-à-dire une fois que la lampe a dit son mode courant — sinon on la
 rendrait éteinte à quelqu'un qui l'avait allumée à la main.
 
-Si ce n'est pas la bonne lampe, « Changer de lampe » dans les réglages l'écarte et relance la
-recherche ; la suivante clignote à son tour. L'appareil écarté est retenu **par son identité**
+Si ce n'est pas la bonne lampe, « Changer de lampe » dans les réglages — ceux du panneau comme
+ceux du champ de données — l'écarte et relance la recherche ; la suivante clignote à son tour. Seule
+la dernière lampe quittée est écartée : un second appui ramène à la première. L'appareil écarté est retenu **par son identité**
 (`ScanResult.isSameDevice`), jamais par son nom : écarter « VS1800S » écarterait aussi celle
 qu'on cherche.
 

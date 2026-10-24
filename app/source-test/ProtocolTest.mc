@@ -820,6 +820,22 @@ module ProtocolTest {
         return true;
     }
 
+    //! Une TL50 annoncee « Lampe avant » doit s'afficher en feu arriere.
+    (:test)
+    function tailLightNamedTl(logger as Test.Logger) as Lang.Boolean {
+        var front = LC.BLT_FRONT_LIGHT;
+        var cases = [["TL50", LC.BLT_TAIL_LIGHT], ["iGPSPORT TL30", LC.BLT_TAIL_LIGHT],
+                     ["VS1800S", front], [null, front]];
+        for (var i = 0; i < cases.size(); i++) {
+            var c = cases[i] as Lang.Array;
+            if (LampManager.lightTypeOf(c[0] as Lang.String or Null, front) != c[1]) {
+                logger.error("type faux pour " + c[0]);
+                return false;
+            }
+        }
+        return true;
+    }
+
     // ---- Identification de la lampe ----------------------------------------
 
     //! La sequence : allumee, eteinte, allumee, eteinte, puis fini. C'est ce
@@ -892,16 +908,20 @@ module ProtocolTest {
     //! dans la plage des modes ferait allumer la lampe en touchant un badge.
     (:test)
     function panelActionsStayOutOfModeRange(logger as Test.Logger) as Lang.Boolean {
-        if (LampPanel.ACTION_SETTINGS >= 0 || LampPanel.ACTION_AUTO >= 0) {
+        if (LampPanel.ACTION_SETTINGS >= 0 || LampPanel.ACTION_AUTO >= 0
+                || LampPanel.ACTION_SWITCH >= 0) {
             logger.error("une commande empiete sur la plage des modes");
             return false;
         }
         if (LampPanel.ACTION_SETTINGS <= LampPanel.ACTION_CATEGORY
-                || LampPanel.ACTION_AUTO <= LampPanel.ACTION_CATEGORY) {
+                || LampPanel.ACTION_AUTO <= LampPanel.ACTION_CATEGORY
+                || LampPanel.ACTION_SWITCH <= LampPanel.ACTION_CATEGORY) {
             logger.error("une commande est prise pour une categorie");
             return false;
         }
-        if (LampPanel.ACTION_SETTINGS == LampPanel.ACTION_AUTO) {
+        if (LampPanel.ACTION_SETTINGS == LampPanel.ACTION_AUTO
+                || LampPanel.ACTION_SWITCH == LampPanel.ACTION_AUTO
+                || LampPanel.ACTION_SWITCH == LampPanel.ACTION_SETTINGS) {
             logger.error("deux commandes partagent la meme valeur");
             return false;
         }
@@ -1072,8 +1092,8 @@ module ProtocolTest {
         // On verifie les deux etats de la rangee de niveaux : affichee, et
         // reservee mais vide — c'est le second qui garantit que toucher
         // « Eteint » ne deplace rien.
-        var m = new PanelLayout(w, h, nc, nl, nl > 0, hs, hm, hl, round);
-        var reserved = new PanelLayout(w, h, nc, 0, true, hs, hm, hl, round);
+        var m = new PanelLayout(w, h, nc, nl, nl > 0, hs, hm, hl, hl, round);
+        var reserved = new PanelLayout(w, h, nc, 0, true, hs, hm, hl, hl, round);
         if (nl > 0 && (reserved.rowsY != m.rowsY || reserved.catH != m.catH
                        || reserved.heroH != m.heroH || reserved.levY != m.levY)) {
             logger.error("la page bouge quand la rangee de niveaux se vide en "

@@ -356,6 +356,11 @@ class LampControlDelegate extends WatchUi.BehaviorDelegate {
             _openSettings();
             return;
         }
+        if (action == LampPanel.ACTION_SWITCH) {
+            _lamp.switchLamp();
+            WatchUi.requestUpdate();
+            return;
+        }
         if (action == LampPanel.ACTION_AUTO) {
             // Le badge rend l'ajustement selon la vitesse reversible depuis la
             // page. Sans lui, une seule tape sur un mode condamnait au manuel

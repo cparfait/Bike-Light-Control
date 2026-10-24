@@ -209,6 +209,10 @@ class LampView extends WatchUi.DataField {
                 _panel.chooseCategory(LC.categoryOf(action));
                 return true;
             }
+            if (action != null && action == LampPanel.ACTION_SWITCH) {
+                _lamp.switchLamp();
+                return true;
+            }
             if (action != null && action == LampPanel.ACTION_AUTO) {
                 // Le badge est le seul moyen de rendre la main à l'ajustement
                 // selon la vitesse sans passer par l'extinction.

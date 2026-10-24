@@ -88,6 +88,10 @@ class PanelLayout {
     //! qu'on regarde une demi-seconde en roulant. La place reste donc prise,
     //! vide, tant que la lampe a au moins une catégorie à plusieurs crans.
     //!
+    //! `hHeader` est la hauteur du bandeau de titre : celle de `hSmall`, ou
+    //! plus quand il porte les fleches de changement de lampe, qu'il faut
+    //! pouvoir viser en roulant.
+    //!
     //! `round` dit que le `Dc` couvre un cadran rond entier — jamais qu'un
     //! champ de données découpé dedans, qui reste un rectangle. C'est
     //! `LampPanel.isRound()` qui tranche, à l'exécution.
@@ -95,7 +99,8 @@ class PanelLayout {
                         nCats as Lang.Number, nLevels as Lang.Number,
                         reserveLevels as Lang.Boolean,
                         hSmall as Lang.Number, hMedium as Lang.Number,
-                        hLarge as Lang.Number, round as Lang.Boolean) {
+                        hLarge as Lang.Number, hHeader as Lang.Number,
+                        round as Lang.Boolean) {
         pad = w / 24;
         if (pad < 5)  { pad = 5; }
         if (pad > 16) { pad = 16; }
@@ -124,7 +129,7 @@ class PanelLayout {
         }
 
         headerY = padTop;
-        headerH = hSmall;
+        headerH = hHeader;
         batteryY = headerY + headerH + gap;
         batteryH = hMedium;
 

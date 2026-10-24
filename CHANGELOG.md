@@ -13,6 +13,31 @@ partagent `shared/`, et deux numéros divergents seraient ingérables.
 
 ---
 
+## [Non publié]
+
+### Modifié
+
+- « Changer de lampe » bascule entre deux lampes : la lampe quittée n'est plus
+  écartée pour la session, seulement jusqu'au changement suivant. Avec un phare
+  et un feu arrière, le second appui ramène au premier.
+- Le champ de données propose aussi « Changer de lampe » dans ses réglages sur
+  le compteur, une fois une lampe connectée.
+- Grandes flèches ‹ › aux deux bords du titre de la lampe, dans le panneau et
+  dans le champ de données plein écran, dès qu'une autre lampe a été vue : le
+  bandeau s'agrandit pour qu'elles se visent en roulant, et une tape n'importe
+  où dessus passe à l'autre lampe. Le changement ne fait
+  ni clignoter la lampe suivante ni changer son mode.
+- Les deux lampes restent connectées quand le compteur a une connexion libre :
+  le premier changement appaire directement l'autre lampe, sans nouvelle
+  recherche, et les suivants sont instantanés. Si la lampe pilotée se perd,
+  l'autre reprend la main.
+- Un appairage refusé par la pile Bluetooth (`DevicePairException`) ne ferme
+  plus l'application : l'appareil est écarté et la recherche reprend.
+- Une lampe dont le nom commence par « TL » suivi d'un chiffre (TL30, TL50)
+  s'affiche en feu arrière, même si elle se déclare autrement.
+
+---
+
 ## [1.0.0] — 21/09/2026
 
 **Première version publique**, déposée le 21/09/2026. Deux fiches **nouvelles**

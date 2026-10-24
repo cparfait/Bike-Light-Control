@@ -35,6 +35,7 @@ module FieldSettings {
     const ID_SPEED2    = 6;
     const ID_SPEED3    = 7;
     const ID_BATTERY   = 8;
+    const ID_OTHER_LIGHT = 9;
 
     const SPEED1_CHOICES = [5, 8, 10, 12, 15];
     const SPEED2_CHOICES = [15, 18, 20, 22, 25];
@@ -48,8 +49,15 @@ module FieldSettings {
     const UNIT_SPEED = " km/h";
     const UNIT_PCT   = " %";
 
-    function build() as WatchUi.Menu2 {
+    function build(lamp as LampManager) as WatchUi.Menu2 {
         var menu = new WatchUi.Menu2({ :title => Labels.of(Rez.Strings.AppName) });
+
+        // Meme sortie que dans le menu du panneau : sans elle, le champ restait
+        // lie a la lampe la plus proche, et le feu arriere injoignable.
+        if (lamp.isReady()) {
+            menu.addItem(new WatchUi.MenuItem(Labels.of(Rez.Strings.MsgOtherLight),
+                Labels.of(Rez.Strings.MsgOtherLightHint), ID_OTHER_LIGHT, null));
+        }
 
         // Pas de libellés d'état sur les interrupteurs : `ToggleMenuItem` en
         // dessine un, et le dessin dit déjà tout ce qu'un « Oui / Non » aurait
@@ -151,6 +159,12 @@ class FieldSettingsDelegate extends WatchUi.Menu2InputDelegate {
             }
             if (id == FieldSettings.ID_SEARCH)    { FieldSettings.save("searchOnStart", on); }
             _auto.loadSettings();
+            return;
+        }
+
+        if (id == FieldSettings.ID_OTHER_LIGHT) {
+            _lamp.switchLamp();
+            WatchUi.popView(WatchUi.SLIDE_RIGHT);
             return;
         }
 

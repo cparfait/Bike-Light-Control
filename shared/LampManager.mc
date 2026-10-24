@@ -119,6 +119,17 @@ class LampManager extends Ble.BleDelegate {
     //! recherche tournait en boucle sans jamais atteindre la vraie lampe.
     private var _rejected as Lang.Array = [];
 
+    //! Lampe quittee par « Changer de lampe ». Une seule, et pas dans
+    //! `_rejected` : avec un phare et un feu arriere, la quitter puis quitter
+    //! l'autre doit ramener a la premiere, pas laisser les deux ecartees.
+    //! shortcut: avec trois lampes ou plus, la bascule alterne entre les deux
+    //! plus proches ; tenir une liste ordonnee si le cas se presente.
+    private var _skipped as Ble.ScanResult or Null = null;
+
+    //! L'autre lampe, gardee connectee pendant qu'on pilote celle-ci : voir
+    //! `switchLamp()` et `_link()` pour le contenu.
+    private var _parked as Lang.Array or Null = null;
+
     //! Lampes reperees pendant la fenetre de choix en cours, la meilleure
     //! d'abord. Bornee : au-dela de quatre lampes autour de soi, la cinquieme
     //! n'apprend rien et la memoire d'un champ de donnees est comptee.
@@ -236,8 +247,9 @@ class LampManager extends Ble.BleDelegate {
                 // Fenetre vide. Si les seuls appareils visibles sont ceux
                 // qu'on a ecartes, on finit par leur redonner leur chance.
                 _emptyWindows++;
-                if (_rejected.size() > 0 && _emptyWindows >= EMPTY_WINDOWS_FORGET) {
+                if (_emptyWindows >= EMPTY_WINDOWS_FORGET) {
                     _rejected = [];
+                    _skipped = null;
                 }
                 _setScanning(false);
             } else if (!_scanning && _scanSeconds >= SCAN_PAUSE_S) {
@@ -334,7 +346,14 @@ class LampManager extends Ble.BleDelegate {
         _setScanning(false);
         _candidates = [];
         _rejected = [];
+        _skipped = null;
         state = STATE_IDLE;
+        // L'autre lampe est introuvable, mais celle d'avant est toujours la.
+        if (_parked != null) {
+            var back = _parked as Lang.Array;
+            _parked = null;
+            _restore(back);
+        }
     }
 
     private function _registerProfiles() as Void {
@@ -399,6 +418,10 @@ class LampManager extends Ble.BleDelegate {
         _identifyPending = false;
         if (_scanning) { _setScanning(false); }
         if (_device != null) { Ble.unpairDevice(_device); _device = null; }
+        if (_parked != null) {
+            try { Ble.unpairDevice((_parked as Lang.Array)[0] as Ble.Device); } catch (e) { }
+            _parked = null;
+        }
         _tx = null;
         _rx = null;
         _battery = null;
@@ -426,6 +449,8 @@ class LampManager extends Ble.BleDelegate {
         _identifiedOnce = true;
         _identifyPending = false;
         _identifyStep = -1;
+        // Deux lampes « vues », pour que le bandeau montre ses chevrons.
+        _candidates = [null, null];
     }
 
     //! Vrai quand rien n'est en cours : ni recherche, ni liaison.
@@ -616,14 +641,34 @@ class LampManager extends Ble.BleDelegate {
         return _candidates.size();
     }
 
+    //! Vrai si une autre lampe que celle-ci a ete vue : c'est ce qui rend utile
+    //! le changement de lampe depuis le bandeau.
+    function canSwitch() as Lang.Boolean {
+        return isReady() && (_parked != null || nearbyCount() > 1 || _skipped != null);
+    }
+
     private function _connectToBest() as Void {
         if (_candidates.size() == 0) { return; }
-        var best = _candidates[0] as Ble.ScanResult;
-        _paired = best;
         _setScanning(false);
-        state = STATE_CONNECTING;
         _pickSeconds = 0;
-        _device = Ble.pairDevice(best);
+        _connectTo(_candidates[0] as Ble.ScanResult);
+    }
+
+    //! `pairDevice` leve `DevicePairException`, ou rend `null`, quand la pile
+    //! refuse l'appairage. L'exception non rattrapee fermait l'application ; on
+    //! ecarte l'appareil pour cette recherche et on repart.
+    private function _connectTo(result as Ble.ScanResult) as Void {
+        _paired = result;
+        state = STATE_CONNECTING;
+        var device = null;
+        try { device = Ble.pairDevice(result); } catch (e) { }
+        if (device == null) {
+            _paired = null;
+            _reject(result);
+            start();
+            return;
+        }
+        _device = device;
     }
 
     //! Reconnaît la lampe à son marqueur d'advertising, à défaut à son nom.
@@ -659,12 +704,26 @@ class LampManager extends Ble.BleDelegate {
         return (third as Lang.String).toNumber() != null;
     }
 
+    //! Type de la lampe, le nom l'emportant quand il est explicite : chez
+    //! iGPSPORT « TL » suivi d'un chiffre designe un feu arriere (TL30, TL50),
+    //! et une TL50 s'affichait « Lampe avant ».
+    static function lightTypeOf(name as Lang.String or Null,
+                                reported as Lang.Number) as Lang.Number {
+        if (name == null) { return reported; }
+        var upper = name.toUpper();
+        var at = upper.find("TL");
+        if (at == null) { return reported; }
+        var digit = upper.substring(at + 2, at + 3);
+        return (digit != null && digit.toNumber() != null) ? LC.BLT_TAIL_LIGHT : reported;
+    }
+
     //! Vrai si cet appareil a déjà été essayé et écarté.
     //!
     //! La comparaison porte sur l'appareil, pas sur son nom : deux exemplaires
     //! du meme modele s'annoncent « VS1800S » tous les deux, et ecarter l'un
     //! par son nom ecarterait aussi l'autre — celui qu'on cherche, justement.
     private function _isRejected(result as Ble.ScanResult) as Lang.Boolean {
+        if (_skipped != null && result.isSameDevice(_skipped)) { return true; }
         for (var i = 0; i < _rejected.size(); i++) {
             if (result.isSameDevice(_rejected[i] as Ble.ScanResult)) { return true; }
         }
@@ -679,30 +738,76 @@ class LampManager extends Ble.BleDelegate {
         _rejected.add(result);
     }
 
-    //! Ecarte la lampe connectee et repart en recherche.
+    //! Passe a l'autre lampe, sans lacher celle-ci.
     //!
-    //! C'est la sortie de secours de l'identification : le clignotement montre
-    //! une lampe qui n'est pas la sienne, on demande la suivante. Sans elle,
-    //! savoir que la lampe est la mauvaise ne servirait a rien.
-    function forgetCurrentLamp() as Void {
-        _reject(_paired);
+    //! La lampe quittee reste connectee, rangee dans `_parked` : y revenir est
+    //! un simple echange, sans « Connexion ». La premiere fois, l'autre lampe
+    //! est appairee directement depuis la recherche qui l'a vue ; a defaut, on
+    //! relance une recherche qui ecarte celle-ci. Sans connexion libre sur le
+    //! compteur, on lache celle-ci comme avant.
+    function switchLamp() as Void {
         _identifyStep = -1;
         _identifyPending = false;
-        _identifiedOnce = false;
-        if (_device != null) {
-            try { Ble.unpairDevice(_device); } catch (e) { }
-            _device = null;
+        // Vrai et non faux : passer a l'autre lampe, souvent en roulant, ne doit
+        // ni la faire clignoter ni changer son mode — seulement la piloter.
+        _identifiedOnce = true;
+        if (_parked != null) {
+            var back = _parked as Lang.Array;
+            _parked = _link();
+            _restore(back);
+            return;
         }
+        _skipped = _paired;
+        if (isReady() && (Ble has :getAvailableConnectionCount)
+                && Ble.getAvailableConnectionCount() > 0) {
+            _parked = _link();
+        } else if (_device != null) {
+            try { Ble.unpairDevice(_device); } catch (e) { }
+        }
+        _device = null;
         _paired = null;
         _tx = null;
         _rx = null;
         _battery = null;
         _queue = [];
         _frags = [];
-        _busy = false;
         _rxBuffer = []b;
         status = new LightProtocol.LightStatus();
+        for (var i = 0; i < _candidates.size(); i++) {
+            var c = _candidates[i];
+            if (c != null && !_isRejected(c as Ble.ScanResult)) {
+                _connectTo(c as Ble.ScanResult);
+                return;
+            }
+        }
         start();
+    }
+
+    //! Liaison de la lampe pilotee, telle que `_parked` la range.
+    private function _link() as Lang.Array {
+        return [_device, _tx, _rx, _battery, status, _paired];
+    }
+
+    //! Reprend une lampe rangee dans `_parked`, deja connectee et abonnee.
+    private function _restore(link as Lang.Array) as Void {
+        _device = link[0] as Ble.Device or Null;
+        _tx = link[1] as Ble.Characteristic or Null;
+        _rx = link[2] as Ble.Characteristic or Null;
+        _battery = link[3] as Ble.Characteristic or Null;
+        status = link[4] as LightProtocol.LightStatus;
+        _paired = link[5] as Ble.ScanResult or Null;
+        _queue = [];
+        _frags = [];
+        _rxBuffer = []b;
+        state = STATE_READY;
+        // Ses notifications etaient ignorees pendant qu'on pilotait l'autre.
+        send(LightProtocol.readCurrentMode());
+        send(LightProtocol.readRemainingTime());
+    }
+
+    //! Vrai si l'evenement vient de la lampe rangee dans `_parked`.
+    private function _isParked(device as Ble.Device) as Lang.Boolean {
+        return _parked != null && device.equals((_parked as Lang.Array)[0]);
     }
 
     //! Ecarte un appareil connecte qui n'est pas une lampe exploitable, et
@@ -729,6 +834,15 @@ class LampManager extends Ble.BleDelegate {
 
     function onConnectedStateChanged(device as Ble.Device,
                                      connectionState as Ble.ConnectionState) as Void {
+        // La lampe en reserve s'est eteinte ou eloignee : on l'oublie, celle
+        // qu'on pilote n'est pas concernee.
+        if (_isParked(device)) {
+            if (connectionState != Ble.CONNECTION_STATE_CONNECTED) {
+                try { Ble.unpairDevice(device); } catch (e) { }
+                _parked = null;
+            }
+            return;
+        }
         if (connectionState != Ble.CONNECTION_STATE_CONNECTED) {
             _tx = null;
             _rx = null;
@@ -747,6 +861,14 @@ class LampManager extends Ble.BleDelegate {
             if (_device != null) {
                 try { Ble.unpairDevice(_device); } catch (e) { }
                 _device = null;
+            }
+            // L'autre lampe est encore connectee : on la reprend plutot que de
+            // chercher celle qui vient de partir.
+            if (_parked != null) {
+                var back = _parked as Lang.Array;
+                _parked = null;
+                _restore(back);
+                return;
             }
             if (state != STATE_IDLE && state != STATE_UNSUPPORTED) { start(); }
             return;
@@ -1035,6 +1157,8 @@ class LampManager extends Ble.BleDelegate {
 
     function onCharacteristicChanged(characteristic as Ble.Characteristic,
                                      value as Lang.ByteArray) as Void {
+        // La lampe en reserve : relue quand on y revient, voir `_restore()`.
+        if (_isParked(characteristic.getService().getDevice())) { return; }
         var uuid = characteristic.getUuid();
 
         // Service batterie standard : un seul octet, le pourcentage.
@@ -1078,7 +1202,10 @@ class LampManager extends Ble.BleDelegate {
         if (incoming.remainingMinutes != null) {
             status.remainingMinutes = incoming.remainingMinutes;
         }
-        if (incoming.lightType != null) { status.lightType = incoming.lightType; }
+        if (incoming.lightType != null) {
+            status.lightType = lightTypeOf((_paired == null) ? null : _paired.getDeviceName(),
+                                           incoming.lightType);
+        }
         if (incoming.configs != null) {
             if (status.configs == null) {
                 status.configs = incoming.configs;

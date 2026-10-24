@@ -211,9 +211,8 @@ class SettingsMenuDelegate extends WatchUi.Menu2InputDelegate {
         // Valeurs numériques : une liste de choix vaut mieux qu'un sélecteur
         // au doigt sur un guidon.
         if (id == SettingsMenu.ID_OTHER_LIGHT) {
-            // Retour a la page : c'est la que le clignotement de la lampe
-            // suivante se verra.
-            _lamp.forgetCurrentLamp();
+            // Retour a la page : c'est la que l'autre lampe s'affichera.
+            _lamp.switchLamp();
             WatchUi.popView(WatchUi.SLIDE_RIGHT);
         } else if (id == SettingsMenu.ID_MODES) {
             _pushModes(item);
